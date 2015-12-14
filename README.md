@@ -4,7 +4,7 @@
 [![HHVM Status][badge_hhvm]](http://hhvm.h4cc.de/package/arcanesoft/blog)
 [![Coverage Status][badge_coverage]](https://scrutinizer-ci.com/g/ARCANESOFT/Blog/?branch=master)
 [![Scrutinizer Code Quality][badge_quality]](https://scrutinizer-ci.com/g/ARCANESOFT/Blog/?branch=master)
-[![SensioLabs Insight][badge_insight]](https://insight.sensiolabs.com/projects/[id])
+[![SensioLabs Insight][badge_insight]](https://insight.sensiolabs.com/projects/68e7db8c-ed18-4426-b1ee-be8e2dba15a5)
 [![Github Issues][badge_issues]](https://github.com/ARCANESOFT/Blog/issues)
 
 [![Packagist][badge_package]](https://packagist.org/packages/arcanesoft/blog)
@@ -18,7 +18,7 @@
 [badge_hhvm]:      https://img.shields.io/hhvm/arcanesoft/blog.svg?style=flat-square
 [badge_coverage]:  https://img.shields.io/scrutinizer/coverage/g/ARCANESOFT/Blog.svg?style=flat-square
 [badge_quality]:   https://img.shields.io/scrutinizer/g/ARCANESOFT/Blog.svg?style=flat-square
-[badge_insight]:   https://img.shields.io/sensiolabs/i/[id].svg?style=flat-square
+[badge_insight]:   https://img.shields.io/sensiolabs/i/68e7db8c-ed18-4426-b1ee-be8e2dba15a5.svg?style=flat-square
 [badge_issues]:    https://img.shields.io/github/issues/ARCANESOFT/Blog.svg?style=flat-square
 
 [badge_package]:   https://img.shields.io/badge/package-arcanesoft/blog-blue.svg?style=flat-square
