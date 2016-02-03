@@ -1,6 +1,6 @@
 <?php namespace Arcanesoft\Blog;
 
-use Arcanedev\Support\PackageServiceProvider as ServiceProvider;
+use Arcanesoft\Core\Bases\PackageServiceProvider;
 
 /**
  * Class     BlogServiceProvider
@@ -8,25 +8,18 @@ use Arcanedev\Support\PackageServiceProvider as ServiceProvider;
  * @package  Arcanesoft\Blog
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class BlogServiceProvider extends ServiceProvider
+class BlogServiceProvider extends PackageServiceProvider
 {
     /* ------------------------------------------------------------------------------------------------
      |  Properties
      | ------------------------------------------------------------------------------------------------
      */
     /**
-     * Vendor name.
-     *
-     * @var string
-     */
-    protected $vendor       = 'arcanesoft';
-
-    /**
      * Package name.
      *
      * @var string
      */
-    protected $package      = 'blog';
+    protected $package = 'blog';
 
     /* ------------------------------------------------------------------------------------------------
      |  Getters & Setters
@@ -62,6 +55,7 @@ class BlogServiceProvider extends ServiceProvider
     public function register()
     {
         $this->registerConfig();
+        $this->registerSidebarItems();
     }
 
     /**
@@ -100,8 +94,14 @@ class BlogServiceProvider extends ServiceProvider
             $this->getConfigFile() => config_path("{$this->vendor}/{$this->package}.php"),
         ], 'config');
 
+        // Migrations
+        $this->publishes([
+            $this->getBasePath() . '/database/migrations/' => database_path('migrations'),
+        ], 'migrations');
+
         // Views
         $viewsPath = $this->getBasePath() . '/resources/views';
+
         $this->loadViewsFrom($viewsPath, $this->package);
         $this->publishes([
             $viewsPath => base_path("resources/views/vendor/{$this->package}"),
@@ -109,6 +109,7 @@ class BlogServiceProvider extends ServiceProvider
 
         // Translations
         $translationsPath = $this->getBasePath() . '/resources/lang';
+
         $this->loadTranslationsFrom($translationsPath, $this->package);
         $this->publishes([
             $translationsPath => base_path("resources/lang/vendor/{$this->package}"),
