@@ -1,6 +1,7 @@
 <?php namespace Arcanesoft\Blog\Http\Controllers\Foundation;
 
 use Arcanesoft\Blog\Bases\FoundationController;
+use Arcanesoft\Blog\Models\Post;
 
 /**
  * Class     PostsController
@@ -11,15 +12,30 @@ use Arcanesoft\Blog\Bases\FoundationController;
 class PostsController extends FoundationController
 {
     /* ------------------------------------------------------------------------------------------------
+     |  Properties
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * The post model.
+     *
+     * @var \Arcanesoft\Blog\Models\Post
+     */
+    private $post;
+
+    /* ------------------------------------------------------------------------------------------------
      |  Constructor
      | ------------------------------------------------------------------------------------------------
      */
     /**
      * Instantiate the controller.
+     *
+     * @param Post $post
      */
-    public function __construct()
+    public function __construct(Post $post)
     {
         parent::__construct();
+
+        $this->post = $post;
 
         $this->setCurrentPage('blog-posts');
         $this->addBreadcrumbRoute('Posts', 'blog::foundation.posts.index');
@@ -29,14 +45,75 @@ class PostsController extends FoundationController
      |  Main Functions
      | ------------------------------------------------------------------------------------------------
      */
-    public function index()
+    /**
+     * List the posts.
+     *
+     * @param  bool  $trashed
+     *
+     * @return \Illuminate\View\View
+     */
+    public function index($trashed = false)
     {
         $this->authorize('blog.posts.list');
 
-        $title = 'Blog - Posts';
-        $this->setTitle($title);
-        $this->addBreadcrumb('List all posts');
+        $posts = $trashed
+            ? $this->post->onlyTrashed()->paginate(30)
+            : $this->post->paginate(30);
 
-        return $this->view('foundation.posts.list');
+        $title = 'List of posts' . ($trashed ? ' - Trashed' : '');
+        $this->setTitle($title);
+        $this->addBreadcrumb($title);
+
+        return $this->view('foundation.posts.list', compact('trashed', 'posts'));
+    }
+
+    /**
+     * List the trashed posts.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function trash()
+    {
+        return $this->index(true);
+    }
+
+    public function create()
+    {
+        //
+    }
+
+    public function store()
+    {
+        //
+    }
+
+    public function show($post)
+    {
+        //
+    }
+
+    public function edit($post)
+    {
+        //
+    }
+
+    public function update($post)
+    {
+        //
+    }
+
+    public function publish($post)
+    {
+        //
+    }
+
+    public function restore($post)
+    {
+        //
+    }
+
+    public function delete($post)
+    {
+        //
     }
 }
