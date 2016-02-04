@@ -1,6 +1,7 @@
 <?php namespace Arcanesoft\Blog;
 
 use Arcanesoft\Core\Bases\PackageServiceProvider;
+use Arcanesoft\Core\CoreServiceProvider;
 
 /**
  * Class     BlogServiceProvider
@@ -56,6 +57,11 @@ class BlogServiceProvider extends PackageServiceProvider
     {
         $this->registerConfig();
         $this->registerSidebarItems();
+        $this->app->register(CoreServiceProvider::class);
+
+        if ($this->app->runningInConsole()) {
+            $this->app->register(Providers\CommandServiceProvider::class);
+        }
     }
 
     /**
@@ -114,5 +120,8 @@ class BlogServiceProvider extends PackageServiceProvider
         $this->publishes([
             $translationsPath => base_path("resources/lang/vendor/{$this->package}"),
         ], 'lang');
+
+        // Sidebar items
+        $this->publishSidebarItems();
     }
 }
