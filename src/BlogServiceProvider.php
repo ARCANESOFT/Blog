@@ -58,6 +58,7 @@ class BlogServiceProvider extends PackageServiceProvider
         $this->registerConfig();
         $this->registerSidebarItems();
         $this->app->register(CoreServiceProvider::class);
+        $this->app->register(Providers\AuthorizationServiceProvider::class);
 
         if ($this->app->runningInConsole()) {
             $this->app->register(Providers\CommandServiceProvider::class);
