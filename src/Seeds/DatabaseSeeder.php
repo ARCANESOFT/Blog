@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
      * @var array
      */
     protected $seeds = [
-        //
+        PermissionsTableSeeder::class,
+        RolesTableSeeder::class,
     ];
 }
