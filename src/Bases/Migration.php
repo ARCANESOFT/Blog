@@ -19,24 +19,7 @@ abstract class Migration extends BaseMigration
      */
     public function __construct()
     {
-        $this->connection = config('arcanesoft.blog.database.connection', null);
-    }
-
-    /* ------------------------------------------------------------------------------------------------
-     |  Getters & Setters
-     | ------------------------------------------------------------------------------------------------
-     */
-    /**
-     * Set the table name.
-     *
-     * @param  string  $table
-     *
-     * @return self
-     */
-    public function setTable($table)
-    {
-        $this->table = $table;
-
-        return $this;
+        $this->setConnection(config('arcanesoft.blog.database.connection', null));
+        $this->setPrefix(config('arcanesoft.blog.database.prefix', ''));
     }
 }

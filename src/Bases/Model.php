@@ -10,5 +10,19 @@ use Arcanedev\Support\Bases\Model as BaseModel;
  */
 abstract class Model extends BaseModel
 {
-    //
+    /* ------------------------------------------------------------------------------------------------
+     |  Constructor
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Create a new Eloquent model instance.
+     *
+     * @param  array  $attributes
+     */
+    public function __construct(array $attributes = [])
+    {
+        $this->prefix = config('arcanesoft.blog.database.prefix', null);
+
+        parent::__construct($attributes);
+    }
 }
