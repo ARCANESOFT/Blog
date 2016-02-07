@@ -1,6 +1,7 @@
 <?php namespace Arcanesoft\Blog\Http\Routes\Foundation;
 
 use Arcanedev\Support\Bases\RouteRegister;
+use Arcanesoft\Blog\Models\Post;
 use Illuminate\Contracts\Routing\Registrar;
 
 /**
@@ -47,7 +48,7 @@ class PostsRoutes extends RouteRegister
             ]);
 
             $this->group([
-                'prefix' => '{post_id}',
+                'prefix' => '{blog_post_id}',
             ], function () {
                 $this->get('show', [
                     'as'   => 'show',      // blog::foundation.posts.show
@@ -81,8 +82,8 @@ class PostsRoutes extends RouteRegister
             });
         });
 
-        //$router->bind('post_id', function($postId) {
-        //    return Post::findOrFail($postId);
-        //});
+        $this->bind('blog_post_id', function($postId) {
+            return Post::findOrFail($postId);
+        });
     }
 }
