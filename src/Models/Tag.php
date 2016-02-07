@@ -40,7 +40,7 @@ class Tag extends Model
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = ['name'];
 
     /**
      * Set or unset the timestamps for the model
@@ -61,12 +61,27 @@ class Tag extends Model
      | ------------------------------------------------------------------------------------------------
      */
     /**
-     * Post's relationship.
+     * Relationship with posts.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function posts()
     {
-        return $this->belongsToMany(Post::class);
+        return $this->belongsToMany(Post::class, $this->prefix . 'post_tag');
+    }
+
+    /* ------------------------------------------------------------------------------------------------
+     |  Getters & Setters
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Set the name attribute.
+     *
+     * @param  string  $name
+     */
+    public function setNameAttribute($name)
+    {
+        $this->attributes['name'] = $name;
+        $this->attributes['slug'] = str_slug($name);
     }
 }

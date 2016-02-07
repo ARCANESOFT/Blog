@@ -49,7 +49,9 @@ class Post extends Model
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'user_id', 'category_id', 'title', 'excerpt', 'content', 'status', 'publish_date'
+    ];
 
     /**
      * Set or unset the timestamps for the model
@@ -70,12 +72,37 @@ class Post extends Model
      | ------------------------------------------------------------------------------------------------
      */
     /**
-     * Category's relationship.
+     * Relationship with category.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * Relationship with tags.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class, $this->prefix . 'post_tag');
+    }
+
+    /* ------------------------------------------------------------------------------------------------
+     |  Getters & Setters
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Set the title attribute.
+     *
+     * @param  string  $title
+     */
+    public function setTitleAttribute($title)
+    {
+        $this->attributes['title'] = $title;
+        $this->attributes['slug']  = str_slug($title);
     }
 }

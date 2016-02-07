@@ -33,40 +33,55 @@ class Category extends Model
      *
      * @var string
      */
-    protected $table = 'categories';
+    protected $table    = 'categories';
 
     /**
      * The attributes that are mass assignable
      *
      * @var array
      */
-    protected $fillable = [];
+    protected $fillable = ['name'];
 
     /**
      * Set or unset the timestamps for the model
      *
      * @var bool
      */
-    public $timestamps = true;
+    public $timestamps  = true;
 
     /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
-    protected $dates = ['deleted_at'];
+    protected $dates    = ['deleted_at'];
 
     /* ------------------------------------------------------------------------------------------------
      |  Relationships
      | ------------------------------------------------------------------------------------------------
      */
     /**
-     * Post's relationship.
+     * Relationship with posts.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function posts()
     {
         return $this->hasMany(Post::class);
+    }
+
+    /* ------------------------------------------------------------------------------------------------
+     |  Getters & Setters
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Set the name attribute.
+     *
+     * @param  string  $name
+     */
+    public function setNameAttribute($name)
+    {
+        $this->attributes['name'] = $name;
+        $this->attributes['slug'] = str_slug($name);
     }
 }
