@@ -15,7 +15,7 @@ class CreateCategoryRequest extends FormRequest
      | ------------------------------------------------------------------------------------------------
      */
     /**
-     * Role validation rules.
+     * Category validation rules.
      *
      * @var array
      */
