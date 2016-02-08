@@ -130,11 +130,58 @@ class TagsController extends FoundationController
 
     public function restore(Tag $tag)
     {
+        self::onlyAjax();
         $this->authorize('blog.tags.update');
+
+        try {
+            $tag->restore();
+
+            $message = "The tag {$tag->name} has been successfully restored !";
+            Log::info($message, $tag->toArray());
+            $this->notifySuccess($message, 'Tag restored !');
+
+            $ajax = [
+                'status'  => 'success',
+                'message' => $message,
+            ];
+        }
+        catch (\Exception $e) {
+            $ajax = [
+                'status'  => 'error',
+                'message' => $e->getMessage(),
+            ];
+        }
+
+        return response()->json($ajax);
     }
 
     public function delete(Tag $tag)
     {
+        self::onlyAjax();
         $this->authorize('blog.tags.delete');
+
+        try {
+            if ($tag->trashed())
+                $tag->forceDelete();
+            else
+                $tag->delete();
+
+            $message = "The tag {$tag->name} has been successfully deleted !";
+            Log::info($message, $tag->toArray());
+            $this->notifySuccess($message, 'Tag deleted !');
+
+            $ajax = [
+                'status'  => 'success',
+                'message' => $message,
+            ];
+        }
+        catch(\Exception $e) {
+            $ajax = [
+                'status'  => 'error',
+                'message' => $e->getMessage(),
+            ];
+        }
+
+        return response()->json($ajax);
     }
 }
