@@ -83,7 +83,7 @@ class PostsRoutes extends RouteRegister
         });
 
         $this->bind('blog_post_id', function($postId) {
-            return Post::findOrFail($postId);
+            return Post::withTrashed()->findOrFail($postId);
         });
     }
 }

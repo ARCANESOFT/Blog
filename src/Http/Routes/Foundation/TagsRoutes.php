@@ -78,7 +78,7 @@ class TagsRoutes extends RouteRegister
         });
 
         $this->bind('blog_tag_id', function ($id) {
-            return Tag::findOrFail($id);
+            return Tag::withTrashed()->findOrFail($id);
         });
     }
 }

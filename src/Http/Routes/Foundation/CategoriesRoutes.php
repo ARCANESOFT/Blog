@@ -78,7 +78,7 @@ class CategoriesRoutes extends RouteRegister
         });
 
         $this->bind('blog_category_id', function ($id) {
-            return Category::findOrFail($id);
+            return Category::withTrashed()->findOrFail($id);
         });
     }
 }
