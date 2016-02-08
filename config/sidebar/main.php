@@ -25,7 +25,7 @@ return [
             'title'       => 'Categories',
             'name'        => 'blog-categories',
             'route'       => 'blog::foundation.categories.index',
-            'icon'        => 'fa fa-fw fa-tags',
+            'icon'        => 'fa fa-fw fa-bookmark-o',
             'roles'       => [],
             'permissions' => ['blog.categories.list'],
         ],[

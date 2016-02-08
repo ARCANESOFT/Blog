@@ -1,5 +1,5 @@
 @section('header')
-    <h1><i class="fa fa-fw fa-tags"></i> Categories <small>{{ $category->name }}</small></h1>
+    <h1><i class="fa fa-fw fa-bookmark-o"></i> Categories <small>{{ $category->name }}</small></h1>
 @endsection
 
 @section('content')
