@@ -133,11 +133,60 @@ class CategoriesController extends FoundationController
 
     public function restore(Category $category)
     {
+        self::onlyAjax();
         $this->authorize('blog.categories.update');
+
+        try {
+            $category->restore();
+
+            $message = "The category {$category->name} has been successfully restored !";
+            Log::info($message, $category->toArray());
+            $this->notifySuccess($message, 'Category restored !');
+
+            $ajax = [
+                'status'  => 'success',
+                'message' => $message,
+            ];
+        }
+        catch (\Exception $e) {
+            $ajax = [
+                'status'  => 'error',
+                'message' => $e->getMessage(),
+            ];
+        }
+
+        return response()->json($ajax);
     }
 
     public function delete(Category $category)
     {
+        self::onlyAjax();
         $this->authorize('blog.categories.delete');
+
+        try {
+            if ($category->trashed()) {
+                $category->forceDelete();
+            }
+            else {
+                $category->delete();
+            }
+
+            $message = "The category {$category->name} has been successfully deleted !";
+            Log::info($message, $category->toArray());
+            $this->notifySuccess($message, 'Category deleted !');
+
+            $ajax = [
+                'status'  => 'success',
+                'message' => $message,
+            ];
+        }
+        catch(\Exception $e) {
+            $ajax = [
+                'status'  => 'error',
+                'message' => $e->getMessage(),
+            ];
+        }
+
+        return response()->json($ajax);
     }
 }
