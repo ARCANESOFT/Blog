@@ -31,4 +31,28 @@ class PostStatus
             self::STATUS_PUBLISHED,
         ];
     }
+
+    /**
+     * Get all posts status
+     *
+     * @return array
+     */
+    public static function all()
+    {
+        return array_map(function ($status) {
+            return trans("blog::posts.statuses.$status");
+        }, array_combine(self::keys(), self::keys()));
+    }
+
+    /**
+     * Get a post status.
+     *
+     * @param  string  $key
+     *
+     * @return null|string
+     */
+    public static function get($key)
+    {
+        return array_get(self::all(), $key);
+    }
 }
