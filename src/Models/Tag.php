@@ -2,6 +2,7 @@
 
 use Arcanesoft\Blog\Bases\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Class     Category
@@ -83,5 +84,23 @@ class Tag extends Model
     {
         $this->attributes['name'] = $name;
         $this->attributes['slug'] = str_slug($name);
+    }
+
+    /* ------------------------------------------------------------------------------------------------
+     |  Main Functions
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Get the categories options for select input.
+     *
+     * @return array
+     */
+    public static function getSelectOptions()
+    {
+        $tags = Cache::remember('blog_tags_select_options', 5, function () {
+            return self::lists('name', 'id');
+        });
+
+        return $tags->toArray();
     }
 }

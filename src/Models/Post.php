@@ -1,6 +1,7 @@
 <?php namespace Arcanesoft\Blog\Models;
 
 use Arcanesoft\Blog\Bases\Model;
+use Arcanesoft\Blog\Entities\PostStatus;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -10,7 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  *
  * @property  int             id
- * @property  int             user_id
+ * @property  int             author_id
  * @property  int             category_id
  * @property  string          title
  * @property  string          slug
@@ -50,7 +51,7 @@ class Post extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'category_id', 'title', 'excerpt', 'content', 'status', 'publish_date'
+        'author_id', 'category_id', 'title', 'excerpt', 'content', 'status', 'publish_date'
     ];
 
     /**
@@ -67,10 +68,30 @@ class Post extends Model
      */
     protected $dates = ['publish_date', 'deleted_at'];
 
+    /**
+     * The attributes that should be casted to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'author_id'   => 'integer',
+        'category_id' => 'integer',
+    ];
+
     /* ------------------------------------------------------------------------------------------------
      |  Relationships
      | ------------------------------------------------------------------------------------------------
      */
+    /**
+     * Relationship with author.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function author()
+    {
+        return $this->belongsTo(config('auth.model'), 'author_id');
+    }
+
     /**
      * Relationship with category.
      *
@@ -104,5 +125,66 @@ class Post extends Model
     {
         $this->attributes['title'] = $title;
         $this->attributes['slug']  = str_slug($title);
+    }
+
+    /**
+     * Get the status name attribute.
+     *
+     * @return null|string
+     */
+    public function getStatusNameAttribute()
+    {
+        return PostStatus::get($this->status);
+    }
+
+    /* ------------------------------------------------------------------------------------------------
+     |  Main Functions
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Create a post.
+     *
+     * @param  array  $inputs
+     *
+     * @return bool
+     */
+    public function createOne(array $inputs)
+    {
+        $attributes = [
+            'author_id'   => auth()->user()->getAuthIdentifier(),
+            'category_id' => $inputs['category'],
+        ] + array_only($inputs, [
+            'title', 'excerpt', 'content', 'publish_date', 'status'
+        ]);
+
+        $this->fill($attributes);
+        $saved = $this->save();
+        $this->tags()->sync($inputs['tags']);
+
+        return $saved;
+    }
+
+    /* ------------------------------------------------------------------------------------------------
+     |  Check Functions
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Check if the post's status is "draft".
+     *
+     * @return bool
+     */
+    public function isDraft()
+    {
+        return $this->status === PostStatus::STATUS_DRAFT;
+    }
+
+    /**
+     * Check if the post's status is "published".
+     *
+     * @return bool
+     */
+    public function isPublished()
+    {
+        return $this->status === PostStatus::STATUS_PUBLISHED;
     }
 }
