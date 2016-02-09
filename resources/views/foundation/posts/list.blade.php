@@ -37,7 +37,6 @@
                         <tr>
                             <th>Category</th>
                             <th>Title</th>
-                            <th>Publish date</th>
                             <th class="text-center" style="width: 80px;">Status</th>
                             <th class="text-right" style="width: 130px;">Actions</th>
                         </tr>
@@ -46,13 +45,27 @@
                         @if ($posts->count())
                             @foreach($posts as $post)
                                 <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>
+                                        <span class="label label-primary">
+                                            {{ $post->category->name }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $post->title }}</td>
                                     <td class="text-center">
+                                        <span class="label label-{{ $post->isDraft() ? 'default' : 'success' }}">
+                                            {{ $post->status_name }}
+                                        </span>
                                     </td>
                                     <td class="text-right">
-                                        @include('blog::foundation.posts._partials.table-actions')
+                                        <a href="{{ route('blog::foundation.posts.show', [$post->id]) }}" class="btn btn-xs btn-info" data-toggle="tooltip" data-original-title="Show">
+                                            <i class="fa fa-fw fa-search"></i>
+                                        </a>
+                                        <a href="{{ route('blog::foundation.posts.edit', [$post->id]) }}" class="btn btn-xs btn-warning" data-toggle="tooltip" data-original-title="Edit">
+                                            <i class="fa fa-fw fa-pencil"></i>
+                                        </a>
+                                        <a href="#deletePostModal" class="btn btn-xs btn-danger" data-toggle="tooltip" data-original-title="Delete" data-post-id="{{ $post->id }}">
+                                            <i class="fa fa-fw fa-trash"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach

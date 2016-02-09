@@ -1,7 +1,13 @@
 <?php namespace Arcanesoft\Blog\Http\Controllers\Foundation;
 
 use Arcanesoft\Blog\Bases\FoundationController;
+use Arcanesoft\Blog\Entities\PostStatus;
+use Arcanesoft\Blog\Http\Requests\Backend\Posts\CreatePostRequest;
+use Arcanesoft\Blog\Http\Requests\Backend\Posts\UpdatePostRequest;
+use Arcanesoft\Blog\Models\Category;
 use Arcanesoft\Blog\Models\Post;
+use Arcanesoft\Blog\Models\Tag;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class     PostsController
@@ -56,9 +62,10 @@ class PostsController extends FoundationController
     {
         $this->authorize('blog.posts.list');
 
+        $posts = $this->post->with(['author', 'category']);
         $posts = $trashed
-            ? $this->post->onlyTrashed()->paginate(30)
-            : $this->post->paginate(30);
+            ? $posts->onlyTrashed()->paginate(30)
+            : $posts->paginate(30);
 
         $title = 'List of posts' . ($trashed ? ' - Trashed' : '');
         $this->setTitle($title);
@@ -77,43 +84,106 @@ class PostsController extends FoundationController
         return $this->index(true);
     }
 
+    /**
+     * Create a post.
+     *
+     * @return \Illuminate\View\View
+     */
     public function create()
     {
-        //
+        $this->authorize('blog.posts.create');
+
+        $title = 'Blog - Posts';
+        $this->setTitle($title);
+        $this->addBreadcrumb('Create post');
+
+        $categories = Category::getSelectOptions();
+        $tags       = Tag::getSelectOptions();
+        $statuses   = PostStatus::all();
+
+        return $this->view('foundation.posts.create', compact('categories', 'tags', 'statuses'));
     }
 
-    public function store()
+    /**
+     * Store the post.
+     *
+     * @param  \Arcanesoft\Blog\Http\Requests\Backend\Posts\CreatePostRequest  $request
+     * @param  \Arcanesoft\Blog\Models\Post                                    $post
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function store(CreatePostRequest $request, Post $post)
     {
-        //
+        $this->authorize('blog.posts.create');
+
+        $post->createOne($request->all());
+
+        $message = "The post {$post->name} was created successfully !";
+        Log::info($message, $post->toArray());
+        $this->notifySuccess($message, 'Post created !');
+
+        return redirect()->route('blog::foundation.posts.index');
     }
 
-    public function show($post)
+    /**
+     * Show a post.
+     *
+     * @param  \Arcanesoft\Blog\Models\Post  $post
+     *
+     * @return \Illuminate\View\View
+     */
+    public function show(Post $post)
     {
-        //
+        $this->authorize('blog.posts.show');
+
+        $post = $post->with(['author', 'category', 'tags']);
+
+        $title = 'Blog - Posts';
+        $this->setTitle($title);
+        $this->addBreadcrumb('Post - ' . $post->title);
+
+        return $this->view('blog::foundation.posts.show', compact('post'));
     }
 
-    public function edit($post)
+    /**
+     * Edit a post.
+     *
+     * @param  \Arcanesoft\Blog\Models\Post  $post
+     *
+     * @return \Illuminate\View\View
+     */
+    public function edit(Post $post)
     {
-        //
+        $this->authorize('blog.posts.update');
+
+        $title = 'Blog - Posts';
+        $this->setTitle($title);
+        $this->addBreadcrumb('Edit post');
+
+        $categories = Category::getSelectOptions();
+        $tags       = Tag::getSelectOptions();
+        $statuses   = PostStatus::all();
+
+        return $this->view('foundation.posts.edit', compact('post', 'categories', 'tags', 'statuses'));
     }
 
-    public function update($post)
+    public function update(UpdatePostRequest $request, Post $post)
     {
-        //
+        $this->authorize('blog.posts.update');
     }
 
-    public function publish($post)
+    public function publish(Post $post)
     {
-        //
+        $this->authorize('blog.posts.update');
     }
 
-    public function restore($post)
+    public function restore(Post $post)
     {
-        //
+        $this->authorize('blog.posts.update');
     }
 
-    public function delete($post)
+    public function delete(Post $post)
     {
-        //
+        $this->authorize('blog.posts.delete');
     }
 }
