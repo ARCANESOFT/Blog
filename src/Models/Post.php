@@ -164,6 +164,27 @@ class Post extends Model
         return $saved;
     }
 
+    /**
+     * Create a post.
+     *
+     * @param  array  $inputs
+     *
+     * @return bool|int
+     */
+    public function updateOne(array $inputs)
+    {
+        $attributes = [
+            'category_id' => $inputs['category'],
+        ] + array_only($inputs, [
+            'title', 'excerpt', 'content', 'publish_date', 'status'
+        ]);
+
+        $updated = $this->update($attributes);
+        $this->tags()->sync($inputs['tags']);
+
+        return $updated;
+    }
+
     /* ------------------------------------------------------------------------------------------------
      |  Check Functions
      | ------------------------------------------------------------------------------------------------
