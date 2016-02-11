@@ -28,7 +28,7 @@ class CreatePostRequest extends FormRequest
         'content'      => 'required',
         'category'     => 'required|min:1',
         'tags'         => 'required|array|min:1',
-        'publish_date' => 'required',
+        'publish_date' => 'required|date|date_format:Y-m-d',
         'status'       => 'required',
     ];
 

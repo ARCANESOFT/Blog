@@ -1,6 +1,9 @@
 <?php namespace Arcanesoft\Blog\Http\Requests\Backend\Posts;
 
 use Arcanesoft\Blog\Bases\FormRequest;
+use Arcanesoft\Blog\Entities\PostStatus;
+use Arcanesoft\Blog\Models\Category;
+use Arcanesoft\Blog\Models\Tag;
 
 /**
  * Class     UpdatePostRequest
@@ -25,7 +28,7 @@ class UpdatePostRequest extends FormRequest
         'content'      => 'required',
         'category'     => 'required|min:1',
         'tags'         => 'required|array|min:1',
-        'publish_date' => 'required',
+        'publish_date' => 'required|date|date_format:Y-m-d',
         'status'       => 'required',
     ];
 
@@ -50,6 +53,26 @@ class UpdatePostRequest extends FormRequest
      */
     public function rules()
     {
-        return $this->rules;
+        return $this->updateRules($this->rules);
+    }
+
+    /* ------------------------------------------------------------------------------------------------
+     |  Other Functions
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Update request rules.
+     *
+     * @param  array  $rules
+     *
+     * @return array
+     */
+    private function updateRules(array $rules)
+    {
+        $rules['category'] .= '|in:' . implode(',', array_keys(Category::getSelectOptions(false)));
+        $rules['tags']     .= '|in:' . implode(',', array_keys(Tag::getSelectOptions()));
+        $rules['status']   .= '|in:' . implode(',', PostStatus::keys());
+
+        return $rules;
     }
 }
