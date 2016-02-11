@@ -118,7 +118,7 @@ class PostsController extends FoundationController
 
         $post->createOne($request->all());
 
-        $message = "The post {$post->name} was created successfully !";
+        $message = "The post {$post->title} was created successfully !";
         Log::info($message, $post->toArray());
         $this->notifySuccess($message, 'Post created !');
 
@@ -136,13 +136,13 @@ class PostsController extends FoundationController
     {
         $this->authorize('blog.posts.show');
 
-        $post = $post->with(['author', 'category', 'tags']);
+        $post = $post->load(['author', 'category', 'tags']);
 
         $title = 'Blog - Posts';
         $this->setTitle($title);
         $this->addBreadcrumb('Post - ' . $post->title);
 
-        return $this->view('blog::foundation.posts.show', compact('post'));
+        return $this->view('foundation.posts.show', compact('post'));
     }
 
     /**
@@ -170,6 +170,14 @@ class PostsController extends FoundationController
     public function update(UpdatePostRequest $request, Post $post)
     {
         $this->authorize('blog.posts.update');
+
+        $post->updateOne($request->all());
+
+        $message = "The post {$post->title} was updated successfully !";
+        Log::info($message, $post->toArray());
+        $this->notifySuccess($message, 'Post updated !');
+
+        return redirect()->route('blog::foundation.posts.show', [$post->id]);
     }
 
     public function publish(Post $post)
