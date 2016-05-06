@@ -70,9 +70,14 @@ class BlogServiceProvider extends PackageServiceProvider
      */
     public function boot()
     {
-        $this->registerPublishes();
-
         $this->app->register(Providers\RouteServiceProvider::class);
+
+        // Publishes
+        $this->publishConfig();
+        $this->publishMigrations();
+        $this->publishViews();
+        $this->publishTranslations();
+        $this->publishSidebarItems();
     }
 
     /**
@@ -85,44 +90,5 @@ class BlogServiceProvider extends PackageServiceProvider
         return [
             //
         ];
-    }
-
-    /* ------------------------------------------------------------------------------------------------
-     |  Other Functions
-     | ------------------------------------------------------------------------------------------------
-     */
-    /**
-     * Register publishes.
-     */
-    private function registerPublishes()
-    {
-        // Config
-        $this->publishes([
-            $this->getConfigFile() => config_path("{$this->vendor}/{$this->package}.php"),
-        ], 'config');
-
-        // Migrations
-        $this->publishes([
-            $this->getBasePath() . '/database/migrations/' => database_path('migrations'),
-        ], 'migrations');
-
-        // Views
-        $viewsPath = $this->getBasePath() . '/resources/views';
-
-        $this->loadViewsFrom($viewsPath, $this->package);
-        $this->publishes([
-            $viewsPath => base_path("resources/views/vendor/{$this->package}"),
-        ], 'views');
-
-        // Translations
-        $translationsPath = $this->getBasePath() . '/resources/lang';
-
-        $this->loadTranslationsFrom($translationsPath, $this->package);
-        $this->publishes([
-            $translationsPath => base_path("resources/lang/vendor/{$this->package}"),
-        ], 'lang');
-
-        // Sidebar items
-        $this->publishSidebarItems();
     }
 }
