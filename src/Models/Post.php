@@ -1,8 +1,9 @@
 <?php namespace Arcanesoft\Blog\Models;
 
-use Arcanesoft\Blog\Bases\Model;
 use Arcanesoft\Blog\Entities\PostStatus;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 /**
  * Class     Post
@@ -26,7 +27,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property  \Arcanesoft\Contracts\Auth\Models\User  user
  * @property  \Arcanesoft\Blog\Models\Category        category
  */
-class Post extends Model
+class Post extends AbstractModel
 {
     /* ------------------------------------------------------------------------------------------------
      |  Traits
@@ -53,13 +54,6 @@ class Post extends Model
     protected $fillable = [
         'author_id', 'category_id', 'title', 'excerpt', 'content', 'status', 'publish_date'
     ];
-
-    /**
-     * Set or unset the timestamps for the model
-     *
-     * @var bool
-     */
-    public $timestamps = true;
 
     /**
      * The attributes that should be mutated to dates.
@@ -109,7 +103,7 @@ class Post extends Model
      */
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, $this->prefix . 'post_tag');
+        return $this->belongsToMany(Tag::class, $this->prefix.'post_tag');
     }
 
     /* ------------------------------------------------------------------------------------------------
@@ -124,13 +118,13 @@ class Post extends Model
     public function setTitleAttribute($title)
     {
         $this->attributes['title'] = $title;
-        $this->attributes['slug']  = str_slug($title);
+        $this->attributes['slug']  = Str::slug($title);
     }
 
     /**
      * Get the status name attribute.
      *
-     * @return null|string
+     * @return string|null
      */
     public function getStatusNameAttribute()
     {
@@ -153,7 +147,7 @@ class Post extends Model
         $attributes = [
             'author_id'   => auth()->user()->getAuthIdentifier(),
             'category_id' => $inputs['category'],
-        ] + array_only($inputs, [
+        ] + Arr::only($inputs, [
             'title', 'excerpt', 'content', 'publish_date', 'status'
         ]);
 
@@ -175,7 +169,7 @@ class Post extends Model
     {
         $attributes = [
             'category_id' => $inputs['category'],
-        ] + array_only($inputs, [
+        ] + Arr::only($inputs, [
             'title', 'excerpt', 'content', 'publish_date', 'status'
         ]);
 

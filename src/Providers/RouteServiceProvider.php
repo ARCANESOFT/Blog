@@ -13,32 +13,6 @@ use Illuminate\Contracts\Routing\Registrar as Router;
 class RouteServiceProvider extends ServiceProvider
 {
     /* ------------------------------------------------------------------------------------------------
-     |  Getters & Setters
-     | ------------------------------------------------------------------------------------------------
-     */
-    /**
-     * Get the routes namespace
-     *
-     * @return string
-     */
-    protected function getRouteNamespace()
-    {
-        return 'Arcanesoft\\Blog\\Http\\Routes';
-    }
-
-    /**
-     * Get the auth foundation route prefix.
-     *
-     * @return string
-     */
-    public function getFoundationBlogPrefix()
-    {
-        $prefix = array_get($this->getFoundationRouteGroup(), 'prefix', 'dashboard');
-
-        return "$prefix/" . config('arcanesoft.blog.route.prefix', 'blog');
-    }
-
-    /* ------------------------------------------------------------------------------------------------
      |  Main Functions
      | ------------------------------------------------------------------------------------------------
      */
@@ -50,7 +24,7 @@ class RouteServiceProvider extends ServiceProvider
     public function map(Router $router)
     {
         $this->mapPublicRoutes($router);
-        $this->mapFoundationRoutes($router);
+        $this->mapAdminRoutes($router);
     }
 
     /**
@@ -68,22 +42,20 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @param  \Illuminate\Contracts\Routing\Registrar  $router
      */
-    private function mapFoundationRoutes(Router $router)
+    private function mapAdminRoutes(Router $router)
     {
-        $attributes = array_merge($this->getFoundationRouteGroup(), [
-            'as'        => 'blog::foundation.',
-            'namespace' => 'Arcanesoft\\Blog\\Http\\Controllers\\Foundation',
-        ]);
+        $attributes = $this->getAdminAttributes(
+            'blog.',
+            'Arcanesoft\\Blog\\Http\\Controllers\\Admin',
+            $this->config()->get('arcanesoft.blog.route.prefix', 'blog')
+        );
 
-        $router->group(array_merge(
-            $attributes,
-            ['prefix' => $this->getFoundationBlogPrefix()]
-        ), function (Router $router) {
-            Routes\Foundation\StatsRoutes::register($router);
-            Routes\Foundation\PostsRoutes::register($router);
-            Routes\Foundation\CommentsRoutes::register($router);
-            Routes\Foundation\CategoriesRoutes::register($router);
-            Routes\Foundation\TagsRoutes::register($router);
+        $router->group($attributes, function (Router $router) {
+            Routes\Admin\StatsRoutes::register($router);
+            Routes\Admin\PostsRoutes::register($router);
+            Routes\Admin\CommentsRoutes::register($router);
+            Routes\Admin\CategoriesRoutes::register($router);
+            Routes\Admin\TagsRoutes::register($router);
         });
     }
 }

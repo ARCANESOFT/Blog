@@ -1,8 +1,8 @@
 <?php namespace Arcanesoft\Blog\Models;
 
-use Arcanesoft\Blog\Bases\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 /**
  * Class     Category
@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Cache;
  * @property  \Carbon\Carbon  updated_at
  * @property  \Carbon\Carbon  deleted_at
  */
-class Category extends Model
+class Category extends AbstractModel
 {
     /* ------------------------------------------------------------------------------------------------
      |  Traits
@@ -42,13 +42,6 @@ class Category extends Model
      * @var array
      */
     protected $fillable = ['name'];
-
-    /**
-     * Set or unset the timestamps for the model
-     *
-     * @var bool
-     */
-    public $timestamps  = true;
 
     /**
      * The attributes that should be mutated to dates.
@@ -83,7 +76,7 @@ class Category extends Model
     public function setNameAttribute($name)
     {
         $this->attributes['name'] = $name;
-        $this->attributes['slug'] = str_slug($name);
+        $this->attributes['slug'] = Str::slug($name);
     }
 
     /* ------------------------------------------------------------------------------------------------
@@ -93,15 +86,19 @@ class Category extends Model
     /**
      * Get the categories options for select input.
      *
-     * @return array
+     * @param  bool  $placeholder
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public static function getSelectOptions($placehoder = true)
+    public static function getSelectOptions($placeholder = true)
     {
-        $options    = $placehoder ? ['-- Select a category --'] : [];
+        /** @var  \Illuminate\Database\Eloquent\Collection  $categories */
         $categories = Cache::remember('blog_categories_select_options', 5, function () {
-            return self::lists('name', 'id');
+            return self::all()->pluck('name', 'id');
         });
 
-        return $options + $categories->toArray();
+        return $placeholder
+            ? $categories->prepend('-- Select a category --', 0)
+            : $categories;
     }
 }

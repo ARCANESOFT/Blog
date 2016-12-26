@@ -1,8 +1,8 @@
 <?php namespace Arcanesoft\Blog\Models;
 
-use Arcanesoft\Blog\Bases\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Str;
 
 /**
  * Class     Category
@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Cache;
  * @property  \Carbon\Carbon  updated_at
  * @property  \Carbon\Carbon  deleted_at
  */
-class Tag extends Model
+class Tag extends AbstractModel
 {
     /* ------------------------------------------------------------------------------------------------
      |  Traits
@@ -42,13 +42,6 @@ class Tag extends Model
      * @var array
      */
     protected $fillable = ['name'];
-
-    /**
-     * Set or unset the timestamps for the model
-     *
-     * @var bool
-     */
-    public $timestamps = true;
 
     /**
      * The attributes that should be mutated to dates.
@@ -83,7 +76,7 @@ class Tag extends Model
     public function setNameAttribute($name)
     {
         $this->attributes['name'] = $name;
-        $this->attributes['slug'] = str_slug($name);
+        $this->attributes['slug'] = Str::slug($name);
     }
 
     /* ------------------------------------------------------------------------------------------------

@@ -7,6 +7,7 @@ return [
      */
     'database' => [
         'connection' => config('database.default'),
+
         'prefix'     => 'blog_',
     ],
 
@@ -25,18 +26,18 @@ return [
     'posts' => [
         'table'    => 'posts',
         'model'    => Arcanesoft\Blog\Models\Post::class,
-        'observer' => Arcanesoft\Blog\Observers\PostObserver::class,
+        'observer' => \Arcanesoft\Blog\Models\Observers\PostObserver::class,
     ],
 
     'categories' => [
         'table'    => 'categories',
         'model'    => Arcanesoft\Blog\Models\Category::class,
-        'observer' => Arcanesoft\Blog\Observers\CategoryObserver::class,
+        'observer' => \Arcanesoft\Blog\Models\Observers\CategoryObserver::class,
     ],
 
     'tags' => [
         'table'    => 'tags',
         'model'    => Arcanesoft\Blog\Models\Tag::class,
-        'observer' => Arcanesoft\Blog\Observers\TagObserver::class,
+        'observer' => \Arcanesoft\Blog\Models\Observers\TagObserver::class,
     ],
 ];

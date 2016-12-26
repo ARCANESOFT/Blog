@@ -36,16 +36,6 @@ class BlogServiceProvider extends PackageServiceProvider
         return dirname(__DIR__);
     }
 
-    /**
-     * Get config key.
-     *
-     * @return string
-     */
-    protected function getConfigKey()
-    {
-        return str_slug($this->vendor . ' ' .$this->package, '.');
-    }
-
     /* ------------------------------------------------------------------------------------------------
      |  Main Functions
      | ------------------------------------------------------------------------------------------------
@@ -57,12 +47,12 @@ class BlogServiceProvider extends PackageServiceProvider
     {
         $this->registerConfig();
         $this->registerSidebarItems();
-        $this->app->register(CoreServiceProvider::class);
-        $this->app->register(Providers\AuthorizationServiceProvider::class);
-
-        if ($this->app->runningInConsole()) {
-            $this->app->register(Providers\CommandServiceProvider::class);
-        }
+        $this->registerProviders([
+            CoreServiceProvider::class,
+            Providers\AuthorizationServiceProvider::class,
+            Providers\ViewComposerServiceProvider::class,
+        ]);
+        $this->registerConsoleServiceProvider(Providers\CommandServiceProvider::class);
     }
 
     /**
@@ -70,7 +60,9 @@ class BlogServiceProvider extends PackageServiceProvider
      */
     public function boot()
     {
-        $this->app->register(Providers\RouteServiceProvider::class);
+        parent::boot();
+
+        $this->registerProvider(Providers\RouteServiceProvider::class);
 
         // Publishes
         $this->publishConfig();

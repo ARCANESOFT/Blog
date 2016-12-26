@@ -1,21 +1,19 @@
 <?php namespace Arcanesoft\Blog\Seeds;
 
-use Arcanesoft\Blog\Bases\Seeder;
-
 /**
  * Class     DatabaseSeeder
  *
  * @package  Arcanesoft\Blog\Seeds
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class DatabaseSeeder extends Seeder
+class DatabaseAbstractSeeder extends AbstractSeeder
 {
     /* ------------------------------------------------------------------------------------------------
      |  Properties
      | ------------------------------------------------------------------------------------------------
      */
     /**
-     * Seeder collection.
+     * Seeders collection.
      *
      * @var array
      */
