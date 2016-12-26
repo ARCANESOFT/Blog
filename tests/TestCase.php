@@ -24,6 +24,7 @@ abstract class TestCase extends BaseTestCase
     protected function getPackageProviders($app)
     {
         return [
+            \Arcanesoft\Seo\SeoServiceProvider::class,
             \Arcanesoft\Blog\BlogServiceProvider::class,
         ];
     }
