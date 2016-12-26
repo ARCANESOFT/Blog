@@ -1,6 +1,7 @@
 <?php namespace Arcanesoft\Blog\Providers;
 
 use Arcanedev\Support\Providers\CommandServiceProvider as ServiceProvider;
+use Arcanesoft\Blog\Console;
 
 /**
  * Class     CommandServiceProvider
@@ -11,60 +12,16 @@ use Arcanedev\Support\Providers\CommandServiceProvider as ServiceProvider;
 class CommandServiceProvider extends ServiceProvider
 {
     /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
+     |  Properties
      | ------------------------------------------------------------------------------------------------
      */
     /**
-     * Register the service provider.
-     */
-    public function register()
-    {
-        $this->registerPublishCommand();
-        $this->registerSetupCommand();
-
-        $this->commands($this->commands);
-    }
-
-    /**
-     * Get the provided commands.
+     * The commands to be registered.
      *
-     * @return array
+     * @var array
      */
-    public function provides()
-    {
-        return [
-            'arcanesoft.blog.commands.publish',
-            'arcanesoft.blog.commands.setup',
-        ];
-    }
-
-    /* ------------------------------------------------------------------------------------------------
-     |  Command Functions
-     | ------------------------------------------------------------------------------------------------
-     */
-    /**
-     * Register the publish command.
-     */
-    private function registerPublishCommand()
-    {
-        $this->app->singleton(
-            'arcanesoft.blog.commands.publish',
-            \Arcanesoft\Blog\Console\PublishCommand::class
-        );
-
-        $this->commands[] = \Arcanesoft\Blog\Console\PublishCommand::class;
-    }
-
-    /**
-     * Register the setup command.
-     */
-    private function registerSetupCommand()
-    {
-        $this->app->singleton(
-            'arcanesoft.blog.commands.setup',
-            \Arcanesoft\Blog\Console\SetupCommand::class
-        );
-
-        $this->commands[] = \Arcanesoft\Blog\Console\SetupCommand::class;
-    }
+    protected $commands = [
+        Console\PublishCommand::class,
+        Console\SetupCommand::class,
+    ];
 }
