@@ -44,7 +44,7 @@ class CreateBlogPostsTable extends Migration
             $table->string('slug');
             $table->text('excerpt');
             $table->longtext('content');
-            $table->enum('status', PostStatus::keys());
+            $table->enum('status', PostStatus::keys()->toArray());
 
             $table->dateTime('publish_date');
             $table->timestamps();

@@ -32,7 +32,7 @@
         </div>
         <div class="box-body no-padding">
             <div class="table-responsive">
-                <table class="table table-condensed table-hover">
+                <table class="table table-condensed table-hover no-margin">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -50,7 +50,7 @@
                                         <span class="label label-primary">{{ $tag->slug }}</span>
                                     </td>
                                     <td class="text-center">
-                                        <span class="label label-{{ $tag->posts->count() ? 'info' : 'default' }}">
+                                        <span class="label label-{{ $tag->hasPosts() ? 'info' : 'default' }}">
                                             {{ $tag->posts->count() }}
                                         </span>
                                     </td>

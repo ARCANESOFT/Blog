@@ -63,6 +63,7 @@ class BlogServiceProvider extends PackageServiceProvider
         parent::boot();
 
         $this->registerProvider(Providers\RouteServiceProvider::class);
+        $this->registerProvider(Providers\ViewComposerServiceProvider::class);
 
         // Publishes
         $this->publishConfig();

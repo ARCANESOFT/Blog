@@ -77,19 +77,22 @@ class Post extends AbstractModel
      | ------------------------------------------------------------------------------------------------
      */
     /**
-     * Relationship with author.
+     * Author relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function author()
     {
-        return $this->belongsTo(config('auth.model'), 'author_id');
+        return $this->belongsTo(
+            config('auth.providers.users.model', \App\Models\User::class),
+            'author_id'
+        );
     }
 
     /**
-     * Relationship with category.
+     * Category relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function category()
     {
@@ -97,13 +100,13 @@ class Post extends AbstractModel
     }
 
     /**
-     * Relationship with tags.
+     * Tags relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, $this->prefix.'post_tag');
+        return $this->belongsToMany(Tag::class, "{$this->prefix}post_tag");
     }
 
     /* ------------------------------------------------------------------------------------------------

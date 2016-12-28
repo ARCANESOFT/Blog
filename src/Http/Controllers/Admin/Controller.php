@@ -39,6 +39,6 @@ class Controller extends AdminController
     {
         parent::__construct();
 
-        $this->addBreadcrumbRoute('Blog', 'blog::foundation.dashboard');
+        $this->addBreadcrumbRoute('Blog', 'admin::blog.dashboard');
     }
 }

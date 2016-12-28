@@ -18,6 +18,15 @@
                             <span class="text-red">{!! $errors->first('title') !!}</span>
                         @endif
                     </div>
+
+                    <div class="form-group {{ $errors->first('slug', 'has-error') }}">
+                        {{ Form::label('slug', 'Slug :') }}
+                        {{ Form::text('slug', old('slug'), ['class' => 'form-control']) }}
+                        @if ($errors->has('slug'))
+                            <span class="text-red">{!! $errors->first('slug') !!}</span>
+                        @endif
+                    </div>
+
                     <div class="form-group {{ $errors->first('excerpt', 'has-error') }}">
                         {{ Form::label('excerpt', 'Excerpt :') }}
                         {{ Form::textarea('excerpt', old('excerpt'), ['class' => 'form-control', 'rows' => 1, 'style' => 'resize: none;']) }}
@@ -25,6 +34,7 @@
                             <span class="text-red">{!! $errors->first('excerpt') !!}</span>
                         @endif
                     </div>
+
                     <div class="form-group {{ $errors->first('content', 'has-error') }}">
                         {{ Form::label('content', 'Content :') }}
                         {{ Form::textarea('content', old('content'), ['class' => 'form-control']) }}
@@ -86,12 +96,12 @@
                                 <div class="row">
                                     <div class="col-sm-6 col-md-12">
                                         <div class="form-group {{ $errors->first('publish_date', 'has-error') }}">
-                                            {{ Form::label('publish_date', 'Publish date (yyyy-mm-dd) :') }}
+                                            {{ Form::label('publish_date', 'Publish date (YYYY-MM-DD) :') }}
                                             <div class="input-group">
                                                 <div class="input-group-addon">
                                                     <i class="fa fa-fw fa-calendar"></i>
                                                 </div>
-                                                {{ Form::text('publish_date', old('publish_date', date('Y-m-d')), ['class' => 'form-control', 'data-date-format' => 'yyyy-mm-dd']) }}
+                                                {{ Form::text('publish_date', old('publish_date', date('Y-m-d')), ['class' => 'form-control', 'data-date-format' => 'YYYY-MM-DD']) }}
                                             </div>
                                             @if ($errors->has('publish_date'))
                                                 <span class="text-red">{!! $errors->first('publish_date') !!}</span>
@@ -101,7 +111,7 @@
                                     <div class="col-sm-6 col-md-12">
                                         <div class="form-group {{ $errors->first('status', 'has-error') }}">
                                             {{ Form::label('status', 'Status :') }}
-                                            {{ Form::select('status', $statuses, old('status', head($statuses)), ['class' => 'form-control']) }}
+                                            {{ Form::select('status', $statuses, old('status', $statuses->first()), ['class' => 'form-control']) }}
                                             @if ($errors->has('status'))
                                                 <span class="text-red">{!! $errors->first('status') !!}</span>
                                             @endif

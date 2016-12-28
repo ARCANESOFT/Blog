@@ -16,6 +16,8 @@ use Illuminate\Support\Str;
  * @property  \Carbon\Carbon  created_at
  * @property  \Carbon\Carbon  updated_at
  * @property  \Carbon\Carbon  deleted_at
+ *
+ * @property  \Illuminate\Database\Eloquent\Collection  posts
  */
 class Category extends AbstractModel
 {
@@ -100,5 +102,19 @@ class Category extends AbstractModel
         return $placeholder
             ? $categories->prepend('-- Select a category --', 0)
             : $categories;
+    }
+
+    /* ------------------------------------------------------------------------------------------------
+     |  Check Functions
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Check if category has posts.
+     *
+     * @return bool
+     */
+    public function hasPosts()
+    {
+        return ! $this->posts->isEmpty();
     }
 }

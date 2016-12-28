@@ -89,7 +89,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if ($tag->posts->count())
+                            @if ($tag->hasPosts())
                                 @foreach($tag->posts as $post)
                                     <tr>
                                         <td>{{ $post->title }}</td>
@@ -105,7 +105,7 @@
                                 @endforeach
                             @else
                                 <tr>
-                                    <td colspan="2" class="text-center">
+                                    <td colspan="3" class="text-center">
                                         <span class="label label-default">The list of posts is empty.</span>
                                     </td>
                                 </tr>

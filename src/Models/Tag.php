@@ -16,6 +16,8 @@ use Illuminate\Support\Str;
  * @property  \Carbon\Carbon  created_at
  * @property  \Carbon\Carbon  updated_at
  * @property  \Carbon\Carbon  deleted_at
+ *
+ * @property  \Illuminate\Database\Eloquent\Collection  posts
  */
 class Tag extends AbstractModel
 {
@@ -55,13 +57,13 @@ class Tag extends AbstractModel
      | ------------------------------------------------------------------------------------------------
      */
     /**
-     * Relationship with posts.
+     * Posts relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function posts()
     {
-        return $this->belongsToMany(Post::class, $this->prefix . 'post_tag');
+        return $this->belongsToMany(Post::class, "{$this->prefix}post_tag");
     }
 
     /* ------------------------------------------------------------------------------------------------
@@ -86,14 +88,26 @@ class Tag extends AbstractModel
     /**
      * Get the categories options for select input.
      *
-     * @return array
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function getSelectOptions()
     {
-        $tags = Cache::remember('blog_tags_select_options', 5, function () {
-            return self::lists('name', 'id');
+        return Cache::remember('blog_tags_select_options', 5, function () {
+            return self::all()->pluck('name', 'id');
         });
+    }
 
-        return $tags->toArray();
+    /* ------------------------------------------------------------------------------------------------
+     |  Check Functions
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Check if tag has posts.
+     *
+     * @return bool
+     */
+    public function hasPosts()
+    {
+        return ! $this->posts->isEmpty();
     }
 }

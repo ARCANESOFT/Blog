@@ -22,26 +22,21 @@ class PostStatus
     /**
      * Get all posts status keys.
      *
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
     public static function keys()
     {
-        return [
-            self::STATUS_DRAFT,
-            self::STATUS_PUBLISHED,
-        ];
+        return self::all()->keys();
     }
 
     /**
      * Get all posts status
      *
-     * @return array
+     * @return \Illuminate\Support\Collection
      */
     public static function all()
     {
-        return array_map(function ($status) {
-            return trans("blog::posts.statuses.$status");
-        }, array_combine(self::keys(), self::keys()));
+        return collect(trans('blog::posts.statuses'));
     }
 
     /**
@@ -49,10 +44,10 @@ class PostStatus
      *
      * @param  string  $key
      *
-     * @return null|string
+     * @return string|null
      */
     public static function get($key)
     {
-        return array_get(self::all(), $key);
+        return self::all()->get($key);
     }
 }

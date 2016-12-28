@@ -18,6 +18,15 @@
                                 <span class="text-red">{!! $errors->first('title') !!}</span>
                             @endif
                         </div>
+
+                        <div class="form-group {{ $errors->first('slug', 'has-error') }}">
+                            {{ Form::label('slug', 'Slug :') }}
+                            {{ Form::text('slug', old('slug', $post->slug), ['class' => 'form-control']) }}
+                            @if ($errors->has('slug'))
+                                <span class="text-red">{!! $errors->first('slug') !!}</span>
+                            @endif
+                        </div>
+
                         <div class="form-group {{ $errors->first('excerpt', 'has-error') }}">
                             {{ Form::label('excerpt', 'Excerpt :') }}
                             {{ Form::textarea('excerpt', old('excerpt', $post->excerpt), ['class' => 'form-control', 'rows' => 1, 'style' => 'resize: none;']) }}
@@ -25,6 +34,7 @@
                                 <span class="text-red">{!! $errors->first('excerpt') !!}</span>
                             @endif
                         </div>
+
                         <div class="form-group {{ $errors->first('content', 'has-error') }}">
                             {{ Form::label('content', 'Content :') }}
                             {{ Form::textarea('content', old('content', $post->content), ['class' => 'form-control']) }}

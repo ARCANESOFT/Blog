@@ -17,22 +17,22 @@
 
             <div class="box-tools">
                 <div class="btn-group" role="group">
-                    <a href="{{ route('blog::foundation.categories.index') }}" class="btn btn-xs btn-default {{ route_is('blog::foundation.categories.index') ? 'active' : '' }}">
+                    <a href="{{ route('admin::blog.categories.index') }}" class="btn btn-xs btn-default {{ route_is('admin::blog.categories.index') ? 'active' : '' }}">
                         <i class="fa fa-fw fa-bars"></i> All
                     </a>
-                    <a href="{{ route('blog::foundation.categories.trash') }}" class="btn btn-xs btn-default {{ route_is('blog::foundation.categories.trash') ? 'active' : '' }}">
+                    <a href="{{ route('admin::blog.categories.trash') }}" class="btn btn-xs btn-default {{ route_is('admin::blog.categories.trash') ? 'active' : '' }}">
                         <i class="fa fa-fw fa-trash-o"></i> Trashed
                     </a>
                 </div>
 
-                <a href="{{ route('blog::foundation.categories.create') }}" class="btn btn-xs btn-primary" data-toggle="tooltip" data-original-title="Add">
+                <a href="{{ route('admin::blog.categories.create') }}" class="btn btn-xs btn-primary" data-toggle="tooltip" data-original-title="Add">
                     <i class="fa fa-plus"></i>
                 </a>
             </div>
         </div>
         <div class="box-body no-padding">
             <div class="table-responsive">
-                <table class="table table-condensed table-hover">
+                <table class="table table-condensed table-hover no-margin">
                     <thead>
                         <tr>
                             <th>Name</th>
@@ -50,15 +50,15 @@
                                         <span class="label label-primary">{{ $category->slug }}</span>
                                     </td>
                                     <td class="text-center">
-                                        <span class="label label-{{ $category->posts->count() ? 'info' : 'default' }}">
+                                        <span class="label label-{{ $category->hasPosts() ? 'info' : 'default' }}">
                                             {{ $category->posts->count() }}
                                         </span>
                                     </td>
                                     <td class="text-right">
-                                        <a href="{{ route('blog::foundation.categories.show', [$category->id]) }}" class="btn btn-xs btn-info" data-toggle="tooltip" data-original-title="Show">
+                                        <a href="{{ route('admin::blog.categories.show', [$category]) }}" class="btn btn-xs btn-info" data-toggle="tooltip" data-original-title="Show">
                                             <i class="fa fa-fw fa-search"></i>
                                         </a>
-                                        <a href="{{ route('blog::foundation.categories.edit', [$category->id]) }}" class="btn btn-xs btn-warning" data-toggle="tooltip" data-original-title="Edit">
+                                        <a href="{{ route('admin::blog.categories.edit', [$category]) }}" class="btn btn-xs btn-warning" data-toggle="tooltip" data-original-title="Edit">
                                             <i class="fa fa-fw fa-pencil"></i>
                                         </a>
                                         @if ($category->trashed())
@@ -87,61 +87,63 @@
             <div class="box-footer clearfix">{!! $categories->render() !!}</div>
         @endif
     </div>
+@endsection
 
+@section('modals')
     @if ($trashed)
         @can('blog.categories.update')
-        {{-- RESTORE MODAL --}}
-        <div id="restoreCategoryModal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog" aria-labelledby="restoreCategoryModalLabel">
-            <div class="modal-dialog" role="document">
-                {!! Form::open(['method' => 'PUT', 'id' => 'restoreCategoryForm', 'class' => 'form form-loading', 'autocomplete' => 'off']) !!}
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        <h4 class="modal-title" id="restoreCategoryModalLabel">Restore Category</h4>
-                    </div>
-                    <div class="modal-body">
-                        <p></p>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-sm btn-default pull-left" data-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-sm btn-primary" data-loading-text="Loading&hellip;">
-                            <i class="fa fa-fw fa-reply"></i> RESTORE
-                        </button>
-                    </div>
+            {{-- RESTORE MODAL --}}
+            <div id="restoreCategoryModal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog" aria-labelledby="restoreCategoryModalLabel">
+                <div class="modal-dialog" role="document">
+                    {{ Form::open(['method' => 'PUT', 'id' => 'restoreCategoryForm', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title" id="restoreCategoryModalLabel">Restore Category</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p></p>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-sm btn-default pull-left" data-dismiss="modal">Cancel</button>
+                                <button type="submit" class="btn btn-sm btn-primary" data-loading-text="Loading&hellip;">
+                                    <i class="fa fa-fw fa-reply"></i> RESTORE
+                                </button>
+                            </div>
+                        </div>
+                    {{ Form::close() }}
                 </div>
-                {!! Form::close() !!}
             </div>
-        </div>
         @endcan
     @endif
 
     @can('blog.categories.delete')
-    {{-- DELETE MODAL --}}
-    <div id="deleteCategoryModal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog" aria-labelledby="deleteCategoryModalLabel">
-        <div class="modal-dialog" role="document">
-            {!! Form::open(['method' => 'DELETE', 'id' => 'deleteCategoryForm', 'class' => 'form form-loading', 'autocomplete' => 'off']) !!}
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                    <h4 class="modal-title" id="deleteCategoryModalLabel">Delete Category</h4>
-                </div>
-                <div class="modal-body">
-                    <p></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-default pull-left" data-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-sm btn-danger" data-loading-text="Loading&hellip;">
-                        <i class="fa fa-fw fa-trash-o"></i> DELETE
-                    </button>
-                </div>
+        {{-- DELETE MODAL --}}
+        <div id="deleteCategoryModal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog" aria-labelledby="deleteCategoryModalLabel">
+            <div class="modal-dialog" role="document">
+                {{ Form::open(['method' => 'DELETE', 'id' => 'deleteCategoryForm', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title" id="deleteCategoryModalLabel">Delete Category</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p></p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-sm btn-default pull-left" data-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn btn-sm btn-danger" data-loading-text="Loading&hellip;">
+                                <i class="fa fa-fw fa-trash-o"></i> DELETE
+                            </button>
+                        </div>
+                    </div>
+                {{ Form::close() }}
             </div>
-            {!! Form::close() !!}
         </div>
-    </div>
     @endcan
 @endsection
 
@@ -150,38 +152,41 @@
         @can('blog.tags.update')
         {{-- RESTORE SCRIPT --}}
         <script>
-            var restoreCategoryModal = $('div#restoreCategoryModal'),
-                restoreCategoryForm  = $('form#restoreCategoryForm'),
-                restoreCategoryUrl   = "{{ route('blog::foundation.categories.restore', [':id']) }}";
+            var $restoreCategoryModal = $('div#restoreCategoryModal'),
+                $restoreCategoryForm  = $('form#restoreCategoryForm'),
+                restoreCategoryUrl    = "{{ route('admin::blog.categories.restore', [':id']) }}";
 
             $('a[href="#restoreCategoryModal"]').click(function (event) {
                 event.preventDefault();
-                var modalMessage = 'Are you sure you want to <span class="label label-primary">restore</span> this category : <strong>:category</strong> ?';
 
-                restoreCategoryForm.attr('action', restoreCategoryUrl.replace(':id', $(this).data('category-id')));
-                restoreCategoryModal.find('.modal-body p').html(modalMessage.replace(':category', $(this).data('category-name')));
+                var _this        = $(this),
+                    modalMessage = 'Are you sure you want to <span class="label label-primary">restore</span> this category : <strong>:category</strong> ?';
 
-                restoreCategoryModal.modal('show');
+                $restoreCategoryForm.attr('action', restoreCategoryUrl.replace(':id', _this.data('category-id')));
+                $restoreCategoryModal.find('.modal-body p').html(modalMessage.replace(':category', _this.data('category-name')));
+
+                $restoreCategoryModal.modal('show');
             });
 
-            restoreCategoryModal.on('hidden.bs.modal', function () {
-                restoreCategoryForm.removeAttr('action');
+            $restoreCategoryModal.on('hidden.bs.modal', function () {
+                $restoreCategoryForm.removeAttr('action');
                 $(this).find('.modal-body p').html('');
             });
 
-            restoreCategoryForm.submit(function (event) {
+            $restoreCategoryForm.on('submit', function(event) {
                 event.preventDefault();
-                var submitBtn = $(this).find('button[type="submit"]');
+
+                var submitBtn = $restoreCategoryForm.find('button[type="submit"]');
                     submitBtn.button('loading');
 
                 $.ajax({
-                    url:      $(this).attr('action'),
-                    type:     $(this).attr('method'),
+                    url:      $restoreCategoryForm.attr('action'),
+                    type:     $restoreCategoryForm.attr('method'),
                     dataType: 'json',
-                    data:     $(this).serialize(),
+                    data:     $restoreCategoryForm.serialize(),
                     success: function(data) {
                         if (data.status === 'success') {
-                            restoreCategoryModal.modal('hide');
+                            $restoreCategoryModal.modal('hide');
                             location.reload();
                         }
                         else {
@@ -206,38 +211,41 @@
     @can('blog.tags.delete')
     {{-- DELETE SCRIPT --}}
     <script>
-        var deleteCategoryModal = $('div#deleteCategoryModal'),
-            deleteCategoryForm  = $('form#deleteCategoryForm'),
-            deleteCategoryUrl   = "{{ route('blog::foundation.categories.delete', [':id']) }}";
+        var $deleteCategoryModal = $('div#deleteCategoryModal'),
+            $deleteCategoryForm  = $('form#deleteCategoryForm'),
+            deleteCategoryUrl    = "{{ route('admin::blog.categories.delete', [':id']) }}";
 
         $('a[href="#deleteCategoryModal"]').click(function (event) {
             event.preventDefault();
-            var modalMessage = 'Are you sure you want to <span class="label label-danger">delete</span> this category : <strong>:category</strong> ?';
 
-            deleteCategoryForm.attr('action', deleteCategoryUrl.replace(':id', $(this).data('category-id')));
-            deleteCategoryModal.find('.modal-body p').html(modalMessage.replace(':category', $(this).data('category-name')));
+            var _this        = $(this);
+                modalMessage = 'Are you sure you want to <span class="label label-danger">delete</span> this category : <strong>:category</strong> ?';
 
-            deleteCategoryModal.modal('show');
+            $deleteCategoryForm.attr('action', deleteCategoryUrl.replace(':id', _this.data('category-id')));
+            $deleteCategoryModal.find('.modal-body p').html(modalMessage.replace(':category', _this.data('category-name')));
+
+            $deleteCategoryModal.modal('show');
         });
 
-        deleteCategoryModal.on('hidden.bs.modal', function () {
-            deleteCategoryForm.removeAttr('action');
-            $(this).find('.modal-body p').html('');
+        $deleteCategoryModal.on('hidden.bs.modal', function() {
+            $deleteCategoryForm.removeAttr('action');
+            $deleteCategoryModal.find('.modal-body p').html('');
         });
 
-        deleteCategoryForm.submit(function (event) {
-            event.preventDefault();
-            var submitBtn = $(this).find('button[type="submit"]');
+        $deleteCategoryForm.on('submit', function (e) {
+            e.preventDefault();
+
+            var submitBtn = $deleteCategoryForm.find('button[type="submit"]');
                 submitBtn.button('loading');
 
             $.ajax({
-                url:      $(this).attr('action'),
-                type:     $(this).attr('method'),
+                url:      $deleteCategoryForm.attr('action'),
+                type:     $deleteCategoryForm.attr('method'),
                 dataType: 'json',
-                data:     $(this).serialize(),
+                data:     $deleteCategoryForm.serialize(),
                 success: function(data) {
                     if (data.status === 'success') {
-                        deleteCategoryModal.modal('hide');
+                        $deleteCategoryModal.modal('hide');
                         location.reload();
                     }
                     else {

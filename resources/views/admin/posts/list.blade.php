@@ -17,22 +17,22 @@
 
             <div class="box-tools">
                 <div class="btn-group" role="group">
-                    <a href="{{ route('blog::foundation.posts.index') }}" class="btn btn-xs btn-default {{ route_is('blog::foundation.posts.index') ? 'active' : '' }}">
+                    <a href="{{ route('admin::blog.posts.index') }}" class="btn btn-xs btn-default {{ route_is('admin::blog.posts.index') ? 'active' : '' }}">
                         <i class="fa fa-fw fa-bars"></i> All
                     </a>
-                    <a href="{{ route('blog::foundation.posts.trash') }}" class="btn btn-xs btn-default {{ route_is('blog::foundation.posts.trash') ? 'active' : '' }}">
+                    <a href="{{ route('admin::blog.posts.trash') }}" class="btn btn-xs btn-default {{ route_is('admin::blog.posts.trash') ? 'active' : '' }}">
                         <i class="fa fa-fw fa-trash-o"></i> Trashed
                     </a>
                 </div>
 
-                <a href="{{ route('blog::foundation.posts.create') }}" class="btn btn-xs btn-primary" data-toggle="tooltip" data-original-title="Add">
+                <a href="{{ route('admin::blog.posts.create') }}" class="btn btn-xs btn-primary" data-toggle="tooltip" data-original-title="Add">
                     <i class="fa fa-plus"></i>
                 </a>
             </div>
         </div>
         <div class="box-body no-padding">
             <div class="table-responsive">
-                <table class="table table-condensed table-hover">
+                <table class="table table-condensed table-hover no-margin">
                     <thead>
                         <tr>
                             <th>Category</th>
@@ -57,10 +57,10 @@
                                         </span>
                                     </td>
                                     <td class="text-right">
-                                        <a href="{{ route('blog::foundation.posts.show', [$post->id]) }}" class="btn btn-xs btn-info" data-toggle="tooltip" data-original-title="Show">
+                                        <a href="{{ route('admin::blog.posts.show', [$post]) }}" class="btn btn-xs btn-info" data-toggle="tooltip" data-original-title="Show">
                                             <i class="fa fa-fw fa-search"></i>
                                         </a>
-                                        <a href="{{ route('blog::foundation.posts.edit', [$post->id]) }}" class="btn btn-xs btn-warning" data-toggle="tooltip" data-original-title="Edit">
+                                        <a href="{{ route('admin::blog.posts.edit', [$post]) }}" class="btn btn-xs btn-warning" data-toggle="tooltip" data-original-title="Edit">
                                             <i class="fa fa-fw fa-pencil"></i>
                                         </a>
                                         <a href="#deletePostModal" class="btn btn-xs btn-danger" data-toggle="tooltip" data-original-title="Delete" data-post-id="{{ $post->id }}">

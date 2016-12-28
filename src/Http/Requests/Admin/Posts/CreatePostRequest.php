@@ -1,9 +1,7 @@
 <?php namespace Arcanesoft\Blog\Http\Requests\Admin\Posts;
 
-use Arcanesoft\Blog\Bases\FormRequest;
-use Arcanesoft\Blog\Entities\PostStatus;
-use Arcanesoft\Blog\Models\Category;
-use Arcanesoft\Blog\Models\Tag;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 /**
  * Class     CreatePostRequest
@@ -11,27 +9,8 @@ use Arcanesoft\Blog\Models\Tag;
  * @package  Arcanesoft\Blog\Http\Requests\Admin\Posts
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class CreatePostRequest extends FormRequest
+class CreatePostRequest extends PostRequest
 {
-    /* ------------------------------------------------------------------------------------------------
-     |  Properties
-     | ------------------------------------------------------------------------------------------------
-     */
-    /**
-     * Category validation rules.
-     *
-     * @var array
-     */
-    protected $rules = [
-        'title'        => 'required|max:255',
-        'excerpt'      => 'required|max:200',
-        'content'      => 'required',
-        'category'     => 'required|min:1',
-        'tags'         => 'required|array|min:1',
-        'publish_date' => 'required|date|date_format:Y-m-d',
-        'status'       => 'required',
-    ];
-
     /* ------------------------------------------------------------------------------------------------
      |  Main Functions
      | ------------------------------------------------------------------------------------------------
@@ -53,26 +32,20 @@ class CreatePostRequest extends FormRequest
      */
     public function rules()
     {
-        return $this->updateRules($this->rules);
+        return parent::rules() + [
+            'slug' => ['required', $this->getSlugRule()],
+        ];
     }
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Other Functions
-     | ------------------------------------------------------------------------------------------------
-     */
     /**
-     * Update request rules.
-     *
-     * @param  array  $rules
+     * Sanitize the inputs.
      *
      * @return array
      */
-    private function updateRules(array $rules)
+    protected function sanitize()
     {
-        $rules['category'] .= '|in:' . implode(',', array_keys(Category::getSelectOptions(false)));
-        $rules['tags']     .= '|in:' . implode(',', array_keys(Tag::getSelectOptions()));
-        $rules['status']   .= '|in:' . implode(',', PostStatus::keys());
+        $slug = Str::slug($this->get($this->has('slug') ? 'slug' : 'title', ''));
 
-        return $rules;
+        return compact('slug');
     }
 }
