@@ -1,5 +1,6 @@
 <?php namespace Arcanesoft\Blog\Models;
 
+use Arcanedev\LaravelSeo\Traits\Seoable;
 use Arcanesoft\Blog\Entities\PostStatus;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
@@ -33,7 +34,7 @@ class Post extends AbstractModel
      |  Traits
      | ------------------------------------------------------------------------------------------------
      */
-    use SoftDeletes;
+    use Seoable, SoftDeletes;
 
     /* ------------------------------------------------------------------------------------------------
      |  Properties
@@ -158,6 +159,10 @@ class Post extends AbstractModel
         $saved = $this->save();
         $this->tags()->sync($inputs['tags']);
 
+        $this->createSeo(
+            $this->extractSeoAttributes($inputs)
+        );
+
         return $saved;
     }
 
@@ -170,14 +175,15 @@ class Post extends AbstractModel
      */
     public function updateOne(array $inputs)
     {
-        $attributes = [
-            'category_id' => $inputs['category'],
-        ] + Arr::only($inputs, [
+        $attributes = ['category_id' => $inputs['category']] + Arr::only($inputs, [
             'title', 'excerpt', 'content', 'publish_date', 'status'
         ]);
 
         $updated = $this->update($attributes);
         $this->tags()->sync($inputs['tags']);
+
+        $seoAttributes = $this->extractSeoAttributes($inputs);
+        $this->hasSeo() ? $this->updateSeo($seoAttributes) : $this->createSeo($seoAttributes);
 
         return $updated;
     }
@@ -204,5 +210,26 @@ class Post extends AbstractModel
     public function isPublished()
     {
         return $this->status === PostStatus::STATUS_PUBLISHED;
+    }
+
+    /* ------------------------------------------------------------------------------------------------
+     |  Other Functions
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Extract the seo attributes.
+     *
+     * @param  array  $inputs
+     *
+     * @return array
+     */
+    protected function extractSeoAttributes(array $inputs)
+    {
+        return [
+            'title'       => Arr::get($inputs, 'seo_title'),
+            'description' => Arr::get($inputs, 'seo_description'),
+            'keywords'    => Arr::get($inputs, 'seo_keywords'),
+            'metas'       => Arr::get($inputs, 'seo_metas'),
+        ];
     }
 }

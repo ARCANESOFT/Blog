@@ -46,8 +46,9 @@ class UpdatePostRequest extends PostRequest
      */
     protected function sanitize()
     {
-        $slug = Str::slug($this->get($this->has('slug') ? 'slug' : 'title', ''));
-
-        return compact('slug');
+        return [
+            'slug'      => Str::slug($this->get($this->has('slug') ? 'slug' : 'title', '')),
+            'seo_title' => $this->get($this->has('seo_title') ? 'seo_title' : 'title'),
+        ];
     }
 }

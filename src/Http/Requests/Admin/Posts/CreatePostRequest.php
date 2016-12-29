@@ -1,7 +1,6 @@
 <?php namespace Arcanesoft\Blog\Http\Requests\Admin\Posts;
 
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 
 /**
  * Class     CreatePostRequest
@@ -44,8 +43,9 @@ class CreatePostRequest extends PostRequest
      */
     protected function sanitize()
     {
-        $slug = Str::slug($this->get($this->has('slug') ? 'slug' : 'title', ''));
-
-        return compact('slug');
+        return [
+            'slug'      => Str::slug($this->get($this->has('slug') ? 'slug' : 'title', '')),
+            'seo_title' => $this->has('seo_title') ? $this->get('seo_title') : $this->get('title'),
+        ];
     }
 }
