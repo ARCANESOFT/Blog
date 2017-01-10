@@ -2,8 +2,11 @@
 
 use Arcanedev\LaravelSeo\Traits\Seoable;
 use Arcanesoft\Blog\Entities\PostStatus;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 /**
@@ -27,6 +30,9 @@ use Illuminate\Support\Str;
  *
  * @property  \Arcanesoft\Contracts\Auth\Models\User  user
  * @property  \Arcanesoft\Blog\Models\Category        category
+ *
+ * @method  static  \Illuminate\Database\Eloquent\Builder  published()
+ * @method  static  \Illuminate\Database\Eloquent\Builder  publishedAt(int $year)
  */
 class Post extends AbstractModel
 {
@@ -72,6 +78,33 @@ class Post extends AbstractModel
         'author_id'   => 'integer',
         'category_id' => 'integer',
     ];
+
+    /* ------------------------------------------------------------------------------------------------
+     |  Scopes
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Scope only published posts.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $builder
+     */
+    public function scopePublished(Builder $builder)
+    {
+        $builder->where('status', PostStatus::STATUS_PUBLISHED)
+                ->where('publish_date', '<=', Carbon::now());
+    }
+
+    /**
+     * Scope only published posts.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $builder
+     * @param  int                                    $year
+     */
+    public function scopePublishedAt(Builder $builder, $year)
+    {
+        $this->scopePublished($builder);
+        $builder->where(DB::raw('YEAR(publish_date)'), $year);
+    }
 
     /* ------------------------------------------------------------------------------------------------
      |  Relationships

@@ -1,35 +1,35 @@
-<?php namespace Arcanesoft\Blog\ViewComposers\Dashboard;
+<?php namespace Arcanesoft\Blog\ViewComposers\Front\Widgets;
 
+use Arcanesoft\Blog\Models\Post;
 use Arcanesoft\Blog\ViewComposers\AbstractComposer;
 use Illuminate\Contracts\View\View;
 
 /**
- * Class     TagsCountComposer
+ * Class     ArchivesWidgetComposer
  *
- * @package  Arcanesoft\Blog\ViewComposers\Dashboard
+ * @package  Arcanesoft\Blog\ViewComposers\Front\Widgets
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class TagsCountComposer extends AbstractComposer
+class ArchivesWidgetComposer extends AbstractComposer
 {
     /* ------------------------------------------------------------------------------------------------
      |  Constants
      | ------------------------------------------------------------------------------------------------
      */
-    const VIEW = 'blog::admin._composers.dashboard.tags-total-box';
+    const VIEW = 'blog::front._composers.widgets.archives-widget';
 
     /* ------------------------------------------------------------------------------------------------
      |  Main Functions
      | ------------------------------------------------------------------------------------------------
      */
-    /**
-     * Compose the view.
-     *
-     * @param  \Illuminate\Contracts\View\View  $view
-     */
     public function compose(View $view)
     {
-        $tags = $this->cachedTags();
+        $archives = Post::published()
+            ->get()
+            ->groupBy(function (Post $post) {
+                return $post->publish_date->year;
+            });
 
-        $view->with('tagsCount', $tags->count());
+        $view->with('archivesWidgetItems', $archives);
     }
 }

@@ -1,21 +1,21 @@
-<?php namespace Arcanesoft\Blog\ViewComposers\Dashboard;
+<?php namespace Arcanesoft\Blog\ViewComposers\Admin\Dashboard;
 
 use Arcanesoft\Blog\ViewComposers\AbstractComposer;
 use Illuminate\Contracts\View\View;
 
 /**
- * Class     CommentsCountComposer
+ * Class     CategoriesCountComposer
  *
  * @package  Arcanesoft\Blog\ViewComposers\Dashboard
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class CommentsCountComposer extends AbstractComposer
+class CategoriesCountComposer extends AbstractComposer
 {
     /* ------------------------------------------------------------------------------------------------
      |  Constants
      | ------------------------------------------------------------------------------------------------
      */
-    const VIEW = 'blog::admin._composers.dashboard.comments-total-box';
+    const VIEW = 'blog::admin._composers.dashboard.categories-total-box';
 
     /* ------------------------------------------------------------------------------------------------
      |  Main Functions
@@ -28,21 +28,8 @@ class CommentsCountComposer extends AbstractComposer
      */
     public function compose(View $view)
     {
-//        $comments = $this->cachedComments();
-//        $view->with('', $comments->count());
+        $categories = $this->cachedCategories();
 
-        $view->with('commentsCount', rand(1000, 2000));
+        $view->with('categoriesCount', $categories->count());
     }
-
-    /**
-     * Get the cached comments.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-//    protected function cachedComments()
-//    {
-//        return $this->cacheResults('comments.all', function () {
-//            return Comment::all();
-//        });
-//    }
 }

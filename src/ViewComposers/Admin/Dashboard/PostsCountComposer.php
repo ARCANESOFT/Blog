@@ -1,21 +1,21 @@
-<?php namespace Arcanesoft\Blog\ViewComposers\Dashboard;
+<?php namespace Arcanesoft\Blog\ViewComposers\Admin\Dashboard;
 
 use Arcanesoft\Blog\ViewComposers\AbstractComposer;
 use Illuminate\Contracts\View\View;
 
 /**
- * Class     CategoriesCountComposer
+ * Class     PostsCountComposer
  *
  * @package  Arcanesoft\Blog\ViewComposers\Dashboard
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class CategoriesCountComposer extends AbstractComposer
+class PostsCountComposer extends AbstractComposer
 {
     /* ------------------------------------------------------------------------------------------------
      |  Constants
      | ------------------------------------------------------------------------------------------------
      */
-    const VIEW = 'blog::admin._composers.dashboard.categories-total-box';
+    const VIEW = 'blog::admin._composers.dashboard.posts-total-box';
 
     /* ------------------------------------------------------------------------------------------------
      |  Main Functions
@@ -28,8 +28,8 @@ class CategoriesCountComposer extends AbstractComposer
      */
     public function compose(View $view)
     {
-        $categories = $this->cachedCategories();
+        $posts = $this->cachedPosts();
 
-        $view->with('categoriesCount', $categories->count());
+        $view->with('postsCount', $posts->count());
     }
 }

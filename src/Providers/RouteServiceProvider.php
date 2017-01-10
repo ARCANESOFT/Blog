@@ -34,7 +34,17 @@ class RouteServiceProvider extends ServiceProvider
      */
     private function mapPublicRoutes(Router $router)
     {
-        //
+        $attributes = [
+            'as'        => 'public::blog.',
+            'prefix'    => 'blog',
+            'namespace' => 'Arcanesoft\\Blog\\Http\\Controllers\\Front',
+        ];
+
+        $router->group($attributes, function (Router $router) {
+            Routes\Front\PostsRoutes::register($router);
+            Routes\Front\CategoriesRoutes::register($router);
+            Routes\Front\TagsRoutes::register($router);
+        });
     }
 
     /**

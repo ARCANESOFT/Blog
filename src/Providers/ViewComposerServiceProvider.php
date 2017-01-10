@@ -1,7 +1,7 @@
 <?php namespace Arcanesoft\Blog\Providers;
 
 use Arcanedev\Support\ServiceProvider;
-use Arcanesoft\Blog\ViewComposers\Dashboard;
+use Arcanesoft\Blog\ViewComposers;
 use Illuminate\Contracts\View\Factory as ViewFactory;
 
 /**
@@ -21,8 +21,8 @@ class ViewComposerServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerDashboardComposers();
-        //$this->registerOtherComposers();
+        $this->registerAdminComposers();
+        $this->registerFrontComposers();
     }
 
     /* ------------------------------------------------------------------------------------------------
@@ -30,38 +30,62 @@ class ViewComposerServiceProvider extends ServiceProvider
      | ------------------------------------------------------------------------------------------------
      */
     /**
-     * Register the dashboard composers.
+     * Register the front view composers.
      */
-    private function registerDashboardComposers()
+    private function registerFrontComposers()
     {
         $this->composer(
-            Dashboard\PostsCountComposer::VIEW,
-            Dashboard\PostsCountComposer::class
+            ViewComposers\Front\Widgets\CategoriesWidgetComposer::VIEW,
+            ViewComposers\Front\Widgets\CategoriesWidgetComposer::class
         );
 
         $this->composer(
-            Dashboard\CategoriesCountComposer::VIEW,
-            Dashboard\CategoriesCountComposer::class
+            ViewComposers\Front\Widgets\TagsWidgetComposer::VIEW,
+            ViewComposers\Front\Widgets\TagsWidgetComposer::class
         );
 
         $this->composer(
-            Dashboard\CategoriesRatiosComposer::VIEW,
-            Dashboard\CategoriesRatiosComposer::class
+            ViewComposers\Front\Widgets\ArchivesWidgetComposer::VIEW,
+            ViewComposers\Front\Widgets\ArchivesWidgetComposer::class
+        );
+    }
+
+    /**
+     * Register the admin view composers.
+     */
+    private function registerAdminComposers()
+    {
+        /**
+         * Dashboards
+         */
+        $this->composer(
+            ViewComposers\Admin\Dashboard\PostsCountComposer::VIEW,
+            ViewComposers\Admin\Dashboard\PostsCountComposer::class
         );
 
         $this->composer(
-            Dashboard\TagsCountComposer::VIEW,
-            Dashboard\TagsCountComposer::class
+            ViewComposers\Admin\Dashboard\CategoriesCountComposer::VIEW,
+            ViewComposers\Admin\Dashboard\CategoriesCountComposer::class
         );
 
         $this->composer(
-            Dashboard\TagsRatiosComposer::VIEW,
-            Dashboard\TagsRatiosComposer::class
+            ViewComposers\Admin\Dashboard\CategoriesRatiosComposer::VIEW,
+            ViewComposers\Admin\Dashboard\CategoriesRatiosComposer::class
         );
 
         $this->composer(
-            Dashboard\CommentsCountComposer::VIEW,
-            Dashboard\CommentsCountComposer::class
+            ViewComposers\Admin\Dashboard\TagsCountComposer::VIEW,
+            ViewComposers\Admin\Dashboard\TagsCountComposer::class
+        );
+
+        $this->composer(
+            ViewComposers\Admin\Dashboard\TagsRatiosComposer::VIEW,
+            ViewComposers\Admin\Dashboard\TagsRatiosComposer::class
+        );
+
+        $this->composer(
+            ViewComposers\Admin\Dashboard\CommentsCountComposer::VIEW,
+            ViewComposers\Admin\Dashboard\CommentsCountComposer::class
         );
     }
 

@@ -1,4 +1,4 @@
-<?php namespace Arcanesoft\Blog\ViewComposers\Dashboard;
+<?php namespace Arcanesoft\Blog\ViewComposers\Admin\Dashboard;
 
 use Arcanesoft\Blog\Models\Category;
 use Arcanesoft\Blog\ViewComposers\AbstractComposer;
