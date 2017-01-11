@@ -1,4 +1,6 @@
-@extends('_template.default.layout')
+@section('page-title')
+    Blog
+@endsection
 
 @section('content')
     <div class="container">

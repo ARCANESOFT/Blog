@@ -18,20 +18,20 @@ class PostsController extends Controller
     {
         $posts = Post::published()->latest()->paginate(6);
 
-        return view('blog::front.posts.index', compact('posts'));
+        return $this->view('blog::front.posts.index', compact('posts'));
     }
 
     public function show($slug)
     {
         $post = Post::published()->where('slug', $slug)->firstOrFail();
 
-        return view('blog::front.posts.single', compact('post'));
+        return $this->view('blog::front.posts.single', compact('post'));
     }
 
     public function archive($year)
     {
         $posts = Post::publishedAt($year)->latest()->paginate(6);
 
-        return view('blog::front.posts.single', compact('posts'));
+        return $this->view('blog::front.posts.single', compact('posts'));
     }
 }
