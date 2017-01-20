@@ -29,8 +29,8 @@ class TagsWidgetComposer extends AbstractComposer
     {
         $tags = Tag::with('posts')
             ->whereHas('posts', function (Builder $b) {
-                $b->where('status', PostStatus::STATUS_PUBLISHED)
-                  ->where('publish_date', '<=', Carbon::now());
+                $b->where('is_draft', false)
+                  ->where('published_at', '<=', Carbon::now());
             })
             ->get()
             ->sortByDesc(function($tag) {

@@ -27,7 +27,7 @@ class ArchivesWidgetComposer extends AbstractComposer
         $archives = Post::published()
             ->get()
             ->groupBy(function (Post $post) {
-                return $post->publish_date->year;
+                return $post->published_at->year;
             });
 
         $view->with('archivesWidgetItems', $archives);

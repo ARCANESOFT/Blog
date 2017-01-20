@@ -41,16 +41,14 @@ class CreateBlogPostsTable extends Migration
             $table->integer('category_id')->unsigned();
 
             $table->string('title');
-            $table->string('slug');
+            $table->string('slug')->unique();
             $table->text('excerpt');
-            $table->longtext('content');
-            $table->enum('status', PostStatus::keys()->toArray());
-
-            $table->dateTime('publish_date');
+            $table->longtext('content_raw');
+            $table->longtext('content_html');
+            $table->boolean('is_draft')->default(false);
             $table->timestamps();
+            $table->timestamp('published_at');
             $table->softDeletes();
-
-            $table->unique('slug');
         });
     }
 }

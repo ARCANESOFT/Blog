@@ -16,7 +16,7 @@
                                 {{ link_to_route('public::blog.posts.show', $post->title, [$post->slug]) }}
                             </h4>
                             <div class="card-meta">
-                                {{ link_to_route('public::blog.categories.show', $post->category->name, [$post->category->slug]) }} / {{ $post->publish_date->formatLocalized('%d %B %Y') }}
+                                {{ link_to_route('public::blog.categories.show', $post->category->name, [$post->category->slug]) }} / {{ $post->published_at->formatLocalized('%d %B %Y') }}
                             </div>
                             <p class="card-text">{{ $post->excerpt }}</p>
                             {{ link_to_route('public::blog.posts.show', 'Read more&hellip;', [$post->slug]) }}

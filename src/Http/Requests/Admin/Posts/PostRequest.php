@@ -1,8 +1,8 @@
 <?php namespace Arcanesoft\Blog\Http\Requests\Admin\Posts;
 
 use Arcanesoft\Blog\Bases\FormRequest;
-use Arcanesoft\Blog\Entities\PostStatus;
 use Arcanesoft\Blog\Models\Category;
+use Arcanesoft\Blog\Models\Post;
 use Arcanesoft\Blog\Models\Tag;
 use Illuminate\Validation\Rule;
 
@@ -31,7 +31,7 @@ abstract class PostRequest extends FormRequest
             'content'      => 'required',
             'category'     => static::getCategoryRule(),
             'tags'         => static::getTagsRule(),
-            'publish_date' => 'required|date_format:Y-m-d',
+            'published_at' => 'required|date_format:Y-m-d',
             'status'       => static::getPostStatusRule(),
         ];
     }
@@ -79,6 +79,6 @@ abstract class PostRequest extends FormRequest
      */
     protected static function getPostStatusRule()
     {
-        return 'required|in:'.PostStatus::keys()->implode(',');
+        return 'required|in:'.Post::getStatuses()->keys()->implode(',');
     }
 }

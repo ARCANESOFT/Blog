@@ -55,7 +55,7 @@
                     <div class="col-xs-12">
                         <div class="form-group {{ $errors->first('content', 'has-error') }}">
                             {{ Form::label('content', 'Content :') }}
-                            {{ Form::textarea('content', old('content', $post->content), ['class' => 'form-control']) }}
+                            {{ Form::textarea('content', old('content', $post->content_raw), ['class' => 'form-control']) }}
                             @if ($errors->has('content'))
                                 <span class="text-red">{!! $errors->first('content') !!}</span>
                             @endif
@@ -65,14 +65,14 @@
                     <div class="clearfix visible-md visible-lg"></div>
 
                     <div class="col-md-4">
-                        <div class="form-group {{ $errors->first('publish_date', 'has-error') }}">
-                            {{ Form::label('publish_date', 'Publish date (YYYY-MM-DD) :') }}
+                        <div class="form-group {{ $errors->first('published_at', 'has-error') }}">
+                            {{ Form::label('published_at', 'Publish date (YYYY-MM-DD) :') }}
                             <div class="input-group">
                                 <div class="input-group-addon"><i class="fa fa-fw fa-calendar"></i></div>
-                                {{ Form::text('publish_date', old('publish_date', $post->publish_date->format('Y-m-d')), ['class' => 'form-control', 'data-date-format' => 'YYYY-MM-DD']) }}
+                                {{ Form::text('published_at', old('published_at', $post->published_at->format('Y-m-d')), ['class' => 'form-control', 'data-date-format' => 'YYYY-MM-DD']) }}
                             </div>
-                            @if ($errors->has('publish_date'))
-                                <span class="text-red">{!! $errors->first('publish_date') !!}</span>
+                            @if ($errors->has('published_at'))
+                                <span class="text-red">{!! $errors->first('published_at') !!}</span>
                             @endif
                         </div>
                     </div>
@@ -112,7 +112,9 @@
 @section('scripts')
     <script>
         $(function() {
-            $('textarea[name="content"]').trumbowyg();
+            new SimpleMDE({
+                element: document.getElementById('content')
+            });
             $('input#publish_date').datetimepicker();
         });
     </script>

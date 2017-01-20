@@ -96,7 +96,7 @@ class PostsController extends Controller
 
         $categories = Category::getSelectOptions();
         $tags       = Tag::getSelectOptions();
-        $statuses   = PostStatus::all();
+        $statuses   = Post::getStatuses();
 
         return $this->view('admin.posts.create', compact('categories', 'tags', 'statuses'));
     }
@@ -157,7 +157,7 @@ class PostsController extends Controller
 
         $categories = Category::getSelectOptions();
         $tags       = Tag::getSelectOptions();
-        $statuses   = PostStatus::all();
+        $statuses   = Post::getStatuses();
 
         return $this->view('admin.posts.edit', compact('post', 'categories', 'tags', 'statuses'));
     }

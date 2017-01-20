@@ -67,21 +67,21 @@
                     <div class="col-md-4">
                         <div class="form-group {{ $errors->first('status', 'has-error') }}">
                             {{ Form::label('status', 'Status :') }}
-                            {{ Form::select('status', $statuses, old('status', $statuses->first()), ['class' => 'form-control']) }}
+                            {{ Form::select('status', $statuses, old('status', $statuses->first()), ['class' => 'form-control select-2-fw']) }}
                             @if ($errors->has('status'))
                                 <span class="text-red">{!! $errors->first('status') !!}</span>
                             @endif
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group {{ $errors->first('publish_date', 'has-error') }}">
-                            {{ Form::label('publish_date', 'Publish date (YYYY-MM-DD) :') }}
+                        <div class="form-group {{ $errors->first('published_at', 'has-error') }}">
+                            {{ Form::label('published_at', 'Published at (YYYY-MM-DD) :') }}
                             <div class="input-group">
                                 <div class="input-group-addon"><i class="fa fa-fw fa-calendar"></i></div>
-                                {{ Form::text('publish_date', old('publish_date', date('Y-m-d')), ['class' => 'form-control', 'data-date-format' => 'YYYY-MM-DD']) }}
+                                {{ Form::text('published_at', old('published_at', date('Y-m-d')), ['class' => 'form-control', 'data-date-format' => 'YYYY-MM-DD']) }}
                             </div>
-                            @if ($errors->has('publish_date'))
-                                <span class="text-red">{!! $errors->first('publish_date') !!}</span>
+                            @if ($errors->has('published_at'))
+                                <span class="text-red">{!! $errors->first('published_at') !!}</span>
                             @endif
                         </div>
                     </div>
@@ -112,7 +112,9 @@
 @section('scripts')
     <script>
         $(function() {
-            $('textarea[name="content"]').trumbowyg();
+            new SimpleMDE({
+                element: document.getElementById('content')
+            });
             $('input#publish_date').datetimepicker();
         });
     </script>

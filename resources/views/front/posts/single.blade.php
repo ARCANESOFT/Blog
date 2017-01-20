@@ -12,7 +12,7 @@
                     </div>
                     <div class="card-block">
                         <div class="card-meta">
-                            {{ link_to_route('public::blog.categories.show', $post->category->name, [$post->category->slug]) }} / {{ $post->publish_date->formatLocalized('%d %B %Y') }}
+                            {{ link_to_route('public::blog.categories.show', $post->category->name, [$post->category->slug]) }} / {{ $post->published_at->formatLocalized('%d %B %Y') }}
                         </div>
                         {{ $post->content }}
                     </div>

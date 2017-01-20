@@ -1,10 +1,10 @@
 <?php
 
-use \Arcanesoft\Blog\Entities\PostStatus;
+use Arcanesoft\Blog\Models\Post;
 
 return [
     'statuses' => [
-        PostStatus::STATUS_DRAFT     => 'Brouillon',
-        PostStatus::STATUS_PUBLISHED => 'Publié',
+        POST::STATUS_DRAFT     => 'Brouillon',
+        POST::STATUS_PUBLISHED => 'Publié',
     ],
 ];

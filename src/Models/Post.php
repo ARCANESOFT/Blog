@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -21,9 +22,10 @@ use Illuminate\Support\Str;
  * @property  string          title
  * @property  string          slug
  * @property  string          excerpt
- * @property  string          content
- * @property  string          status
- * @property  \Carbon\Carbon  publish_date
+ * @property  string          content_raw
+ * @property  string          content_html
+ * @property  bool            is_draft
+ * @property  \Carbon\Carbon  published_at
  * @property  \Carbon\Carbon  created_at
  * @property  \Carbon\Carbon  updated_at
  * @property  \Carbon\Carbon  deleted_at
@@ -36,6 +38,13 @@ use Illuminate\Support\Str;
  */
 class Post extends AbstractModel
 {
+    /* ------------------------------------------------------------------------------------------------
+     |  Constants
+     | ------------------------------------------------------------------------------------------------
+     */
+    const STATUS_DRAFT     = 'draft';
+    const STATUS_PUBLISHED = 'published';
+
     /* ------------------------------------------------------------------------------------------------
      |  Traits
      | ------------------------------------------------------------------------------------------------
@@ -59,7 +68,7 @@ class Post extends AbstractModel
      * @var array
      */
     protected $fillable = [
-        'author_id', 'category_id', 'title', 'excerpt', 'content', 'status', 'publish_date'
+        'author_id', 'category_id', 'title', 'excerpt', 'content', 'published_at'
     ];
 
     /**
@@ -67,7 +76,7 @@ class Post extends AbstractModel
      *
      * @var array
      */
-    protected $dates = ['publish_date', 'deleted_at'];
+    protected $dates = ['published_at', 'deleted_at'];
 
     /**
      * The attributes that should be casted to native types.
@@ -77,6 +86,7 @@ class Post extends AbstractModel
     protected $casts = [
         'author_id'   => 'integer',
         'category_id' => 'integer',
+        'is_draft'    => 'boolean',
     ];
 
     /* ------------------------------------------------------------------------------------------------
@@ -90,8 +100,8 @@ class Post extends AbstractModel
      */
     public function scopePublished(Builder $builder)
     {
-        $builder->where('status', PostStatus::STATUS_PUBLISHED)
-                ->where('publish_date', '<=', Carbon::now());
+        $builder->where('is_draft', false)
+                ->where('published_at', '<=', Carbon::now());
     }
 
     /**
@@ -103,7 +113,7 @@ class Post extends AbstractModel
     public function scopePublishedAt(Builder $builder, $year)
     {
         $this->scopePublished($builder);
-        $builder->where(DB::raw('YEAR(publish_date)'), $year);
+        $builder->where(DB::raw('YEAR(published_at)'), $year);
     }
 
     /* ------------------------------------------------------------------------------------------------
@@ -159,13 +169,46 @@ class Post extends AbstractModel
     }
 
     /**
+     * Set the content attribute.
+     *
+     * @param  string  $content
+     */
+    public function setContentAttribute($content)
+    {
+        $this->attributes['content_raw']  = $content;
+        $this->attributes['content_html'] = markdown($content);
+    }
+
+    /**
+     * Get the content attribute.
+     *
+     * @return \Illuminate\Support\HtmlString
+     */
+    public function getContentAttribute()
+    {
+        return new \Illuminate\Support\HtmlString($this->content_html);
+    }
+
+    /**
+     * Set the status attribute.
+     *
+     * @param  string  $content
+     */
+    public function setStatusAttribute($status)
+    {
+        $this->attributes['is_draft'] = ($status === self::STATUS_DRAFT);
+    }
+
+    /**
      * Get the status name attribute.
      *
      * @return string|null
      */
     public function getStatusNameAttribute()
     {
-        return PostStatus::get($this->status);
+        return self::getStatuses()->get(
+            $this->isDraft() ? self::STATUS_DRAFT : self::STATUS_PUBLISHED
+        );
     }
 
     /* ------------------------------------------------------------------------------------------------
@@ -185,10 +228,11 @@ class Post extends AbstractModel
             'author_id'   => auth()->user()->getAuthIdentifier(),
             'category_id' => $inputs['category'],
         ] + Arr::only($inputs, [
-            'title', 'excerpt', 'content', 'publish_date', 'status'
+            'title', 'excerpt', 'content', 'published_at', 'status'
         ]);
 
         $this->fill($attributes);
+
         $saved = $this->save();
         $this->tags()->sync($inputs['tags']);
 
@@ -209,7 +253,7 @@ class Post extends AbstractModel
     public function updateOne(array $inputs)
     {
         $attributes = ['category_id' => $inputs['category']] + Arr::only($inputs, [
-            'title', 'excerpt', 'content', 'publish_date', 'status'
+            'title', 'excerpt', 'content', 'published_at', 'status'
         ]);
 
         $updated = $this->update($attributes);
@@ -232,7 +276,7 @@ class Post extends AbstractModel
      */
     public function isDraft()
     {
-        return $this->status === PostStatus::STATUS_DRAFT;
+        return $this->is_draft;
     }
 
     /**
@@ -242,13 +286,25 @@ class Post extends AbstractModel
      */
     public function isPublished()
     {
-        return $this->status === PostStatus::STATUS_PUBLISHED;
+        return ! $this->isDraft();
     }
 
     /* ------------------------------------------------------------------------------------------------
      |  Other Functions
      | ------------------------------------------------------------------------------------------------
      */
+    /**
+     * Get the post statuses.
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getStatuses()
+    {
+        return Collection::make(
+            trans('blog::posts.statuses', [])
+        );
+    }
+
     /**
      * Extract the seo attributes.
      *
