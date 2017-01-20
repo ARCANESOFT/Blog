@@ -35,9 +35,10 @@ class RouteServiceProvider extends ServiceProvider
     private function mapPublicRoutes(Router $router)
     {
         $attributes = [
-            'as'        => 'public::blog.',
-            'prefix'    => 'blog',
-            'namespace' => 'Arcanesoft\\Blog\\Http\\Controllers\\Front',
+            'as'         => 'public::blog.',
+            'prefix'     => 'blog',
+            'middleware' => 'web',
+            'namespace'  => 'Arcanesoft\\Blog\\Http\\Controllers\\Front',
         ];
 
         $router->group($attributes, function (Router $router) {
