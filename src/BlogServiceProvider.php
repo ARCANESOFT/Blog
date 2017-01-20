@@ -51,6 +51,7 @@ class BlogServiceProvider extends PackageServiceProvider
             CoreServiceProvider::class,
             Providers\AuthorizationServiceProvider::class,
             Providers\ViewComposerServiceProvider::class,
+            \Arcanedev\LaravelMarkdown\LaravelMarkdownServiceProvider::class,
         ]);
         $this->registerConsoleServiceProvider(Providers\CommandServiceProvider::class);
     }

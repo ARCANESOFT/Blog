@@ -16,11 +16,12 @@
     "type":    "library",
     "license": "MIT",
     "require": {
-        "php":                  ">=5.6.4",
-        "arcanesoft/core":      "~1.4",
-        "arcanesoft/auth":      "~1.9",
-        "arcanesoft/seo":       "~0.4",
-        "arcanedev/taxonomies": "^0.0.1"
+        "php":                        ">=5.6.4",
+        "arcanesoft/core":            "~1.4",
+        "arcanesoft/auth":            "~1.9",
+        "arcanesoft/seo":             "~0.4",
+        "arcanedev/laravel-markdown": "~1.1",
+        "arcanedev/taxonomies":       "^0.0.1"
     },
     "require-dev": {
         "phpunit/phpcov":  "~3.0",
