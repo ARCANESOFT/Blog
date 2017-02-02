@@ -1,8 +1,7 @@
 <?php namespace Arcanesoft\Blog\Http\Routes\Admin;
 
-use Arcanedev\Support\Bases\RouteRegister;
+use Arcanedev\Support\Routing\RouteRegistrar;
 use Arcanesoft\Blog\Models\Category;
-use Illuminate\Contracts\Routing\Registrar;
 
 /**
  * Class     CategoriesRoutes
@@ -10,7 +9,7 @@ use Illuminate\Contracts\Routing\Registrar;
  * @package  Arcanesoft\Blog\Http\Routes\Admin
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class CategoriesRoutes extends RouteRegister
+class CategoriesRoutes extends RouteRegistrar
 {
     /* ------------------------------------------------------------------------------------------------
      |  Main Functions
@@ -18,12 +17,10 @@ class CategoriesRoutes extends RouteRegister
      */
     /**
      * Map routes.
-     *
-     * @param  \Illuminate\Contracts\Routing\Registrar  $router
      */
-    public function map(Registrar $router)
+    public function map()
     {
-        $this->group(['prefix' => 'categories', 'as' => 'categories.'], function () {
+        $this->prefix('categories')->name('categories.')->group(function () {
             $this->get('/', 'CategoriesController@index')
                  ->name('index');       // admin::blog.categories.index
 
@@ -36,7 +33,7 @@ class CategoriesRoutes extends RouteRegister
             $this->post('store', 'CategoriesController@store')
                  ->name('store');       // admin::blog.categories.store
 
-            $this->group(['prefix' => '{blog_category}'], function () {
+            $this->prefix('{blog_category}')->group(function () {
                 $this->get('/', 'CategoriesController@show')
                      ->name('show');    // admin::blog.categories.show
 

@@ -1,8 +1,7 @@
 <?php namespace Arcanesoft\Blog\Http\Routes\Admin;
 
-use Arcanedev\Support\Bases\RouteRegister;
+use Arcanedev\Support\Routing\RouteRegistrar;
 use Arcanesoft\Blog\Models\Tag;
-use Illuminate\Contracts\Routing\Registrar;
 
 /**
  * Class     TagsRoutes
@@ -10,7 +9,7 @@ use Illuminate\Contracts\Routing\Registrar;
  * @package  Arcanesoft\Blog\Http\Routes\Admin
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class TagsRoutes extends RouteRegister
+class TagsRoutes extends RouteRegistrar
 {
     /* ------------------------------------------------------------------------------------------------
      |  Main Functions
@@ -18,12 +17,10 @@ class TagsRoutes extends RouteRegister
      */
     /**
      * Map routes.
-     *
-     * @param  \Illuminate\Contracts\Routing\Registrar  $router
      */
-    public function map(Registrar $router)
+    public function map()
     {
-        $this->group(['prefix' => 'tags', 'as' => 'tags.'], function () {
+        $this->prefix('tags')->name('tags.')->group(function () {
             $this->get('/', 'TagsController@index')
                  ->name('index');       // admin::blog.tags.index
 
@@ -36,7 +33,7 @@ class TagsRoutes extends RouteRegister
             $this->post('store', 'TagsController@store')
                  ->name('store');       // admin::blog.tags.store
 
-            $this->group(['prefix' => '{blog_tag}'], function () {
+            $this->prefix('{blog_tag}')->group(function () {
                 $this->get('/', 'TagsController@show')
                      ->name('show');    // admin::blog.tags.show
 

@@ -1,8 +1,7 @@
 <?php namespace Arcanesoft\Blog\Http\Routes\Admin;
 
-use Arcanedev\Support\Bases\RouteRegister;
+use Arcanedev\Support\Routing\RouteRegistrar;
 use Arcanesoft\Blog\Models\Post;
-use Illuminate\Contracts\Routing\Registrar;
 
 /**
  * Class     PostsRoutes
@@ -10,7 +9,7 @@ use Illuminate\Contracts\Routing\Registrar;
  * @package  Arcanesoft\Blog\Http\Routes\Admin
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class PostsRoutes extends RouteRegister
+class PostsRoutes extends RouteRegistrar
 {
     /* ------------------------------------------------------------------------------------------------
      |  Main Functions
@@ -18,17 +17,15 @@ class PostsRoutes extends RouteRegister
      */
     /**
      * Map routes.
-     *
-     * @param  \Illuminate\Contracts\Routing\Registrar  $router
      */
-    public function map(Registrar $router)
+    public function map()
     {
-        $this->group(['prefix' => 'posts', 'as' => 'posts.'], function () {
+        $this->prefix('posts')->name('posts.')->group(function () {
             $this->get('/', 'PostsController@index')
                  ->name('index');       // admin::blog.posts.index
 
             $this->get('trash', 'PostsController@trash')
-                ->name('trash');        // admin::blog.posts.trash
+                 ->name('trash');       // admin::blog.posts.trash
 
             $this->get('create', 'PostsController@create')
                  ->name('create');      // admin::blog.posts.create
@@ -36,7 +33,7 @@ class PostsRoutes extends RouteRegister
             $this->post('store', 'PostsController@store')
                  ->name('store');       // admin::blog.posts.store
 
-            $this->group(['prefix' => '{blog_post}'], function () {
+            $this->prefix('{blog_post}')->group(function () {
                 $this->get('show', 'PostsController@show')
                      ->name('show');    // admin::blog.posts.show
 
