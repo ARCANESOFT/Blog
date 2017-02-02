@@ -1,6 +1,6 @@
 <?php namespace Arcanesoft\Blog\Http\Controllers\Front;
 
-use Arcanesoft\Core\Bases\Controller as BaseController;
+use Arcanesoft\Core\Http\Controllers\Controller as BaseController;
 
 /**
  * Class     Controller
