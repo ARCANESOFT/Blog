@@ -1,7 +1,6 @@
 <?php namespace Arcanesoft\Blog\Http\Routes\Front;
 
-use Arcanedev\Support\Bases\RouteRegister;
-use Illuminate\Contracts\Routing\Registrar;
+use Arcanedev\Support\Routing\RouteRegistrar;
 
 /**
  * Class     CategoriesRoutes
@@ -9,7 +8,7 @@ use Illuminate\Contracts\Routing\Registrar;
  * @package  Arcanesoft\Blog\Http\Routes\Front
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class CategoriesRoutes extends RouteRegister
+class CategoriesRoutes extends RouteRegistrar
 {
     /* ------------------------------------------------------------------------------------------------
      |  Main Functions
@@ -17,13 +16,12 @@ class CategoriesRoutes extends RouteRegister
      */
     /**
      * Map routes.
-     *
-     * @param  \Illuminate\Contracts\Routing\Registrar $router
      */
-    public function map(Registrar $router)
+    public function map()
     {
-        $this->group(['prefix' => 'categories', 'as' => 'categories.'], function () {
-            $this->get('{slug}', 'CategoriesController@show')->name('show'); // public::blog.categories.show
+        $this->prefix('categories')->name('categories.')->group(function () {
+            $this->get('{slug}', 'CategoriesController@show')
+                 ->name('show'); // public::blog.categories.show
         });
     }
 }

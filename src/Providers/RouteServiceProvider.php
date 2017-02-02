@@ -23,8 +23,30 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map(Router $router)
     {
-        $this->mapPublicRoutes($router);
         $this->mapAdminRoutes($router);
+        $this->mapPublicRoutes($router);
+    }
+
+    /**
+     * Define the foundation routes for the application.
+     *
+     * @param  \Illuminate\Contracts\Routing\Registrar  $router
+     */
+    private function mapAdminRoutes(Router $router)
+    {
+        $attributes = $this->getAdminAttributes(
+            'blog.',
+            'Arcanesoft\\Blog\\Http\\Controllers\\Admin',
+            $this->config()->get('arcanesoft.blog.route.prefix', 'blog')
+        );
+
+        $router->group($attributes, function ($router) {
+            Routes\Admin\StatsRoutes::register($router);
+            Routes\Admin\PostsRoutes::register($router);
+            Routes\Admin\CommentsRoutes::register($router);
+            Routes\Admin\CategoriesRoutes::register($router);
+            Routes\Admin\TagsRoutes::register($router);
+        });
     }
 
     /**
@@ -41,32 +63,10 @@ class RouteServiceProvider extends ServiceProvider
             'namespace'  => 'Arcanesoft\\Blog\\Http\\Controllers\\Front',
         ];
 
-        $router->group($attributes, function (Router $router) {
+        $router->group($attributes, function ($router) {
             Routes\Front\PostsRoutes::register($router);
             Routes\Front\CategoriesRoutes::register($router);
             Routes\Front\TagsRoutes::register($router);
-        });
-    }
-
-    /**
-     * Define the foundation routes for the application.
-     *
-     * @param  \Illuminate\Contracts\Routing\Registrar  $router
-     */
-    private function mapAdminRoutes(Router $router)
-    {
-        $attributes = $this->getAdminAttributes(
-            'blog.',
-            'Arcanesoft\\Blog\\Http\\Controllers\\Admin',
-            $this->config()->get('arcanesoft.blog.route.prefix', 'blog')
-        );
-
-        $router->group($attributes, function (Router $router) {
-            Routes\Admin\StatsRoutes::register($router);
-            Routes\Admin\PostsRoutes::register($router);
-            Routes\Admin\CommentsRoutes::register($router);
-            Routes\Admin\CategoriesRoutes::register($router);
-            Routes\Admin\TagsRoutes::register($router);
         });
     }
 }

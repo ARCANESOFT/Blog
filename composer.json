@@ -17,11 +17,11 @@
     "license": "MIT",
     "require": {
         "php":                        ">=5.6.4",
-        "arcanesoft/core":            "~1.4",
-        "arcanesoft/auth":            "~1.9",
-        "arcanesoft/seo":             "~0.4",
-        "arcanedev/laravel-markdown": "~1.1",
-        "arcanedev/taxonomies":       "^0.0.1"
+        "arcanedev/laravel-markdown": "~1.2",
+        "arcanedev/taxonomies":       "~0.2",
+        "arcanesoft/auth":            "~2.0",
+        "arcanesoft/core":            "~1.5",
+        "arcanesoft/seo":             "~1.0"
     },
     "require-dev": {
         "phpunit/phpcov":  "~3.0",
@@ -38,7 +38,7 @@
         }
     },
     "scripts": {
-        "testbench": "composer require --dev \"orchestra/testbench=~3.3.0\""
+        "testbench": "composer require --dev \"orchestra/testbench=~3.4.0\""
     },
     "extra": {
         "branch-alias": {

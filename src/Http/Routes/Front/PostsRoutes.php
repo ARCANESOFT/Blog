@@ -1,7 +1,6 @@
 <?php namespace Arcanesoft\Blog\Http\Routes\Front;
 
-use Arcanedev\Support\Bases\RouteRegister;
-use Illuminate\Contracts\Routing\Registrar;
+use Arcanedev\Support\Routing\RouteRegistrar;
 
 /**
  * Class     PostsRoutes
@@ -9,7 +8,7 @@ use Illuminate\Contracts\Routing\Registrar;
  * @package  Arcanesoft\Blog\Http\Routes\Front
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class PostsRoutes extends RouteRegister
+class PostsRoutes extends RouteRegistrar
 {
     /* ------------------------------------------------------------------------------------------------
      |  Main Functions
@@ -20,12 +19,17 @@ class PostsRoutes extends RouteRegister
      *
      * @param  \Illuminate\Contracts\Routing\Registrar  $router
      */
-    public function map(Registrar $router)
+    public function map()
     {
-        $this->group(['prefix' => 'posts', 'as' => 'posts.'], function () {
-            $this->get('/', 'PostsController@index')->name('index');          // public::blog.posts.index
-            $this->get('{slug}', 'PostsController@show')->name('show');       // public::blog.posts.show
-            $this->get('{year}', 'PostsController@archive')->name('archive'); // public::blog.posts.archive
+        $this->prefix('posts')->name('posts.')->group(function () {
+            $this->get('/', 'PostsController@index')
+                 ->name('index');   // public::blog.posts.index
+
+            $this->get('{slug}', 'PostsController@show')
+                 ->name('show');    // public::blog.posts.show
+
+            $this->get('{year}', 'PostsController@archive')
+                 ->name('archive'); // public::blog.posts.archive
         });
     }
 }
