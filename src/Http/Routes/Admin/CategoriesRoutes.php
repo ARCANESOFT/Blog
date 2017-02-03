@@ -8,8 +8,6 @@ use Arcanesoft\Blog\Models\Category;
  *
  * @package  Arcanesoft\Blog\Http\Routes\Admin
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
- *
- * @todo: Fixing the routes by solving the group issue and removing the `clear()` method.
  */
 class CategoriesRoutes extends RouteRegistrar
 {
@@ -22,7 +20,7 @@ class CategoriesRoutes extends RouteRegistrar
      */
     public function map()
     {
-        $this->clear()->prefix('categories')->name('categories.')->group(function () {
+        $this->prefix('categories')->name('categories.')->group(function () {
             $this->get('/', 'CategoriesController@index')
                  ->name('index');       // admin::blog.categories.index
 

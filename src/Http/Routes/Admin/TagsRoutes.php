@@ -8,8 +8,6 @@ use Arcanesoft\Blog\Models\Tag;
  *
  * @package  Arcanesoft\Blog\Http\Routes\Admin
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
- *
- * @todo: Fixing the routes by solving the group issue and removing the `clear()` method.
  */
 class TagsRoutes extends RouteRegistrar
 {
@@ -22,7 +20,7 @@ class TagsRoutes extends RouteRegistrar
      */
     public function map()
     {
-        $this->clear()->prefix('tags')->name('tags.')->group(function () {
+        $this->prefix('tags')->name('tags.')->group(function () {
             $this->get('/', 'TagsController@index')
                  ->name('index');       // admin::blog.tags.index
 
@@ -35,7 +33,7 @@ class TagsRoutes extends RouteRegistrar
             $this->post('store', 'TagsController@store')
                  ->name('store');       // admin::blog.tags.store
 
-            $this->clear()->prefix('{blog_tag}')->group(function () {
+            $this->prefix('{blog_tag}')->group(function () {
                 $this->get('/', 'TagsController@show')
                      ->name('show');    // admin::blog.tags.show
 

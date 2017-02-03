@@ -8,8 +8,6 @@ use Arcanesoft\Blog\Models\Post;
  *
  * @package  Arcanesoft\Blog\Http\Routes\Admin
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
- *
- * @todo: Fixing the routes by solving the group issue and removing the `clear()` method.
  */
 class PostsRoutes extends RouteRegistrar
 {
@@ -22,7 +20,7 @@ class PostsRoutes extends RouteRegistrar
      */
     public function map()
     {
-        $this->clear()->prefix('posts')->name('posts.')->group(function () {
+        $this->prefix('posts')->name('posts.')->group(function () {
             $this->get('/', 'PostsController@index')
                  ->name('index');       // admin::blog.posts.index
 
@@ -35,7 +33,7 @@ class PostsRoutes extends RouteRegistrar
             $this->post('store', 'PostsController@store')
                  ->name('store');       // admin::blog.posts.store
 
-            $this->clear()->prefix('{blog_post}')->group(function () {
+            $this->prefix('{blog_post}')->group(function () {
                 $this->get('show', 'PostsController@show')
                      ->name('show');    // admin::blog.posts.show
 
