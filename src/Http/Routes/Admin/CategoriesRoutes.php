@@ -33,7 +33,7 @@ class CategoriesRoutes extends RouteRegistrar
             $this->post('store', 'CategoriesController@store')
                  ->name('store');       // admin::blog.categories.store
 
-            $this->clear()->prefix('{blog_category}')->group(function () {
+            $this->prefix('{blog_category}')->group(function () {
                 $this->get('/', 'CategoriesController@show')
                      ->name('show');    // admin::blog.categories.show
 
