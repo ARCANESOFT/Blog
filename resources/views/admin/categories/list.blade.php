@@ -67,7 +67,7 @@
                                             </a>
                                         @endif
                                         <a href="#deleteCategoryModal" class="btn btn-xs btn-danger" data-category-id="{{ $category->id }}" data-category-name="{{ $category->name }}" data-toggle="tooltip" data-original-title="Delete">
-                                            <i class="fa fa-fw fa-trash"></i>
+                                            <i class="fa fa-fw fa-trash-o"></i>
                                         </a>
                                     </td>
                                 </tr>

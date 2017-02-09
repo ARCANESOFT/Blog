@@ -117,4 +117,16 @@ class Category extends AbstractModel
     {
         return ! $this->posts->isEmpty();
     }
+
+    /* ------------------------------------------------------------------------------------------------
+     |  Other Functions
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Clear the cached categories.
+     */
+    public static function clearCache()
+    {
+        cache()->forget('blog_categories_select_options');
+    }
 }

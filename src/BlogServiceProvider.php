@@ -2,6 +2,7 @@
 
 use Arcanesoft\Core\Bases\PackageServiceProvider;
 use Arcanesoft\Core\CoreServiceProvider;
+use Illuminate\Support\Arr;
 
 /**
  * Class     BlogServiceProvider
@@ -45,6 +46,8 @@ class BlogServiceProvider extends PackageServiceProvider
      */
     public function register()
     {
+        parent::register();
+
         $this->registerConfig();
         $this->registerSidebarItems();
         $this->registerProviders([
@@ -66,6 +69,8 @@ class BlogServiceProvider extends PackageServiceProvider
         $this->registerProvider(Providers\RouteServiceProvider::class);
         $this->registerProvider(Providers\ViewComposerServiceProvider::class);
 
+        $this->registerObservers();
+
         // Publishes
         $this->publishConfig();
         $this->publishMigrations();
@@ -84,5 +89,23 @@ class BlogServiceProvider extends PackageServiceProvider
         return [
             //
         ];
+    }
+
+    /* ------------------------------------------------------------------------------------------------
+     |  Other Functions
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Register the observers.
+     */
+    private function registerObservers()
+    {
+        $config = $this->config()->get('arcanesoft.blog');
+
+        foreach (Arr::only($config, ['posts', 'categories', 'tags']) as $entity) {
+            $this->app->make($entity['model'])->observe(
+                $entity['observer']
+            );
+        }
     }
 }

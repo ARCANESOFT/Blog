@@ -110,4 +110,16 @@ class Tag extends AbstractModel
     {
         return ! $this->posts->isEmpty();
     }
+
+    /* ------------------------------------------------------------------------------------------------
+     |  Other Functions
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Clear the cached tags.
+     */
+    public static function clearCache()
+    {
+        cache()->forget('blog_tags_select_options');
+    }
 }

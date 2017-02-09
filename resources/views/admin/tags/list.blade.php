@@ -67,7 +67,7 @@
                                             </a>
                                         @endif
                                         <a href="#deleteTagModal" class="btn btn-xs btn-danger" data-tag-id="{{ $tag->id }}" data-tag-name="{{ $tag->name }}" data-toggle="tooltip" data-original-title="Delete">
-                                            <i class="fa fa-fw fa-trash"></i>
+                                            <i class="fa fa-fw fa-trash-o"></i>
                                         </a>
                                     </td>
                                 </tr>

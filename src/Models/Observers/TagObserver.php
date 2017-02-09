@@ -1,6 +1,6 @@
 <?php namespace Arcanesoft\Blog\Models\Observers;
 
-use Arcanesoft\Blog\Models\Observers\AbstractObserver;
+use Arcanesoft\Blog\Models\Tag;
 
 /**
  * Class     TagObserver
@@ -10,5 +10,27 @@ use Arcanesoft\Blog\Models\Observers\AbstractObserver;
  */
 class TagObserver extends AbstractObserver
 {
-    //
+    /* ------------------------------------------------------------------------------------------------
+     |  Events
+     | ------------------------------------------------------------------------------------------------
+     */
+    /**
+     * Listen to the Tag saved event.
+     *
+     * @param  \Arcanesoft\Blog\Models\Tag  $tag
+     */
+    public function saved(Tag $tag)
+    {
+        $tag->clearCache();
+    }
+
+    /**
+     * Listen to the Tag deleted event.
+     *
+     * @param  \Arcanesoft\Blog\Models\Tag  $tag
+     */
+    public function deleted(Tag $tag)
+    {
+        $tag->clearCache();
+    }
 }

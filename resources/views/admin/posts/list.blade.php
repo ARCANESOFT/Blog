@@ -64,7 +64,7 @@
                                             <i class="fa fa-fw fa-pencil"></i>
                                         </a>
                                         <a href="#deletePostModal" class="btn btn-xs btn-danger" data-toggle="tooltip" data-original-title="Delete" data-post-id="{{ $post->id }}">
-                                            <i class="fa fa-fw fa-trash"></i>
+                                            <i class="fa fa-fw fa-trash-o"></i>
                                         </a>
                                     </td>
                                 </tr>

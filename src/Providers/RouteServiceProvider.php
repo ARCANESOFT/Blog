@@ -23,16 +23,14 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function map(Router $router)
     {
-        $this->mapAdminRoutes($router);
-        $this->mapPublicRoutes($router);
+        $this->mapAdminRoutes();
+        $this->mapPublicRoutes();
     }
 
     /**
      * Define the foundation routes for the application.
-     *
-     * @param  \Illuminate\Contracts\Routing\Registrar  $router
      */
-    private function mapAdminRoutes(Router $router)
+    private function mapAdminRoutes()
     {
         $attributes = $this->getAdminAttributes(
             'blog.',
@@ -40,21 +38,19 @@ class RouteServiceProvider extends ServiceProvider
             $this->config()->get('arcanesoft.blog.route.prefix', 'blog')
         );
 
-        $router->group($attributes, function ($router) {
-            Routes\Admin\StatsRoutes::register($router);
-            Routes\Admin\PostsRoutes::register($router);
-            Routes\Admin\CommentsRoutes::register($router);
-            Routes\Admin\CategoriesRoutes::register($router);
-            Routes\Admin\TagsRoutes::register($router);
+        $this->group($attributes, function () {
+            Routes\Admin\StatsRoutes::register();
+            Routes\Admin\PostsRoutes::register();
+            Routes\Admin\CommentsRoutes::register();
+            Routes\Admin\CategoriesRoutes::register();
+            Routes\Admin\TagsRoutes::register();
         });
     }
 
     /**
      * Define the public routes for the application.
-     *
-     * @param  \Illuminate\Contracts\Routing\Registrar  $router
      */
-    private function mapPublicRoutes(Router $router)
+    private function mapPublicRoutes()
     {
         $attributes = [
             'as'         => 'public::blog.',
@@ -63,10 +59,10 @@ class RouteServiceProvider extends ServiceProvider
             'namespace'  => 'Arcanesoft\\Blog\\Http\\Controllers\\Front',
         ];
 
-        $router->group($attributes, function ($router) {
-            Routes\Front\PostsRoutes::register($router);
-            Routes\Front\CategoriesRoutes::register($router);
-            Routes\Front\TagsRoutes::register($router);
+        $this->group($attributes, function () {
+            Routes\Front\PostsRoutes::register();
+            Routes\Front\CategoriesRoutes::register();
+            Routes\Front\TagsRoutes::register();
         });
     }
 }
