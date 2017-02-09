@@ -2,7 +2,6 @@
 
 use Arcanesoft\Blog\Http\Routes;
 use Arcanesoft\Core\Bases\RouteServiceProvider as ServiceProvider;
-use Illuminate\Contracts\Routing\Registrar as Router;
 
 /**
  * Class     RouteServiceProvider
@@ -18,10 +17,8 @@ class RouteServiceProvider extends ServiceProvider
      */
     /**
      * Define the routes for the application.
-     *
-     * @param  \Illuminate\Contracts\Routing\Registrar  $router
      */
-    public function map(Router $router)
+    public function map()
     {
         $this->mapAdminRoutes();
         $this->mapPublicRoutes();

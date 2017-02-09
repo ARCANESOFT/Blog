@@ -1,7 +1,6 @@
 <?php namespace Arcanesoft\Blog;
 
 use Arcanesoft\Core\Bases\PackageServiceProvider;
-use Arcanesoft\Core\CoreServiceProvider;
 use Illuminate\Support\Arr;
 
 /**
@@ -51,7 +50,6 @@ class BlogServiceProvider extends PackageServiceProvider
         $this->registerConfig();
         $this->registerSidebarItems();
         $this->registerProviders([
-            CoreServiceProvider::class,
             Providers\AuthorizationServiceProvider::class,
             Providers\ViewComposerServiceProvider::class,
             \Arcanedev\LaravelMarkdown\LaravelMarkdownServiceProvider::class,
