@@ -2,7 +2,6 @@
 
 use Arcanedev\Support\Providers\AuthorizationServiceProvider as ServiceProvider;
 use Arcanesoft\Blog\Policies;
-use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 
 /**
  * Class     AuthorizationServiceProvider
@@ -13,35 +12,20 @@ use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 class AuthorizationServiceProvider extends ServiceProvider
 {
     /* ------------------------------------------------------------------------------------------------
-     |  Properties
-     | ------------------------------------------------------------------------------------------------
-     */
-    /**
-     * The policy mappings for the application.
-     *
-     * @var array
-     */
-    protected $policies = [
-        //
-    ];
-
-    /* ------------------------------------------------------------------------------------------------
      |  Main Functions
      | ------------------------------------------------------------------------------------------------
      */
     /**
      * Register any application authentication / authorization services.
-     *
-     * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
      */
-    public function boot(GateContract $gate)
+    public function boot()
     {
         parent::registerPolicies();
 
-        $this->registerPostsPolicies($gate);
-        $this->registerCategoriesPolicies($gate);
-        $this->registerTagsPolicies($gate);
-        $this->registerOtherPolicies($gate);
+        $this->registerPostsPolicies();
+        $this->registerCategoriesPolicies();
+        $this->registerTagsPolicies();
+        $this->registerOtherPolicies();
     }
 
     /* ------------------------------------------------------------------------------------------------
@@ -50,12 +34,10 @@ class AuthorizationServiceProvider extends ServiceProvider
      */
     /**
      * Register posts authorizations.
-     *
-     * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
      */
-    private function registerPostsPolicies(GateContract $gate)
+    private function registerPostsPolicies()
     {
-        $this->defineMany($gate,
+        $this->defineMany(
             Policies\PostsPolicy::class,
             Policies\PostsPolicy::getPolicies()
         );
@@ -63,12 +45,10 @@ class AuthorizationServiceProvider extends ServiceProvider
 
     /**
      * Register categories authorizations.
-     *
-     * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
      */
-    private function registerCategoriesPolicies(GateContract $gate)
+    private function registerCategoriesPolicies()
     {
-        $this->defineMany($gate,
+        $this->defineMany(
             Policies\CategoriesPolicy::class,
             Policies\CategoriesPolicy::getPolicies()
         );
@@ -76,12 +56,10 @@ class AuthorizationServiceProvider extends ServiceProvider
 
     /**
      * Register tags authorizations.
-     *
-     * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
      */
-    private function registerTagsPolicies(GateContract $gate)
+    private function registerTagsPolicies()
     {
-        $this->defineMany($gate,
+        $this->defineMany(
             Policies\TagsPolicy::class,
             Policies\TagsPolicy::getPolicies()
         );
@@ -89,10 +67,8 @@ class AuthorizationServiceProvider extends ServiceProvider
 
     /**
      * Register other authorizations for blog module.
-     *
-     * @param  \Illuminate\Contracts\Auth\Access\Gate  $gate
      */
-    private function registerOtherPolicies(GateContract $gate)
+    private function registerOtherPolicies()
     {
         //
     }
