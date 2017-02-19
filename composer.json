@@ -20,8 +20,8 @@
         "arcanedev/laravel-markdown": "~1.2",
         "arcanedev/taxonomies":       "~0.2",
         "arcanesoft/auth":            "~2.0",
-        "arcanesoft/core":            "~1.5",
-        "arcanesoft/seo":             "~1.0"
+        "arcanesoft/core":            "~2.0",
+        "arcanesoft/seo":             "~2.0"
     },
     "require-dev": {
         "phpunit/phpcov":  "~3.0",
