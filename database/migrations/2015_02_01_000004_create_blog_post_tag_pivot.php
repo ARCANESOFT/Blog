@@ -34,9 +34,10 @@ class CreateBlogPostTagPivot extends Migration
     public function up()
     {
         $this->createSchema(function(Blueprint $table) {
-            $table->increments('id');
-            $table->integer('post_id')->unsigned();
-            $table->integer('tag_id')->unsigned();
+            $table->unsignedInteger('post_id');
+            $table->unsignedInteger('tag_id');
+
+            $table->primary(['post_id', 'tag_id']);
         });
     }
 }

@@ -16,8 +16,6 @@ class PostsRoutes extends RouteRegistrar
      */
     /**
      * Map routes.
-     *
-     * @param  \Illuminate\Contracts\Routing\Registrar  $router
      */
     public function map()
     {

@@ -1,7 +1,6 @@
 <?php
 
 use Arcanesoft\Blog\Bases\Migration;
-use Arcanesoft\Blog\Entities\PostStatus;
 use Illuminate\Database\Schema\Blueprint;
 
 /**
@@ -36,12 +35,10 @@ class CreateBlogPostsTable extends Migration
     {
         $this->createSchema(function(Blueprint $table) {
             $table->increments('id');
-
-            $table->integer('author_id')->unsigned()->default(0);
-            $table->integer('category_id')->unsigned();
-
+            $table->unsignedInteger('author_id')->default(0);
+            $table->unsignedInteger('category_id');
             $table->string('title');
-            $table->string('slug')->unique();
+            $table->string('slug');
             $table->text('excerpt');
             $table->longtext('content_raw');
             $table->longtext('content_html');
@@ -49,6 +46,8 @@ class CreateBlogPostsTable extends Migration
             $table->timestamps();
             $table->timestamp('published_at');
             $table->softDeletes();
+
+            $table->unique('slug');
         });
     }
 }

@@ -23,20 +23,6 @@ class BlogServiceProvider extends PackageServiceProvider
     protected $package = 'blog';
 
     /* ------------------------------------------------------------------------------------------------
-     |  Getters & Setters
-     | ------------------------------------------------------------------------------------------------
-     */
-    /**
-     * Get the base path of the package.
-     *
-     * @return string
-     */
-    public function getBasePath()
-    {
-        return dirname(__DIR__);
-    }
-
-    /* ------------------------------------------------------------------------------------------------
      |  Main Functions
      | ------------------------------------------------------------------------------------------------
      */
@@ -71,10 +57,11 @@ class BlogServiceProvider extends PackageServiceProvider
 
         // Publishes
         $this->publishConfig();
-        $this->publishMigrations();
         $this->publishViews();
         $this->publishTranslations();
         $this->publishSidebarItems();
+
+        Blog::$runsMigrations ? $this->loadMigrations() : $this->publishMigrations();
     }
 
     /**
@@ -101,9 +88,9 @@ class BlogServiceProvider extends PackageServiceProvider
         $config = $this->config()->get('arcanesoft.blog');
 
         foreach (Arr::only($config, ['posts', 'categories', 'tags']) as $entity) {
-            $this->app->make($entity['model'])->observe(
-                $entity['observer']
-            );
+            $this->app
+                 ->make($entity['model'])
+                 ->observe($entity['observer']);
         }
     }
 }
