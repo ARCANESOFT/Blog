@@ -11,17 +11,29 @@ use Arcanesoft\Core\Bases\RouteServiceProvider as ServiceProvider;
  */
 class RouteServiceProvider extends ServiceProvider
 {
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Properties
+     | -----------------------------------------------------------------
+     */
+    /**
+     * The admin controller namespace for the application.
+     *
+     * @var string
+     */
+    protected $adminNamespace = 'Arcanesoft\\Blog\\Http\\Controllers\\Admin';
+
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
     /**
      * Define the routes for the application.
      */
     public function map()
     {
-        $this->mapAdminRoutes();
-        $this->mapPublicRoutes();
+        $this->adminGroup(function () {
+            $this->mapAdminRoutes();
+        });
     }
 
     /**
@@ -29,37 +41,14 @@ class RouteServiceProvider extends ServiceProvider
      */
     private function mapAdminRoutes()
     {
-        $attributes = $this->getAdminAttributes(
-            'blog.',
-            'Arcanesoft\\Blog\\Http\\Controllers\\Admin',
-            $this->config()->get('arcanesoft.blog.route.prefix', 'blog')
-        );
-
-        $this->group($attributes, function () {
-            Routes\Admin\StatsRoutes::register();
-            Routes\Admin\PostsRoutes::register();
-            Routes\Admin\CommentsRoutes::register();
-            Routes\Admin\CategoriesRoutes::register();
-            Routes\Admin\TagsRoutes::register();
-        });
-    }
-
-    /**
-     * Define the public routes for the application.
-     */
-    private function mapPublicRoutes()
-    {
-        $attributes = [
-            'as'         => 'public::blog.',
-            'prefix'     => 'blog',
-            'middleware' => 'web',
-            'namespace'  => 'Arcanesoft\\Blog\\Http\\Controllers\\Front',
-        ];
-
-        $this->group($attributes, function () {
-            Routes\Front\PostsRoutes::register();
-            Routes\Front\CategoriesRoutes::register();
-            Routes\Front\TagsRoutes::register();
-        });
+        $this->name('blog.')
+             ->prefix($this->config()->get('arcanesoft.blog.route.prefix', 'blog'))
+             ->group(function () {
+                 Routes\Admin\StatsRoutes::register();
+                 Routes\Admin\PostsRoutes::register();
+                 Routes\Admin\CommentsRoutes::register();
+                 Routes\Admin\CategoriesRoutes::register();
+                 Routes\Admin\TagsRoutes::register();
+            });
     }
 }

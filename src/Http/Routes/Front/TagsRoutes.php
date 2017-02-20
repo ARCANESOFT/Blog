@@ -20,7 +20,8 @@ class TagsRoutes extends RouteRegistrar
     public function map()
     {
         $this->prefix('tags')->name('tags.')->group(function () {
-            $this->get('{slug}', 'TagsController@show')->name('show'); // public::blog.tags.show
+            $this->get('{slug}', 'TagsController@show')
+                 ->name('show'); // public::blog.tags.show
         });
     }
 }
