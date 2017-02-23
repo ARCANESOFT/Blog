@@ -8,31 +8,21 @@ use Arcanesoft\Contracts\Auth\Models\User;
  * @package  Arcanesoft\Blog\Policies
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class CategoriesPolicy
+class CategoriesPolicy extends AbstractPolicy
 {
-    /* ------------------------------------------------------------------------------------------------
-     |  Getters and Setters
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Constants
+     | -----------------------------------------------------------------
      */
-    /**
-     * Get the policies.
-     *
-     * @return array
-     */
-    public static function getPolicies()
-    {
-        return [
-            'listPolicy'   => 'blog.categories.list',
-            'showPolicy'   => 'blog.categories.show',
-            'createPolicy' => 'blog.categories.create',
-            'updatePolicy' => 'blog.categories.update',
-            'deletePolicy' => 'blog.categories.delete',
-        ];
-    }
+    const PERMISSION_LIST   = 'blog.categories.list';
+    const PERMISSION_SHOW   = 'blog.categories.show';
+    const PERMISSION_CREATE = 'blog.categories.create';
+    const PERMISSION_UPDATE = 'blog.categories.update';
+    const PERMISSION_DELETE = 'blog.categories.delete';
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Policies Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Abilities
+     | -----------------------------------------------------------------
      */
     /**
      * Allow to list all the categories.

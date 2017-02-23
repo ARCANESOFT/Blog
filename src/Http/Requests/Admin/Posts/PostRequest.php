@@ -1,6 +1,6 @@
 <?php namespace Arcanesoft\Blog\Http\Requests\Admin\Posts;
 
-use Arcanesoft\Blog\Bases\FormRequest;
+use Arcanesoft\Blog\Http\Requests\Admin\FormRequest;
 use Arcanesoft\Blog\Models\Category;
 use Arcanesoft\Blog\Models\Post;
 use Arcanesoft\Blog\Models\Tag;

@@ -8,31 +8,21 @@ use Arcanesoft\Contracts\Auth\Models\User;
  * @package  Arcanesoft\Blog\Policies
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class TagsPolicy
+class TagsPolicy extends AbstractPolicy
 {
-    /* ------------------------------------------------------------------------------------------------
-     |  Getters and Setters
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Constants
+     | -----------------------------------------------------------------
      */
-    /**
-     * Get the policies.
-     *
-     * @return array
-     */
-    public static function getPolicies()
-    {
-        return [
-            'listPolicy'   => 'blog.tags.list',
-            'showPolicy'   => 'blog.tags.show',
-            'createPolicy' => 'blog.tags.create',
-            'updatePolicy' => 'blog.tags.update',
-            'deletePolicy' => 'blog.tags.delete',
-        ];
-    }
+    const PERMISSION_LIST   = 'blog.tags.list';
+    const PERMISSION_SHOW   = 'blog.tags.show';
+    const PERMISSION_CREATE = 'blog.tags.create';
+    const PERMISSION_UPDATE = 'blog.tags.update';
+    const PERMISSION_DELETE = 'blog.tags.delete';
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Policies Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Abilities
+     | -----------------------------------------------------------------
      */
     /**
      * Allow to list all the tags.

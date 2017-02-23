@@ -1,11 +1,11 @@
 <?php namespace Arcanesoft\Blog\Http\Controllers\Admin;
 
-use Arcanesoft\Blog\Entities\PostStatus;
 use Arcanesoft\Blog\Http\Requests\Admin\Posts\CreatePostRequest;
 use Arcanesoft\Blog\Http\Requests\Admin\Posts\UpdatePostRequest;
 use Arcanesoft\Blog\Models\Category;
 use Arcanesoft\Blog\Models\Post;
 use Arcanesoft\Blog\Models\Tag;
+use Arcanesoft\Blog\Policies\PostsPolicy;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -16,9 +16,9 @@ use Illuminate\Support\Facades\Log;
  */
 class PostsController extends Controller
 {
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Properties
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
     /**
      * The post model.
@@ -27,9 +27,9 @@ class PostsController extends Controller
      */
     private $post;
 
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Constructor
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
     /**
      * Instantiate the controller.
@@ -46,9 +46,9 @@ class PostsController extends Controller
         $this->addBreadcrumbRoute('Posts', 'admin::blog.posts.index');
     }
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
     /**
      * List the posts.
@@ -59,7 +59,7 @@ class PostsController extends Controller
      */
     public function index($trashed = false)
     {
-        $this->authorize('blog.posts.list');
+        $this->authorize(PostsPolicy::PERMISSION_LIST);
 
         $posts = $this->post->with(['author', 'category']);
         $posts = $trashed
@@ -89,7 +89,7 @@ class PostsController extends Controller
      */
     public function create()
     {
-        $this->authorize('blog.posts.create');
+        $this->authorize(PostsPolicy::PERMISSION_CREATE);
 
         $this->setTitle('Blog - Posts');
         $this->addBreadcrumb('Create post');
@@ -111,7 +111,7 @@ class PostsController extends Controller
      */
     public function store(CreatePostRequest $request, Post $post)
     {
-        $this->authorize('blog.posts.create');
+        $this->authorize(PostsPolicy::PERMISSION_CREATE);
 
         $post->createOne($request->all());
 
@@ -131,7 +131,7 @@ class PostsController extends Controller
      */
     public function show(Post $post)
     {
-        $this->authorize('blog.posts.show');
+        $this->authorize(PostsPolicy::PERMISSION_SHOW);
 
         $post = $post->load(['author', 'category', 'tags']);
 
@@ -150,7 +150,7 @@ class PostsController extends Controller
      */
     public function edit(Post $post)
     {
-        $this->authorize('blog.posts.update');
+        $this->authorize(PostsPolicy::PERMISSION_UPDATE);
 
         $this->setTitle('Blog - Posts');
         $this->addBreadcrumb('Edit post');
@@ -164,7 +164,7 @@ class PostsController extends Controller
 
     public function update(UpdatePostRequest $request, Post $post)
     {
-        $this->authorize('blog.posts.update');
+        $this->authorize(PostsPolicy::PERMISSION_UPDATE);
 
         $post->updateOne($request->all());
 
@@ -177,16 +177,22 @@ class PostsController extends Controller
 
     public function publish(Post $post)
     {
-        $this->authorize('blog.posts.update');
+        $this->authorize(PostsPolicy::PERMISSION_UPDATE);
+
+        // TODO: Complete the implementation
     }
 
     public function restore(Post $post)
     {
-        $this->authorize('blog.posts.update');
+        $this->authorize(PostsPolicy::PERMISSION_UPDATE);
+
+        // TODO: Complete the implementation
     }
 
     public function delete(Post $post)
     {
-        $this->authorize('blog.posts.delete');
+        $this->authorize(PostsPolicy::PERMISSION_DELETE);
+
+        // TODO: Complete the implementation
     }
 }

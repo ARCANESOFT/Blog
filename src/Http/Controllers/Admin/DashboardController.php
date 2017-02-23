@@ -1,5 +1,7 @@
 <?php namespace Arcanesoft\Blog\Http\Controllers\Admin;
 
+use Arcanesoft\Auth\Policies\DashboardPolicy;
+
 /**
  * Class     DashboardController
  *
@@ -8,9 +10,9 @@
  */
 class DashboardController extends Controller
 {
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Constructor
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
     /**
      * Instantiate the controller.
@@ -22,13 +24,13 @@ class DashboardController extends Controller
         $this->setCurrentPage('blog-dashboard');
     }
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
     public function index()
     {
-        $this->authorize('blog.dashboard.stats');
+        $this->authorize(DashboardPolicy::PERMISSION_STATS);
 
         $this->setTitle($title = 'Blog - Dashboard');
         $this->addBreadcrumb('Statistics');

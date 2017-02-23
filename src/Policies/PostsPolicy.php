@@ -8,31 +8,21 @@ use Arcanesoft\Contracts\Auth\Models\User;
  * @package  Arcanesoft\Blog\Policies
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class PostsPolicy
+class PostsPolicy extends AbstractPolicy
 {
-    /* ------------------------------------------------------------------------------------------------
-     |  Getters and Setters
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Constants
+     | -----------------------------------------------------------------
      */
-    /**
-     * Get the policies.
-     *
-     * @return array
-     */
-    public static function getPolicies()
-    {
-        return [
-            'listPolicy'   => 'blog.posts.list',
-            'showPolicy'   => 'blog.posts.show',
-            'createPolicy' => 'blog.posts.create',
-            'updatePolicy' => 'blog.posts.update',
-            'deletePolicy' => 'blog.posts.delete',
-        ];
-    }
+    const PERMISSION_LIST   = 'blog.posts.list';
+    const PERMISSION_SHOW   = 'blog.posts.show';
+    const PERMISSION_CREATE = 'blog.posts.create';
+    const PERMISSION_UPDATE = 'blog.posts.update';
+    const PERMISSION_DELETE = 'blog.posts.delete';
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Policies Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Abilities
+     | -----------------------------------------------------------------
      */
     /**
      * Allow to list all the posts.

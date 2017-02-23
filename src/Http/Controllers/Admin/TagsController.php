@@ -3,6 +3,7 @@
 use Arcanesoft\Blog\Http\Requests\Admin\Tags\CreateTagRequest;
 use Arcanesoft\Blog\Http\Requests\Admin\Tags\UpdateTagRequest;
 use Arcanesoft\Blog\Models\Tag;
+use Arcanesoft\Blog\Policies\TagsPolicy;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -13,18 +14,16 @@ use Illuminate\Support\Facades\Log;
  */
 class TagsController extends Controller
 {
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Properties
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
-    /**
-     * @var \Arcanesoft\Blog\Models\Tag
-     */
+    /** @var  \Arcanesoft\Blog\Models\Tag */
     private $tag;
 
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Constructor
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
     /**
      * Instantiate the controller.
@@ -41,13 +40,13 @@ class TagsController extends Controller
         $this->addBreadcrumbRoute('Tags', 'admin::blog.tags.index');
     }
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
     public function index($trashed = false)
     {
-        $this->authorize('blog.tags.list');
+        $this->authorize(TagsPolicy::PERMISSION_LIST);
 
         $tags = $this->tag->with(['posts']);
         $tags = $trashed
@@ -66,7 +65,7 @@ class TagsController extends Controller
 
     public function create()
     {
-        $this->authorize('blog.tags.create');
+        $this->authorize(TagsPolicy::PERMISSION_CREATE);
 
         $this->setTitle('Blog - Tags');
         $this->addBreadcrumb('Create tag');
@@ -76,7 +75,7 @@ class TagsController extends Controller
 
     public function store(CreateTagRequest $request, Tag $tag)
     {
-        $this->authorize('blog.tags.create');
+        $this->authorize(TagsPolicy::PERMISSION_CREATE);
 
         $tag->fill($request->only(['name']));
         $tag->save();
@@ -90,7 +89,7 @@ class TagsController extends Controller
 
     public function show(Tag $tag)
     {
-        $this->authorize('blog.tags.show');
+        $this->authorize(TagsPolicy::PERMISSION_SHOW);
 
         $tag->load(['posts']);
 
@@ -102,7 +101,7 @@ class TagsController extends Controller
 
     public function edit(Tag $tag)
     {
-        $this->authorize('blog.tags.update');
+        $this->authorize(TagsPolicy::PERMISSION_UPDATE);
 
         $this->setTitle('Blog - Tags');
         $this->addBreadcrumb('Update tag');
@@ -112,7 +111,7 @@ class TagsController extends Controller
 
     public function update(UpdateTagRequest $request, Tag $tag)
     {
-        $this->authorize('blog.tags.update');
+        $this->authorize(TagsPolicy::PERMISSION_UPDATE);
 
         $tag->update($request->only(['name']));
 
@@ -125,8 +124,9 @@ class TagsController extends Controller
 
     public function restore(Tag $tag)
     {
+        $this->authorize(TagsPolicy::PERMISSION_UPDATE);
+
         self::onlyAjax();
-        $this->authorize('blog.tags.update');
 
         try {
             $tag->restore();
@@ -150,8 +150,9 @@ class TagsController extends Controller
 
     public function delete(Tag $tag)
     {
+        $this->authorize(TagsPolicy::PERMISSION_DELETE);
+
         self::onlyAjax();
-        $this->authorize('blog.tags.delete');
 
         try {
             $tag->trashed()

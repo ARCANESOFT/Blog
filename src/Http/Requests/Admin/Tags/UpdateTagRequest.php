@@ -1,14 +1,12 @@
 <?php namespace Arcanesoft\Blog\Http\Requests\Admin\Tags;
 
-use Arcanesoft\Blog\Bases\FormRequest;
-
 /**
  * Class     UpdateTagRequest
  *
  * @package  Arcanesoft\Blog\Http\Requests\Admin\Tags
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class UpdateTagRequest extends FormRequest
+class UpdateTagRequest extends TagFormRequest
 {
     /* ------------------------------------------------------------------------------------------------
      |  Main Functions
@@ -32,7 +30,7 @@ class UpdateTagRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'required|min:3',
+            'name' => ['required', 'min:3'],
         ];
     }
 }

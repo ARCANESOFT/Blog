@@ -1,7 +1,10 @@
 <?php namespace Arcanesoft\Blog\Providers;
 
 use Arcanedev\Support\Providers\AuthorizationServiceProvider as ServiceProvider;
-use Arcanesoft\Blog\Policies;
+use Arcanesoft\Auth\Policies\DashboardPolicy;
+use Arcanesoft\Blog\Policies\CategoriesPolicy;
+use Arcanesoft\Blog\Policies\PostsPolicy;
+use Arcanesoft\Blog\Policies\TagsPolicy;
 
 /**
  * Class     AuthorizationServiceProvider
@@ -11,9 +14,9 @@ use Arcanesoft\Blog\Policies;
  */
 class AuthorizationServiceProvider extends ServiceProvider
 {
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
     /**
      * Register any application authentication / authorization services.
@@ -22,54 +25,12 @@ class AuthorizationServiceProvider extends ServiceProvider
     {
         parent::registerPolicies();
 
-        $this->registerPostsPolicies();
-        $this->registerCategoriesPolicies();
-        $this->registerTagsPolicies();
-        $this->registerOtherPolicies();
-    }
+        $this->defineMany(DashboardPolicy::class, DashboardPolicy::policies());
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Policies
-     | ------------------------------------------------------------------------------------------------
-     */
-    /**
-     * Register posts authorizations.
-     */
-    private function registerPostsPolicies()
-    {
-        $this->defineMany(
-            Policies\PostsPolicy::class,
-            Policies\PostsPolicy::getPolicies()
-        );
-    }
+        $this->defineMany(PostsPolicy::class, PostsPolicy::policies());
 
-    /**
-     * Register categories authorizations.
-     */
-    private function registerCategoriesPolicies()
-    {
-        $this->defineMany(
-            Policies\CategoriesPolicy::class,
-            Policies\CategoriesPolicy::getPolicies()
-        );
-    }
+        $this->defineMany(CategoriesPolicy::class, CategoriesPolicy::policies());
 
-    /**
-     * Register tags authorizations.
-     */
-    private function registerTagsPolicies()
-    {
-        $this->defineMany(
-            Policies\TagsPolicy::class,
-            Policies\TagsPolicy::getPolicies()
-        );
-    }
-
-    /**
-     * Register other authorizations for blog module.
-     */
-    private function registerOtherPolicies()
-    {
-        //
+        $this->defineMany(TagsPolicy::class, TagsPolicy::policies());
     }
 }

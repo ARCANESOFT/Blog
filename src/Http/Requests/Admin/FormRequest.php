@@ -1,4 +1,4 @@
-<?php namespace Arcanesoft\Blog\Bases;
+<?php namespace Arcanesoft\Blog\Http\Requests\Admin;
 
 use Arcanedev\Support\Bases\FormRequest as BaseFormRequest;
 

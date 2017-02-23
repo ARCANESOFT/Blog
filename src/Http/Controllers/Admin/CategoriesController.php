@@ -3,6 +3,7 @@
 use Arcanesoft\Blog\Http\Requests\Admin\Categories\CreateCategoryRequest;
 use Arcanesoft\Blog\Http\Requests\Admin\Categories\UpdateCategoryRequest;
 use Arcanesoft\Blog\Models\Category;
+use Arcanesoft\Blog\Policies\CategoriesPolicy;
 use Illuminate\Support\Facades\Log;
 
 /**
@@ -13,9 +14,9 @@ use Illuminate\Support\Facades\Log;
  */
 class CategoriesController extends Controller
 {
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Properties
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
     /**
      * The category model.
@@ -24,9 +25,9 @@ class CategoriesController extends Controller
      */
     private $category;
 
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Constructor
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
     /**
      * Instantiate the controller.
@@ -43,13 +44,13 @@ class CategoriesController extends Controller
         $this->addBreadcrumbRoute('Categories', 'admin::blog.categories.index');
     }
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
     public function index($trashed = false)
     {
-        $this->authorize('blog.categories.list');
+        $this->authorize(CategoriesPolicy::PERMISSION_LIST);
 
         $categories = $this->category->with(['posts']);
         $categories = $trashed
@@ -69,7 +70,7 @@ class CategoriesController extends Controller
 
     public function create()
     {
-        $this->authorize('blog.categories.create');
+        $this->authorize(CategoriesPolicy::PERMISSION_CREATE);
 
         $this->setTitle('Blog - Categories');
         $this->addBreadcrumb('Create category');
@@ -79,7 +80,7 @@ class CategoriesController extends Controller
 
     public function store(CreateCategoryRequest $request, Category $category)
     {
-        $this->authorize('blog.categories.create');
+        $this->authorize(CategoriesPolicy::PERMISSION_CREATE);
 
         $category->fill($request->only(['name']));
         $category->save();
@@ -93,7 +94,7 @@ class CategoriesController extends Controller
 
     public function show(Category $category)
     {
-        $this->authorize('blog.categories.show');
+        $this->authorize(CategoriesPolicy::PERMISSION_SHOW);
 
         $category->load(['posts']);
 
@@ -105,7 +106,7 @@ class CategoriesController extends Controller
 
     public function edit(Category $category)
     {
-        $this->authorize('blog.categories.update');
+        $this->authorize(CategoriesPolicy::PERMISSION_UPDATE);
 
         $this->setTitle('Blog - Categories');
         $this->addBreadcrumb('Update category');
@@ -115,7 +116,7 @@ class CategoriesController extends Controller
 
     public function update(UpdateCategoryRequest $request, Category $category)
     {
-        $this->authorize('blog.categories.update');
+        $this->authorize(CategoriesPolicy::PERMISSION_UPDATE);
 
         $category->update($request->only(['name']));
 
@@ -128,8 +129,9 @@ class CategoriesController extends Controller
 
     public function restore(Category $category)
     {
+        $this->authorize(CategoriesPolicy::PERMISSION_UPDATE);
+
         self::onlyAjax();
-        $this->authorize('blog.categories.update');
 
         try {
             $category->restore();
@@ -153,8 +155,9 @@ class CategoriesController extends Controller
 
     public function delete(Category $category)
     {
+        $this->authorize(CategoriesPolicy::PERMISSION_DELETE);
+
         self::onlyAjax();
-        $this->authorize('blog.categories.delete');
 
         try {
             $category->trashed()

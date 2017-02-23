@@ -1,28 +1,13 @@
 <?php namespace Arcanesoft\Blog\Http\Requests\Admin\Categories;
 
-use Arcanesoft\Blog\Bases\FormRequest;
-
 /**
  * Class     CreateCategoryRequest
  *
  * @package  Arcanesoft\Blog\Http\Requests\Admin\Categories
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class CreateCategoryRequest extends FormRequest
+class CreateCategoryRequest extends CategoryFormRequest
 {
-    /* ------------------------------------------------------------------------------------------------
-     |  Properties
-     | ------------------------------------------------------------------------------------------------
-     */
-    /**
-     * Category validation rules.
-     *
-     * @var array
-     */
-    protected $rules = [
-        'name' => 'required|min:3',
-    ];
-
     /* ------------------------------------------------------------------------------------------------
      |  Main Functions
      | ------------------------------------------------------------------------------------------------
@@ -44,6 +29,8 @@ class CreateCategoryRequest extends FormRequest
      */
     public function rules()
     {
-        return $this->rules;
+        return [
+            'name' => ['required', 'min:3'],
+        ];
     }
 }
