@@ -2,9 +2,7 @@
     "name":        "arcanesoft/blog",
     "description": "Blog package for ARCANESOFT/Foundation.",
     "homepage":    "https://github.com/ARCANESOFT/Blog",
-    "keywords":    [
-        "arcanedev", "arcanesoft", "blog", "posts", "categories", "tags", "cms"
-    ],
+    "keywords":    ["arcanedev", "arcanesoft", "blog", "posts", "categories", "tags", "cms"],
     "authors":  [
         {
             "name":     "ARCANEDEV",
@@ -20,7 +18,7 @@
         "arcanedev/laravel-markdown": "~1.2",
         "arcanedev/taxonomies":       "~0.2",
         "arcanesoft/auth":            "~2.0",
-        "arcanesoft/core":            "~2.0",
+        "arcanesoft/core":            "~2.3",
         "arcanesoft/seo":             "~2.0"
     },
     "require-dev": {
