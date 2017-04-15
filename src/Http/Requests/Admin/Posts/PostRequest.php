@@ -14,10 +14,11 @@ use Illuminate\Validation\Rule;
  */
 abstract class PostRequest extends FormRequest
 {
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -36,12 +37,25 @@ abstract class PostRequest extends FormRequest
         ];
     }
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Other Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Other Methods
+     | -----------------------------------------------------------------
      */
+    public function getValidatedInputs()
+    {
+        return $this->only([
+            // POST inputs
+            'title', 'excerpt', 'content', 'category', 'tags', 'published_at', 'status',
+
+            // SEO inputs
+            'seo_title', 'seo_description', 'seo_keywords',
+        ]);
+    }
+
     /**
      * Get the slug rule.
+     *
+     * @param  string  $column
      *
      * @return \Illuminate\Validation\Rules\Unique
      */

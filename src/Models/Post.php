@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 /**
@@ -186,13 +187,13 @@ class Post extends AbstractModel
      */
     public function getContentAttribute()
     {
-        return new \Illuminate\Support\HtmlString($this->content_html);
+        return new HtmlString($this->content_html);
     }
 
     /**
      * Set the status attribute.
      *
-     * @param  string  $content
+     * @param  string  $status
      */
     public function setStatusAttribute($status)
     {

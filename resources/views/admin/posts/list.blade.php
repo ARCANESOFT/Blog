@@ -1,33 +1,25 @@
+<?php /** @var  \Illuminate\Pagination\LengthAwarePaginator  $posts */ ?>
+
 @section('header')
-    <h1><i class="fa fa-fw fa-files-o"></i> Posts <small></small></h1>
+    <h1><i class="fa fa-fw fa-files-o"></i> {{ trans('blog::posts.titles.posts') }} <small></small></h1>
 @endsection
 
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <span class="label label-info" style="margin-right: 5px;">
-                Total of posts : {{ $posts->total() }}
-            </span>
-
-            @if ($posts->hasPages())
-                <span class="label label-info">
-                    {{ trans('foundation::pagination.pages', ['current' => $posts->currentPage(), 'last' => $posts->lastPage()]) }}
-                </span>
-            @endif
+            @include('core::admin._includes.pagination.labels', ['paginator' => $posts])
 
             <div class="box-tools">
                 <div class="btn-group" role="group">
                     <a href="{{ route('admin::blog.posts.index') }}" class="btn btn-xs btn-default {{ route_is('admin::blog.posts.index') ? 'active' : '' }}">
-                        <i class="fa fa-fw fa-bars"></i> All
+                        <i class="fa fa-fw fa-bars"></i> {{ trans('core::generals.all') }}
                     </a>
                     <a href="{{ route('admin::blog.posts.trash') }}" class="btn btn-xs btn-default {{ route_is('admin::blog.posts.trash') ? 'active' : '' }}">
-                        <i class="fa fa-fw fa-trash-o"></i> Trashed
+                        <i class="fa fa-fw fa-trash-o"></i> {{ trans('core::generals.trashed') }}
                     </a>
                 </div>
 
-                <a href="{{ route('admin::blog.posts.create') }}" class="btn btn-xs btn-primary" data-toggle="tooltip" data-original-title="Add">
-                    <i class="fa fa-plus"></i>
-                </a>
+                {{ ui_link_icon('add', route('admin::blog.posts.create')) }}
             </div>
         </div>
         <div class="box-body no-padding">
@@ -35,47 +27,50 @@
                 <table class="table table-condensed table-hover no-margin">
                     <thead>
                         <tr>
-                            <th>Category</th>
-                            <th>Title</th>
-                            <th class="text-center" style="width: 80px;">Status</th>
-                            <th class="text-right" style="width: 130px;">Actions</th>
+                            <th>{{ trans('blog::posts.attributes.category') }}</th>
+                            <th>{{ trans('blog::posts.attributes.title') }}</th>
+                            <th class="text-center" style="width: 80px;">{{ trans('core::generals.status') }}</th>
+                            <th class="text-right" style="width: 130px;">{{ trans('core::generals.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if ($posts->count())
-                            @foreach($posts as $post)
-                                <tr>
-                                    <td>
-                                        <span class="label label-primary">
-                                            {{ $post->category->name }}
-                                        </span>
-                                    </td>
-                                    <td>{{ $post->title }}</td>
-                                    <td class="text-center">
-                                        <span class="label label-{{ $post->isDraft() ? 'default' : 'success' }}">
-                                            {{ $post->status_name }}
-                                        </span>
-                                    </td>
-                                    <td class="text-right">
-                                        <a href="{{ route('admin::blog.posts.show', [$post]) }}" class="btn btn-xs btn-info" data-toggle="tooltip" data-original-title="Show">
-                                            <i class="fa fa-fw fa-search"></i>
-                                        </a>
-                                        <a href="{{ route('admin::blog.posts.edit', [$post]) }}" class="btn btn-xs btn-warning" data-toggle="tooltip" data-original-title="Edit">
-                                            <i class="fa fa-fw fa-pencil"></i>
-                                        </a>
-                                        <a href="#deletePostModal" class="btn btn-xs btn-danger" data-toggle="tooltip" data-original-title="Delete" data-post-id="{{ $post->id }}">
-                                            <i class="fa fa-fw fa-trash-o"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @else
+                        @forelse($posts as $post)
+                            <?php /** @var  \Arcanesoft\Blog\Models\Post  $post */ ?>
                             <tr>
-                                <td colspan="7" class="text-center">
-                                    <span class="label label-default">The list of posts is empty.</span>
+                                <td>
+                                    <span class="label label-primary">{{ $post->category->name }}</span>
+                                </td>
+                                <td>{{ $post->title }}</td>
+                                <td class="text-center">
+                                    <span class="label label-{{ $post->isDraft() ? 'default' : 'success' }}">
+                                        {{ $post->status_name }}
+                                    </span>
+                                </td>
+                                <td class="text-right">
+                                    @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_SHOW)
+                                        {{ ui_link_icon('show', route('admin::blog.posts.show', [$post])) }}
+                                    @endcan
+
+                                    @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
+                                        {{ ui_link_icon('edit', route('admin::blog.posts.edit', [$post])) }}
+
+                                        @if ($post->trashed())
+                                            {{ ui_link_icon('restore', '#resotre-post-modal', ['data-post-id' => $post->id]) }}
+                                        @endif
+                                    @endcan
+
+                                    @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_DELETE)
+                                        {{ ui_link_icon('delete', '#delete-post-modal', ['data-post-id' => $post->id]) }}
+                                    @endcan
                                 </td>
                             </tr>
-                        @endif
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center">
+                                    <span class="label label-default">{{ trans('blog::posts.list-empty') }}</span>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>

@@ -43,7 +43,7 @@ class PostsController extends Controller
         $this->post = $post;
 
         $this->setCurrentPage('blog-posts');
-        $this->addBreadcrumbRoute('Posts', 'admin::blog.posts.index');
+        $this->addBreadcrumbRoute(trans('blog::posts.titles.posts'), 'admin::blog.posts.index');
     }
 
     /* -----------------------------------------------------------------
@@ -66,7 +66,8 @@ class PostsController extends Controller
             ? $posts->onlyTrashed()->paginate(30)
             : $posts->paginate(30);
 
-        $this->setTitle($title = 'List of posts' . ($trashed ? ' - Trashed' : ''));
+        $title = trans('blog::posts.titles.posts-list');
+        $this->setTitle($title . ($trashed ? ' - '.trans('core::generals.trashed') : ''));
         $this->addBreadcrumb($title);
 
         return $this->view('admin.posts.list', compact('trashed', 'posts'));
@@ -91,12 +92,12 @@ class PostsController extends Controller
     {
         $this->authorize(PostsPolicy::PERMISSION_CREATE);
 
-        $this->setTitle('Blog - Posts');
-        $this->addBreadcrumb('Create post');
-
         $categories = Category::getSelectOptions();
         $tags       = Tag::getSelectOptions();
         $statuses   = Post::getStatuses();
+
+        $this->setTitle($title = trans('blog::posts.titles.create-post'));
+        $this->addBreadcrumb($title);
 
         return $this->view('admin.posts.create', compact('categories', 'tags', 'statuses'));
     }
@@ -113,13 +114,11 @@ class PostsController extends Controller
     {
         $this->authorize(PostsPolicy::PERMISSION_CREATE);
 
-        $post->createOne($request->all());
+        $post->createOne($request->getValidatedInputs());
 
-        $message = "The post {$post->title} was created successfully !";
-        Log::info($message, $post->toArray());
-        $this->notifySuccess($message, 'Post created !');
+        $this->transNotification('created', ['title' => $post->title], $post->toArray());
 
-        return redirect()->route('admin::blog.posts.index');
+        return redirect()->route('admin::blog.posts.show', [$post]);
     }
 
     /**
@@ -166,13 +165,11 @@ class PostsController extends Controller
     {
         $this->authorize(PostsPolicy::PERMISSION_UPDATE);
 
-        $post->updateOne($request->all());
+        $post->updateOne($request->getValidatedInputs());
 
-        $message = "The post {$post->title} was updated successfully !";
-        Log::info($message, $post->toArray());
-        $this->notifySuccess($message, 'Post updated !');
+        $this->transNotification('updated', ['title' => $post->title], $post->toArray());
 
-        return redirect()->route('admin::blog.posts.show', [$post->id]);
+        return redirect()->route('admin::blog.posts.show', [$post]);
     }
 
     public function publish(Post $post)
@@ -194,5 +191,30 @@ class PostsController extends Controller
         $this->authorize(PostsPolicy::PERMISSION_DELETE);
 
         // TODO: Complete the implementation
+    }
+
+    /* -----------------------------------------------------------------
+     |  Other Methods
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Notify with translation.
+     *
+     * @param  string  $action
+     * @param  array   $replace
+     * @param  array   $context
+     *
+     * @return string
+     */
+    protected function transNotification($action, array $replace = [], array $context = [])
+    {
+        $title   = trans("auth::posts.messages.{$action}.title");
+        $message = trans("auth::posts.messages.{$action}.message", $replace);
+
+        Log::info($message, $context);
+        $this->notifySuccess($message, $title);
+
+        return $message;
     }
 }
