@@ -11,10 +11,23 @@ use Arcanesoft\Blog\Models\Post;
  */
 class PostsRoutes extends RouteRegistrar
 {
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
+
+    /**
+     * Route bindings.
+     */
+    public static function bindings()
+    {
+        $registrar = new static;
+
+        $registrar->bind('blog_post', function($postId) {
+            return Post::withTrashed()->findOrFail($postId);
+        });
+    }
+
     /**
      * Map routes.
      */
@@ -52,10 +65,6 @@ class PostsRoutes extends RouteRegistrar
                 $this->delete('delete', 'PostsController@delete')
                      ->name('delete');  // admin::blog.posts.delete
             });
-        });
-
-        $this->bind('blog_post', function($postId) {
-            return Post::withTrashed()->findOrFail($postId);
         });
     }
 }

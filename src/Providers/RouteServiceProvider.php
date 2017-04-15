@@ -15,6 +15,7 @@ class RouteServiceProvider extends ServiceProvider
      |  Properties
      | -----------------------------------------------------------------
      */
+
     /**
      * The admin controller namespace for the application.
      *
@@ -26,6 +27,17 @@ class RouteServiceProvider extends ServiceProvider
      |  Main Methods
      | -----------------------------------------------------------------
      */
+
+    /**
+     * Register the route bindings.
+     */
+    protected function registerRouteBindings()
+    {
+        Routes\Admin\PostsRoutes::bindings();
+        Routes\Admin\CategoriesRoutes::bindings();
+        Routes\Admin\TagsRoutes::bindings();
+    }
+
     /**
      * Define the routes for the application.
      */

@@ -11,10 +11,23 @@ use Arcanesoft\Blog\Models\Category;
  */
 class CategoriesRoutes extends RouteRegistrar
 {
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
+
+    /**
+     * Route bindings.
+     */
+    public static function bindings()
+    {
+        $registrar = new static;
+
+        $registrar->bind('blog_category', function ($id) {
+            return Category::withTrashed()->findOrFail($id);
+        });
+    }
+
     /**
      * Map routes.
      */
@@ -49,10 +62,6 @@ class CategoriesRoutes extends RouteRegistrar
                 $this->delete('delete', 'CategoriesController@delete')
                      ->name('delete'); // admin::blog.categories.delete
             });
-        });
-
-        $this->bind('blog_category', function ($id) {
-            return Category::withTrashed()->findOrFail($id);
         });
     }
 }

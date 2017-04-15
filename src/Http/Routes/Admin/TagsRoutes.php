@@ -11,10 +11,23 @@ use Arcanesoft\Blog\Models\Tag;
  */
 class TagsRoutes extends RouteRegistrar
 {
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
+
+    /**
+     * Route bindings.
+     */
+    public static function bindings()
+    {
+        $registrar = new static;
+
+        $registrar->bind('blog_tag', function ($id) {
+            return Tag::withTrashed()->findOrFail($id);
+        });
+    }
+
     /**
      * Map routes.
      */
@@ -49,10 +62,6 @@ class TagsRoutes extends RouteRegistrar
                 $this->delete('delete', 'TagsController@delete')
                      ->name('delete');  // admin::blog.tags.delete
             });
-        });
-
-        $this->bind('blog_tag', function ($id) {
-            return Tag::withTrashed()->findOrFail($id);
         });
     }
 }
