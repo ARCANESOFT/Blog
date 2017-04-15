@@ -57,9 +57,11 @@ class CategoriesRoutes extends RouteRegistrar
                      ->name('update');  // admin::blog.categories.update
 
                 $this->put('restore', 'CategoriesController@restore')
+                     ->middleware('ajax')
                      ->name('restore'); // admin::blog.categories.restore
 
                 $this->delete('delete', 'CategoriesController@delete')
+                     ->middleware('ajax')
                      ->name('delete'); // admin::blog.categories.delete
             });
         });

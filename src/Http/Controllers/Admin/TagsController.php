@@ -1,5 +1,6 @@
 <?php namespace Arcanesoft\Blog\Http\Controllers\Admin;
 
+use Arcanedev\LaravelApiHelper\Traits\JsonResponses;
 use Arcanesoft\Blog\Http\Requests\Admin\Tags\CreateTagRequest;
 use Arcanesoft\Blog\Http\Requests\Admin\Tags\UpdateTagRequest;
 use Arcanesoft\Blog\Models\Tag;
@@ -15,9 +16,17 @@ use Illuminate\Support\Facades\Log;
 class TagsController extends Controller
 {
     /* -----------------------------------------------------------------
+     |  Traits
+     | -----------------------------------------------------------------
+     */
+
+    use JsonResponses;
+
+    /* -----------------------------------------------------------------
      |  Properties
      | -----------------------------------------------------------------
      */
+
     /** @var  \Arcanesoft\Blog\Models\Tag */
     private $tag;
 
@@ -25,8 +34,9 @@ class TagsController extends Controller
      |  Constructor
      | -----------------------------------------------------------------
      */
+
     /**
-     * Instantiate the controller.
+     * TagsController constructor.
      *
      * @param  \Arcanesoft\Blog\Models\Tag  $tag
      */
@@ -37,13 +47,14 @@ class TagsController extends Controller
         $this->tag = $tag;
 
         $this->setCurrentPage('blog-tags');
-        $this->addBreadcrumbRoute('Tags', 'admin::blog.tags.index');
+        $this->addBreadcrumbRoute(trans('blog::tags.titles.tags'), 'admin::blog.tags.index');
     }
 
     /* -----------------------------------------------------------------
      |  Main Methods
      | -----------------------------------------------------------------
      */
+
     public function index($trashed = false)
     {
         $this->authorize(TagsPolicy::PERMISSION_LIST);
@@ -58,6 +69,7 @@ class TagsController extends Controller
 
         return $this->view('admin.tags.list', compact('tags', 'trashed'));
     }
+
     public function trash()
     {
         return $this->index(true);
@@ -126,8 +138,6 @@ class TagsController extends Controller
     {
         $this->authorize(TagsPolicy::PERMISSION_UPDATE);
 
-        self::onlyAjax();
-
         try {
             $tag->restore();
 
@@ -135,16 +145,10 @@ class TagsController extends Controller
             Log::info($message, $tag->toArray());
             $this->notifySuccess($message, 'Tag restored !');
 
-            return response()->json([
-                'status'  => 'success',
-                'message' => $message,
-            ]);
+            return $this->jsonResponseSuccess(['message' => $message]);
         }
         catch (\Exception $e) {
-            return response()->json([
-                'status'  => 'error',
-                'message' => $e->getMessage(),
-            ]);
+            return $this->jsonResponseError($e->getMessage(), 500);
         }
     }
 
@@ -152,27 +156,17 @@ class TagsController extends Controller
     {
         $this->authorize(TagsPolicy::PERMISSION_DELETE);
 
-        self::onlyAjax();
-
         try {
-            $tag->trashed()
-                ? $tag->forceDelete()
-                : $tag->delete();
+            $tag->trashed() ? $tag->forceDelete() : $tag->delete();
 
             $message = "The tag {$tag->name} has been successfully deleted !";
             Log::info($message, $tag->toArray());
             $this->notifySuccess($message, 'Tag deleted !');
 
-            return response()->json([
-                'status'  => 'success',
-                'message' => $message,
-            ]);
+            return $this->jsonResponseSuccess(['message' => $message]);
         }
         catch(\Exception $e) {
-            return response()->json([
-                'status'  => 'error',
-                'message' => $e->getMessage(),
-            ]);
+            return $this->jsonResponseError($e->getMessage(), 500);
         }
     }
 }

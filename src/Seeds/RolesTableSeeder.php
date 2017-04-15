@@ -3,6 +3,7 @@
 use Arcanesoft\Auth\Models\Role;
 use Arcanesoft\Auth\Models\Permission;
 use Arcanesoft\Auth\Seeds\RolesSeeder;
+use Illuminate\Support\Str;
 
 /**
  * Class     RolesTableSeeder
@@ -12,10 +13,11 @@ use Arcanesoft\Auth\Seeds\RolesSeeder;
  */
 class RolesTableSeeder extends RolesSeeder
 {
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
+
     /**
      * Run the database seeds.
      */
@@ -26,42 +28,45 @@ class RolesTableSeeder extends RolesSeeder
                 'name'        => 'Blog Moderators',
                 'description' => 'The Blog moderators role.',
                 'is_locked'   => true,
-            ],[
+            ],
+            [
                 'name'        => 'Blog Authors',
                 'description' => 'The Blog authors role.',
                 'is_locked'   => true,
-            ]
+            ],
         ]);
 
         $this->syncAdminRole();
-        $this->syncRoles();
-    }
-
-    /* ------------------------------------------------------------------------------------------------
-     |  Other Functions
-     | ------------------------------------------------------------------------------------------------
-     */
-    /**
-     * Sync the roles.
-     *
-     * @todo: Refactor this method
-     */
-    private function syncRoles()
-    {
-        $permissions = Permission::all();
-        $roles       = [
+        $this->syncRoles([
             'blog-moderators' => 'blog.',
             'blog-authors'    => 'blog.posts.',
-        ];
+        ]);
+    }
+
+    /* -----------------------------------------------------------------
+     |  Other Methods
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Sync the roles.
+     * @todo: Refactor this method
+     *
+     * @param  array  $roles
+     */
+    protected function syncRoles(array $roles)
+    {
+        $permissions = Permission::all();
 
         foreach ($roles as $roleSlug => $permissionSlug) {
-            /** @var  \Arcanesoft\Auth\Models\Role  $role */
-            $role = Role::where('slug', $roleSlug)->first();
             $ids  = $permissions->filter(function (Permission $permission) use ($permissionSlug) {
-                return starts_with($permission->slug, $permissionSlug);
-            })->lists('id')->toArray();
+                return Str::startsWith($permission->slug, $permissionSlug);
+            })->pluck('id');
 
-            $role->permissions()->sync($ids);
+            /** @var  \Arcanesoft\Auth\Models\Role  $role */
+            if ($role = Role::where('slug', $roleSlug)->first()) {
+                $role->permissions()->sync($ids);
+            }
         }
     }
 }

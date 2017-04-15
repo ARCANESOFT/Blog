@@ -15,16 +15,18 @@ use Illuminate\Database\Eloquent\Builder;
  */
 class CategoriesWidgetComposer extends AbstractComposer
 {
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Constants
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
+
     const VIEW = 'blog::front._composers.widgets.categories-widget';
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
+
     /**
      * Compose the view.
      *
@@ -34,6 +36,7 @@ class CategoriesWidgetComposer extends AbstractComposer
     {
         $categories = Category::with('posts')
             ->whereHas('posts', function (Builder $b) {
+                // TODO: Try to export this code with model's scope ?
                 $b->where('is_draft', false)
                   ->where('published_at', '<=', Carbon::now());
             })

@@ -57,9 +57,11 @@ class TagsRoutes extends RouteRegistrar
                      ->name('update');  // admin::blog.tags.update
 
                 $this->put('restore', 'TagsController@restore')
+                     ->middleware('ajax')
                      ->name('restore'); // admin::blog.tags.restore
 
                 $this->delete('delete', 'TagsController@delete')
+                     ->middleware('ajax')
                      ->name('delete');  // admin::blog.tags.delete
             });
         });

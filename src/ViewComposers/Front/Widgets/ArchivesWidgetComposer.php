@@ -12,23 +12,28 @@ use Illuminate\Contracts\View\View;
  */
 class ArchivesWidgetComposer extends AbstractComposer
 {
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Constants
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
+
     const VIEW = 'blog::front._composers.widgets.archives-widget';
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Compose the view.
+     *
+     * @param  \Illuminate\Contracts\View\View  $view
      */
     public function compose(View $view)
     {
-        $archives = Post::published()
-            ->get()
-            ->groupBy(function (Post $post) {
-                return $post->published_at->year;
-            });
+        $archives = Post::published()->get()->groupBy(function (Post $post) {
+            return $post->published_at->year;
+        });
 
         $view->with('archivesWidgetItems', $archives);
     }

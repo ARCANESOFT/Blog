@@ -10,8 +10,10 @@ return [
      */
 
     'attributes' => [
+        'author'       => 'Author',
         'title'        => 'Title',
         'slug'         => 'Slug',
+        'permalink'    => 'Permalink',
         'excerpt'      => 'Excerpt',
         'content'      => 'Content',
         'category'     => 'Category',

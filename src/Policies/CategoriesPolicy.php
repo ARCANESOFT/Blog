@@ -14,6 +14,7 @@ class CategoriesPolicy extends AbstractPolicy
      |  Constants
      | -----------------------------------------------------------------
      */
+
     const PERMISSION_LIST   = 'blog.categories.list';
     const PERMISSION_SHOW   = 'blog.categories.show';
     const PERMISSION_CREATE = 'blog.categories.create';
@@ -24,6 +25,7 @@ class CategoriesPolicy extends AbstractPolicy
      |  Abilities
      | -----------------------------------------------------------------
      */
+
     /**
      * Allow to list all the categories.
      *
@@ -33,7 +35,7 @@ class CategoriesPolicy extends AbstractPolicy
      */
     public function listPolicy(User $user)
     {
-        return $user->may('blog.categories.list');
+        return $user->may(static::PERMISSION_LIST);
     }
 
     /**
@@ -45,7 +47,7 @@ class CategoriesPolicy extends AbstractPolicy
      */
     public function showPolicy(User $user)
     {
-        return $user->may('blog.categories.show');
+        return $user->may(static::PERMISSION_SHOW);
     }
 
     /**
@@ -57,7 +59,7 @@ class CategoriesPolicy extends AbstractPolicy
      */
     public function createPolicy(User $user)
     {
-        return $user->may('blog.categories.create');
+        return $user->may(static::PERMISSION_CREATE);
     }
 
     /**
@@ -69,7 +71,7 @@ class CategoriesPolicy extends AbstractPolicy
      */
     public function updatePolicy(User $user)
     {
-        return $user->may('blog.categories.update');
+        return $user->may(static::PERMISSION_UPDATE);
     }
 
     /**
@@ -81,6 +83,6 @@ class CategoriesPolicy extends AbstractPolicy
      */
     public function deletePolicy(User $user)
     {
-        return $user->may('blog.categories.delete');
+        return $user->may(static::PERMISSION_DELETE);
     }
 }

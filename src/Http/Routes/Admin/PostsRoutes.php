@@ -57,12 +57,15 @@ class PostsRoutes extends RouteRegistrar
                      ->name('update');  // admin::blog.posts.update
 
                 $this->put('publish', 'PostsController@publish')
+                     ->middleware('ajax')
                      ->name('publish'); // admin::blog.posts.activate
 
                 $this->put('restore', 'PostsController@restore')
+                     ->middleware('ajax')
                      ->name('restore'); // admin::blog.posts.restore
 
                 $this->delete('delete', 'PostsController@delete')
+                     ->middleware('ajax')
                      ->name('delete');  // admin::blog.posts.delete
             });
         });

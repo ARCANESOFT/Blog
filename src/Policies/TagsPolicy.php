@@ -14,6 +14,7 @@ class TagsPolicy extends AbstractPolicy
      |  Constants
      | -----------------------------------------------------------------
      */
+
     const PERMISSION_LIST   = 'blog.tags.list';
     const PERMISSION_SHOW   = 'blog.tags.show';
     const PERMISSION_CREATE = 'blog.tags.create';
@@ -24,6 +25,7 @@ class TagsPolicy extends AbstractPolicy
      |  Abilities
      | -----------------------------------------------------------------
      */
+
     /**
      * Allow to list all the tags.
      *
@@ -33,7 +35,7 @@ class TagsPolicy extends AbstractPolicy
      */
     public function listPolicy(User $user)
     {
-        return $user->may('blog.tags.list');
+        return $user->may(static::PERMISSION_LIST);
     }
 
     /**
@@ -45,7 +47,7 @@ class TagsPolicy extends AbstractPolicy
      */
     public function showPolicy(User $user)
     {
-        return $user->may('blog.tags.show');
+        return $user->may(static::PERMISSION_SHOW);
     }
 
     /**
@@ -57,7 +59,7 @@ class TagsPolicy extends AbstractPolicy
      */
     public function createPolicy(User $user)
     {
-        return $user->may('blog.tags.create');
+        return $user->may(static::PERMISSION_CREATE);
     }
 
     /**
@@ -69,7 +71,7 @@ class TagsPolicy extends AbstractPolicy
      */
     public function updatePolicy(User $user)
     {
-        return $user->may('blog.tags.update');
+        return $user->may(static::PERMISSION_UPDATE);
     }
 
     /**
@@ -81,6 +83,6 @@ class TagsPolicy extends AbstractPolicy
      */
     public function deletePolicy(User $user)
     {
-        return $user->may('blog.tags.delete');
+        return $user->may(static::PERMISSION_UPDATE);
     }
 }

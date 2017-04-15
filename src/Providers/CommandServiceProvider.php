@@ -11,10 +11,11 @@ use Arcanesoft\Blog\Console;
  */
 class CommandServiceProvider extends ServiceProvider
 {
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Properties
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
+
     /**
      * The commands to be registered.
      *
@@ -22,6 +23,6 @@ class CommandServiceProvider extends ServiceProvider
      */
     protected $commands = [
         Console\PublishCommand::class,
-        Console\SetupCommand::class,
+        Console\InstallCommand::class,
     ];
 }

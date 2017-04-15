@@ -1,12 +1,12 @@
 @section('header')
-    <h1><i class="fa fa-fw fa-files-o"></i> Posts <small>{{ trans('blog::posts.title.create-post') }}</small></h1>
+    <h1><i class="fa fa-fw fa-files-o"></i> {{ trans('blog::posts.titles.posts') }} <small>{{ trans('blog::posts.titles.create-post') }}</small></h1>
 @endsection
 
 @section('content')
     {{ Form::open(['route' => 'admin::blog.posts.store', 'method' => 'POST', 'id' => 'create-post-form', 'class' => 'form form-loading']) }}
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h2 class="box-title">{{ trans('blog::posts.title.new-post') }}</h2>
+                <h2 class="box-title">{{ trans('blog::posts.titles.new-post') }}</h2>
             </div>
             <div class="box-body">
                 <div class="row">

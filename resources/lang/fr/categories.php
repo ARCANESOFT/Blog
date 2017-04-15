@@ -26,7 +26,8 @@ return [
      | -----------------------------------------------------------------
      */
 
-    'list-empty' => 'La liste des catégories est vide.',
+    'list-empty'      => 'La liste des catégories est vide.',
+    'select-category' => '-- Sélectionner une catégorie --',
 
     /* -----------------------------------------------------------------
      |  Modals

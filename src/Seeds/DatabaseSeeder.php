@@ -6,7 +6,7 @@
  * @package  Arcanesoft\Blog\Seeds
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class DatabaseAbstractSeeder extends AbstractSeeder
+class DatabaseSeeder extends AbstractSeeder
 {
     /* ------------------------------------------------------------------------------------------------
      |  Properties

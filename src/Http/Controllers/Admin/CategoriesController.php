@@ -1,5 +1,6 @@
 <?php namespace Arcanesoft\Blog\Http\Controllers\Admin;
 
+use Arcanedev\LaravelApiHelper\Traits\JsonResponses;
 use Arcanesoft\Blog\Http\Requests\Admin\Categories\CreateCategoryRequest;
 use Arcanesoft\Blog\Http\Requests\Admin\Categories\UpdateCategoryRequest;
 use Arcanesoft\Blog\Models\Category;
@@ -15,9 +16,17 @@ use Illuminate\Support\Facades\Log;
 class CategoriesController extends Controller
 {
     /* -----------------------------------------------------------------
+     |  Traits
+     | -----------------------------------------------------------------
+     */
+
+    use JsonResponses;
+
+    /* -----------------------------------------------------------------
      |  Properties
      | -----------------------------------------------------------------
      */
+
     /**
      * The category model.
      *
@@ -29,6 +38,7 @@ class CategoriesController extends Controller
      |  Constructor
      | -----------------------------------------------------------------
      */
+
     /**
      * Instantiate the controller.
      *
@@ -41,13 +51,14 @@ class CategoriesController extends Controller
         $this->category = $category;
 
         $this->setCurrentPage('blog-categories');
-        $this->addBreadcrumbRoute('Categories', 'admin::blog.categories.index');
+        $this->addBreadcrumbRoute(trans('blog::categories.titles.categories'), 'admin::blog.categories.index');
     }
 
     /* -----------------------------------------------------------------
      |  Main Methods
      | -----------------------------------------------------------------
      */
+
     public function index($trashed = false)
     {
         $this->authorize(CategoriesPolicy::PERMISSION_LIST);
@@ -131,8 +142,6 @@ class CategoriesController extends Controller
     {
         $this->authorize(CategoriesPolicy::PERMISSION_UPDATE);
 
-        self::onlyAjax();
-
         try {
             $category->restore();
 
@@ -140,24 +149,16 @@ class CategoriesController extends Controller
             Log::info($message, $category->toArray());
             $this->notifySuccess($message, 'Category restored !');
 
-            return response()->json([
-                'status'  => 'success',
-                'message' => $message,
-            ]);
+            return $this->jsonResponseSuccess(['message' => $message]);
         }
         catch (\Exception $e) {
-            return response()->json([
-                'status'  => 'error',
-                'message' => $e->getMessage(),
-            ]);
+            return $this->jsonResponseError($e->getMessage(), 500);
         }
     }
 
     public function delete(Category $category)
     {
         $this->authorize(CategoriesPolicy::PERMISSION_DELETE);
-
-        self::onlyAjax();
 
         try {
             $category->trashed()
@@ -168,16 +169,10 @@ class CategoriesController extends Controller
             Log::info($message, $category->toArray());
             $this->notifySuccess($message, 'Category deleted !');
 
-            return response()->json([
-                'status'  => 'success',
-                'message' => $message,
-            ]);
+            return $this->jsonResponseSuccess(['message' => $message]);
         }
         catch(\Exception $e) {
-            return response()->json([
-                'status'  => 'error',
-                'message' => $e->getMessage(),
-            ]);
+            return $this->jsonResponseError($e->getMessage(), 500);
         }
     }
 }

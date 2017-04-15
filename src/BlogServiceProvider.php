@@ -11,10 +11,11 @@ use Illuminate\Support\Arr;
  */
 class BlogServiceProvider extends PackageServiceProvider
 {
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Properties
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
+
     /**
      * Package name.
      *
@@ -22,10 +23,11 @@ class BlogServiceProvider extends PackageServiceProvider
      */
     protected $package = 'blog';
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
+
     /**
      * Register the service provider.
      */
@@ -40,6 +42,7 @@ class BlogServiceProvider extends PackageServiceProvider
             Providers\ViewComposerServiceProvider::class,
             \Arcanedev\LaravelMarkdown\LaravelMarkdownServiceProvider::class,
         ]);
+
         $this->registerConsoleServiceProvider(Providers\CommandServiceProvider::class);
     }
 
@@ -76,10 +79,11 @@ class BlogServiceProvider extends PackageServiceProvider
         ];
     }
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Other Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Other Methods
+     | -----------------------------------------------------------------
      */
+
     /**
      * Register the observers.
      */

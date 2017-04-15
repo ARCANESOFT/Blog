@@ -1,6 +1,9 @@
 <?php namespace Arcanesoft\Blog\Seeds;
 
 use Arcanesoft\Auth\Seeds\PermissionsSeeder;
+use Arcanesoft\Blog\Policies\CategoriesPolicy;
+use Arcanesoft\Blog\Policies\PostsPolicy;
+use Arcanesoft\Blog\Policies\TagsPolicy;
 
 /**
  * Class     PermissionsTableSeeder
@@ -10,10 +13,11 @@ use Arcanesoft\Auth\Seeds\PermissionsSeeder;
  */
 class PermissionsTableSeeder extends PermissionsSeeder
 {
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
+
     /**
      * Run the database seeds.
      */
@@ -27,6 +31,7 @@ class PermissionsTableSeeder extends PermissionsSeeder
                     'description' => 'Blog permissions group',
                 ],
                 'permissions' => array_merge(
+                    $this->getDashboardSeeds(),
                     $this->getPostsSeeds(),
                     $this->getCategoriesSeeds(),
                     $this->getTagsSeeds()
@@ -35,10 +40,27 @@ class PermissionsTableSeeder extends PermissionsSeeder
         ]);
     }
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Other Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Other Methods
+     | -----------------------------------------------------------------
      */
+
+    /**
+     * Get the dashboard permissions
+     *
+     * @return array
+     */
+    private function getDashboardSeeds()
+    {
+        return [
+            [
+                'name'        => 'Statistics - Show all the stats',
+                'description' => 'Show all the blog stats.',
+                'slug'        => PostsPolicy::PERMISSION_LIST,
+            ],
+        ];
+    }
+
     /**
      * Get the Posts permissions.
      *
@@ -50,24 +72,28 @@ class PermissionsTableSeeder extends PermissionsSeeder
             [
                 'name'        => 'Posts - List all posts',
                 'description' => 'Allow to list all posts.',
-                'slug'        => 'blog.posts.list',
-            ],[
+                'slug'        => PostsPolicy::PERMISSION_LIST,
+            ],
+            [
                 'name'        => 'Posts - View a post',
                 'description' => 'Allow to display a post.',
-                'slug'        => 'blog.posts.show',
-            ],[
+                'slug'        => PostsPolicy::PERMISSION_SHOW,
+            ],
+            [
                 'name'        => 'Posts - Create a post',
                 'description' => 'Allow to create a post.',
-                'slug'        => 'blog.posts.create',
-            ],[
+                'slug'        => PostsPolicy::PERMISSION_CREATE,
+            ],
+            [
                 'name'        => 'Posts - Update a post',
                 'description' => 'Allow to update a post.',
-                'slug'        => 'blog.posts.update',
-            ],[
+                'slug'        => PostsPolicy::PERMISSION_UPDATE,
+            ],
+            [
                 'name'        => 'Posts - Delete a post',
                 'description' => 'Allow to delete a post.',
-                'slug'        => 'blog.posts.delete',
-            ]
+                'slug'        => PostsPolicy::PERMISSION_DELETE,
+            ],
         ];
     }
 
@@ -82,24 +108,28 @@ class PermissionsTableSeeder extends PermissionsSeeder
             [
                 'name'        => 'Categories - List all posts',
                 'description' => 'Allow to list all categories.',
-                'slug'        => 'blog.categories.list',
-            ],[
+                'slug'        => CategoriesPolicy::PERMISSION_LIST,
+            ],
+            [
                 'name'        => 'Categories - View a category',
                 'description' => 'Allow to display a category.',
-                'slug'        => 'blog.categories.show',
-            ],[
+                'slug'        => CategoriesPolicy::PERMISSION_SHOW,
+            ],
+            [
                 'name'        => 'Categories - Create a category',
                 'description' => 'Allow to create a category.',
-                'slug'        => 'blog.categories.create',
-            ],[
+                'slug'        => CategoriesPolicy::PERMISSION_CREATE,
+            ],
+            [
                 'name'        => 'Categories - Update a category',
                 'description' => 'Allow to update a category.',
-                'slug'        => 'blog.categories.update',
-            ],[
+                'slug'        => CategoriesPolicy::PERMISSION_UPDATE,
+            ],
+            [
                 'name'        => 'Categories - Delete a category',
                 'description' => 'Allow to delete a category.',
-                'slug'        => 'blog.categories.delete',
-            ]
+                'slug'        => CategoriesPolicy::PERMISSION_DELETE,
+            ],
         ];
     }
 
@@ -114,24 +144,28 @@ class PermissionsTableSeeder extends PermissionsSeeder
             [
                 'name'        => 'Tags - List all tags',
                 'description' => 'Allow to list all tags.',
-                'slug'        => 'blog.tags.list',
-            ],[
+                'slug'        => TagsPolicy::PERMISSION_LIST,
+            ],
+            [
                 'name'        => 'Tags - View a tag',
                 'description' => 'Allow to display a tag.',
-                'slug'        => 'blog.tags.show',
-            ],[
+                'slug'        => TagsPolicy::PERMISSION_SHOW,
+            ],
+            [
                 'name'        => 'Tags - Create a tag',
                 'description' => 'Allow to create a tag.',
-                'slug'        => 'blog.tags.create',
-            ],[
+                'slug'        => TagsPolicy::PERMISSION_CREATE,
+            ],
+            [
                 'name'        => 'Tags - Update a tag',
                 'description' => 'Allow to update a tag.',
-                'slug'        => 'blog.tags.update',
-            ],[
+                'slug'        => TagsPolicy::PERMISSION_UPDATE,
+            ],
+            [
                 'name'        => 'Tags - Delete a tag',
                 'description' => 'Allow to delete a tag.',
-                'slug'        => 'blog.tags.delete',
-            ]
+                'slug'        => TagsPolicy::PERMISSION_DELETE,
+            ],
         ];
     }
 }

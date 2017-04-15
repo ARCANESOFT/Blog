@@ -1,5 +1,6 @@
 <?php namespace Arcanesoft\Blog\Http\Controllers\Admin;
 
+use Arcanedev\LaravelApiHelper\Traits\JsonResponses;
 use Arcanesoft\Blog\Http\Requests\Admin\Posts\CreatePostRequest;
 use Arcanesoft\Blog\Http\Requests\Admin\Posts\UpdatePostRequest;
 use Arcanesoft\Blog\Models\Category;
@@ -17,9 +18,17 @@ use Illuminate\Support\Facades\Log;
 class PostsController extends Controller
 {
     /* -----------------------------------------------------------------
+     |  Traits
+     | -----------------------------------------------------------------
+     */
+
+    use JsonResponses;
+
+    /* -----------------------------------------------------------------
      |  Properties
      | -----------------------------------------------------------------
      */
+
     /**
      * The post model.
      *
@@ -31,10 +40,11 @@ class PostsController extends Controller
      |  Constructor
      | -----------------------------------------------------------------
      */
+
     /**
-     * Instantiate the controller.
+     * PostsController constructor.
      *
-     * @param Post $post
+     * @param  \Arcanesoft\Blog\Models\Post  $post
      */
     public function __construct(Post $post)
     {
@@ -50,6 +60,7 @@ class PostsController extends Controller
      |  Main Methods
      | -----------------------------------------------------------------
      */
+
     /**
      * List the posts.
      *
@@ -106,7 +117,7 @@ class PostsController extends Controller
      * Store the post.
      *
      * @param  \Arcanesoft\Blog\Http\Requests\Admin\Posts\CreatePostRequest  $request
-     * @param  \Arcanesoft\Blog\Models\Post                                    $post
+     * @param  \Arcanesoft\Blog\Models\Post                                  $post
      *
      * @return \Illuminate\Http\RedirectResponse
      */
@@ -161,6 +172,14 @@ class PostsController extends Controller
         return $this->view('admin.posts.edit', compact('post', 'categories', 'tags', 'statuses'));
     }
 
+    /**
+     * Update the post.
+     *
+     * @param  \Arcanesoft\Blog\Http\Requests\Admin\Posts\UpdatePostRequest  $request
+     * @param  \Arcanesoft\Blog\Models\Post                                  $post
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function update(UpdatePostRequest $request, Post $post)
     {
         $this->authorize(PostsPolicy::PERMISSION_UPDATE);
@@ -172,6 +191,13 @@ class PostsController extends Controller
         return redirect()->route('admin::blog.posts.show', [$post]);
     }
 
+    /**
+     * Publish/Unpublish a post.
+     *
+     * @param  \Arcanesoft\Blog\Models\Post  $post
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function publish(Post $post)
     {
         $this->authorize(PostsPolicy::PERMISSION_UPDATE);
@@ -179,6 +205,13 @@ class PostsController extends Controller
         // TODO: Complete the implementation
     }
 
+    /**
+     * Restore a trashed post.
+     *
+     * @param  \Arcanesoft\Blog\Models\Post  $post
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function restore(Post $post)
     {
         $this->authorize(PostsPolicy::PERMISSION_UPDATE);
@@ -186,6 +219,13 @@ class PostsController extends Controller
         // TODO: Complete the implementation
     }
 
+    /**
+     * Delete a post.
+     *
+     * @param  \Arcanesoft\Blog\Models\Post  $post
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function delete(Post $post)
     {
         $this->authorize(PostsPolicy::PERMISSION_DELETE);

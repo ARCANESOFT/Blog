@@ -1,7 +1,7 @@
 <?php namespace Arcanesoft\Blog;
 
-use Illuminate\Support\Facades\Route;
 use Arcanesoft\Blog\Http\Routes\Front as Routes;
+use Illuminate\Support\Facades\Route;
 
 /**
  * Class     Blog
@@ -15,6 +15,7 @@ class Blog
      |  Properties
      | -----------------------------------------------------------------
      */
+
     /**
      * Indicates if migrations will be run.
      *
@@ -26,6 +27,7 @@ class Blog
      |  Main Methods
      | -----------------------------------------------------------------
      */
+
     /**
      * Publish the migrations.
      */

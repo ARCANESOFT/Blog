@@ -1,7 +1,7 @@
 <?php namespace Arcanesoft\Blog\Providers;
 
 use Arcanedev\Support\Providers\AuthorizationServiceProvider as ServiceProvider;
-use Arcanesoft\Auth\Policies\DashboardPolicy;
+use Arcanesoft\Blog\Policies\DashboardPolicy;
 use Arcanesoft\Blog\Policies\CategoriesPolicy;
 use Arcanesoft\Blog\Policies\PostsPolicy;
 use Arcanesoft\Blog\Policies\TagsPolicy;
@@ -18,6 +18,7 @@ class AuthorizationServiceProvider extends ServiceProvider
      |  Main Methods
      | -----------------------------------------------------------------
      */
+
     /**
      * Register any application authentication / authorization services.
      */
@@ -26,11 +27,8 @@ class AuthorizationServiceProvider extends ServiceProvider
         parent::registerPolicies();
 
         $this->defineMany(DashboardPolicy::class, DashboardPolicy::policies());
-
         $this->defineMany(PostsPolicy::class, PostsPolicy::policies());
-
         $this->defineMany(CategoriesPolicy::class, CategoriesPolicy::policies());
-
         $this->defineMany(TagsPolicy::class, TagsPolicy::policies());
     }
 }
