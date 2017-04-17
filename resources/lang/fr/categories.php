@@ -32,7 +32,7 @@ return [
      | -----------------------------------------------------------------
      */
 
-    'list-empty'      => 'La liste des catégories est vide.',
+    'list-empty'      => 'La liste des catégories est vide !',
     'select-category' => '-- Sélectionner une catégorie --',
     'has-no-posts'    => "Cette catégorie n'a aucune de publications !",
 

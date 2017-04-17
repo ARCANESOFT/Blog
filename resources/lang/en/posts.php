@@ -83,13 +83,13 @@ return [
 
     'modals' => [
         'delete' => [
-            'title' => 'Delete Category',
-            'message' => 'Are you sure you want to <span class="label label-danger">delete</span> this category: <strong>:name</strong> ?',
+            'title'   => 'Delete Post',
+            'message' => 'Are you sure you want to <span class="label label-danger">delete</span> this post: <strong>:title</strong> ?',
         ],
 
         'restore' => [
-            'title'   => 'Restore Category',
-            'message' => 'Are you sure you want to <span class="label label-primary">restore</span> this category: <strong>:name</strong> ?',
+            'title'   => 'Restore Post',
+            'message' => 'Are you sure you want to <span class="label label-primary">restore</span> this post: <strong>:title</strong> ?',
         ],
     ],
 

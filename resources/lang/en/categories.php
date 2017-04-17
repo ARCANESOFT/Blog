@@ -32,7 +32,7 @@ return [
      | -----------------------------------------------------------------
      */
 
-    'list-empty'      => 'The list of categories is empty.',
+    'list-empty'      => 'The list of categories is empty !',
     'select-category' => '-- Select a category --',
     'has-no-posts'    => 'This category has no posts !',
 

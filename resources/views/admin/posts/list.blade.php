@@ -42,9 +42,7 @@
                                 </td>
                                 <td>{{ $post->title }}</td>
                                 <td class="text-center">
-                                    <span class="label label-{{ $post->isDraft() ? 'default' : 'success' }}">
-                                        {{ $post->status_name }}
-                                    </span>
+                                    @include('blog::admin.posts._includes.post-status-name', compact('post'))
                                 </td>
                                 <td class="text-right">
                                     @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_SHOW)

@@ -22,7 +22,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <th>C{{ trans('blog::posts.attributes.category') }}:</th>
+                                    <th>{{ trans('blog::posts.attributes.category') }}:</th>
                                     <td class="text-right">
                                         <span class="label label-primary">{{ $post->category->name }}</span>
                                     </td>
@@ -39,12 +39,14 @@
                                         {{ $post->slug }}
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td colspan="2">
-                                        <b>{{ trans('blog::posts.attributes.permalink') }}:</b><br>
-                                        {{ route('public::blog.posts.show', [$post->slug]) }}
-                                    </td>
-                                </tr>
+                                @if (Route::has('public::blog.posts.show'))
+                                    <tr>
+                                        <td colspan="2">
+                                            <b>{{ trans('blog::posts.attributes.permalink') }}:</b><br>
+                                            {{ route('public::blog.posts.show', [$post->slug]) }}
+                                        </td>
+                                    </tr>
+                                @endif
                                 <tr>
                                     <td colspan="2">
                                         <b>{{ trans('blog::posts.attributes.excerpt') }}:</b><br>
@@ -54,7 +56,8 @@
                                 <tr>
                                     <td colspan="2">
                                         <b>{{ trans('blog::posts.attributes.tags') }}:</b><br>
-                                        @foreach($post->tags as $tag)
+                                        @foreach ($post->tags as $tag)
+                                            <?php /** @var  \Arcanesoft\Blog\Models\Tag  $tag */ ?>
                                             <span class="label label-info">{{ $tag->name }}</span>
                                         @endforeach
                                     </td>
@@ -62,9 +65,7 @@
                                 <tr>
                                     <th>{{ trans('blog::posts.attributes.status') }}:</th>
                                     <td class="text-right">
-                                        <span class="label label-{{ $post->isDraft() ? 'default' : 'success' }}">
-                                            {{ $post->status_name }}
-                                        </span>
+                                        @include('blog::admin.posts._includes.post-status-name', compact('post'))
                                     </td>
                                 </tr>
                                 <tr>
@@ -87,7 +88,7 @@
                                 </tr>
                                 @if ($post->trashed())
                                 <tr>
-                                    <th>{{ trans('core::generals.trashed_at') }}:</th>
+                                    <th>{{ trans('core::generals.deleted_at') }}:</th>
                                     <td class="text-right">
                                         <small>{{ $post->deleted_at }}</small>
                                     </td>
@@ -113,6 +114,7 @@
             </div>
         </div>
         <div class="col-md-7 col-lg-8">
+            {{-- POST CONTENT --}}
             <div class="box">
                 <div class="box-header with-border">
                     <h2 class="box-title">{{ trans('blog::posts.attributes.content') }}</h2>
@@ -142,21 +144,149 @@
     </div>
 @endsection
 
+@section('modals')
+    {{-- RESTORE MODAL --}}
+    @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
+        @if ($post->trashed())
+            <div id="restore-post-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    {{ Form::open(['route' => ['admin::blog.posts.restore', $post], 'method' => 'PUT', 'id' => 'restore-post-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title">{{ trans('blog::posts.modals.restore.title') }}</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>{!! trans('blog::posts.modals.restore.message', ['title' => $post->title]) !!}</p>
+                            </div>
+                            <div class="modal-footer">
+                                {{ ui_button('cancel')->appendClass('pull-left')->setAttribute('data-dismiss', 'modal') }}
+                                {{ ui_button('restore', 'submit')->withLoadingText() }}
+                            </div>
+                        </div>
+                    {{ Form::close() }}
+                </div>
+            </div>
+        @endif
+    @endcan
+
+    {{-- DELETE MODAL --}}
+    @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_DELETE)
+        <div id="delete-post-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                {{ Form::open(['route' => ['admin::blog.posts.delete', $post], 'method' => 'DELETE', 'id' => 'delete-post-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                            <h4 class="modal-title">{{ trans('blog::posts.modals.delete.title') }}</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>{!! trans('blog::posts.modals.delete.message', ['title' => $post->title]) !!}</p>
+                        </div>
+                        <div class="modal-footer">
+                            {{ ui_button('cancel')->appendClass('pull-left')->setAttribute('data-dismiss', 'modal') }}
+                            {{ ui_button('delete', 'submit')->withLoadingText() }}
+                        </div>
+                    </div>
+                {{ Form::close() }}
+            </div>
+        </div>
+    @endcan
+@endsection
+
 @section('scripts')
+    {{-- RESTORE SCRIPT --}}
     @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
         @if ($post->trashed())
             <script>
                 $(function () {
-                    // RESTORE MODAL
+                    var $restorePostModal = $('div#restore-post-modal'),
+                        $restorePostForm  = $('form#restore-post-form');
+
+                    $('a[href="#restore-post-modal"]').on('click', function (e) {
+                        e.preventDefault();
+
+                        $restorePostModal.modal('show');
+                    });
+
+                    $restorePostForm.on('submit', function (e) {
+                        e.preventDefault();
+
+                        var submitBtn = $restorePostForm.find('button[type="submit"]');
+                            submitBtn.button('loading');
+
+                        axios.put($restorePostForm.attr('action'))
+                             .then(function (response) {
+                                 if (response.data.status === 'success') {
+                                     $restorePostModal.modal('hide');
+                                     location.reload();
+                                 }
+                                 else {
+                                     alert('ERROR ! Check the console !');
+                                     console.error(response.data.message);
+                                     submitBtn.button('reset');
+                                 }
+                             })
+                             .catch(function (error) {
+                                 alert('AJAX ERROR ! Check the console !');
+                                 console.log(error);
+                                 submitBtn.button('reset');
+                             });
+
+                        return false;
+                    });
                 });
             </script>
         @endif
     @endcan
 
+    {{-- DELETE SCRIPT --}}
     @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_DELETE)
         <script>
             $(function () {
-                // DELETE MODAL
+                var $deletePostModal = $('div#delete-post-modal'),
+                    $deletePostForm  = $('form#delete-post-form');
+
+                $('a[href="#delete-post-modal"]').on('click', function (e) {
+                    e.preventDefault();
+
+                    $deletePostModal.modal('show');
+                });
+
+                $deletePostForm.on('submit', function (e) {
+                    e.preventDefault();
+
+                    var submitBtn = $deletePostForm.find('button[type="submit"]');
+                        submitBtn.button('loading');
+
+                    axios.delete($deletePostForm.attr('action'))
+                         .then(function (response) {
+                             if (response.data.status === 'success') {
+                                 $deletePostModal.modal('hide');
+                                 @if ($post->trashed())
+                                     location.replace("{{ route('admin::blog.posts.index') }}");
+                                 @else
+                                     location.reload();
+                                 @endif
+                             }
+                             else {
+                                 alert('ERROR ! Check the console !');
+                                 console.error(response.data.message);
+                                 submitBtn.button('reset');
+                             }
+                         })
+                         .catch(function (error) {
+                             alert('AJAX ERROR ! Check the console !');
+                             console.log(error);
+                             submitBtn.button('reset');
+                         });
+
+                    return false;
+                });
             });
         </script>
     @endcan

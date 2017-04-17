@@ -145,8 +145,8 @@ class PostsController extends Controller
 
         $post = $post->load(['author', 'category', 'tags']);
 
-        $this->setTitle('Blog - Posts');
-        $this->addBreadcrumb("Post - {$post->title}");
+        $this->setTitle(trans('blog::posts.titles.post-details'));
+        $this->addBreadcrumb($post->title);
 
         return $this->view('admin.posts.show', compact('post'));
     }
@@ -162,8 +162,8 @@ class PostsController extends Controller
     {
         $this->authorize(PostsPolicy::PERMISSION_UPDATE);
 
-        $this->setTitle('Blog - Posts');
-        $this->addBreadcrumb('Edit post');
+        $this->setTitle($title = trans('blog::posts.titles.edit-post'));
+        $this->addBreadcrumb($title);
 
         $categories = Category::getSelectOptions();
         $tags       = Tag::getSelectOptions();
@@ -216,7 +216,16 @@ class PostsController extends Controller
     {
         $this->authorize(PostsPolicy::PERMISSION_UPDATE);
 
-        // TODO: Complete the implementation
+        try {
+            $post->restore();
+
+            return $this->jsonResponseSuccess([
+                'message' => $this->transNotification('restored', ['title' => $post->title], $post->toArray())
+            ]);
+        }
+        catch (\Exception $e) {
+            return $this->jsonResponseError($e->getMessage(), 500);
+        }
     }
 
     /**
@@ -230,7 +239,16 @@ class PostsController extends Controller
     {
         $this->authorize(PostsPolicy::PERMISSION_DELETE);
 
-        // TODO: Complete the implementation
+        try {
+            $post->trashed() ? $post->forceDelete() : $post->delete();
+
+            return $this->jsonResponseSuccess([
+                'message' => $this->transNotification('deleted', ['title' => $post->title], $post->toArray())
+            ]);
+        }
+        catch(\Exception $e) {
+            return $this->jsonResponseError($e->getMessage(), 500);
+        }
     }
 
     /* -----------------------------------------------------------------
@@ -249,8 +267,8 @@ class PostsController extends Controller
      */
     protected function transNotification($action, array $replace = [], array $context = [])
     {
-        $title   = trans("auth::posts.messages.{$action}.title");
-        $message = trans("auth::posts.messages.{$action}.message", $replace);
+        $title   = trans("blog::posts.messages.{$action}.title");
+        $message = trans("blog::posts.messages.{$action}.message", $replace);
 
         Log::info($message, $context);
         $this->notifySuccess($message, $title);

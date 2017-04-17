@@ -64,8 +64,8 @@ class TagsController extends Controller
             ? $tags->onlyTrashed()->paginate(30)
             : $tags->paginate(30);
 
-        $this->setTitle('Blog - Tags');
-        $this->addBreadcrumb('List all tags');
+        $this->setTitle($title = trans('blog::tags.titles.tags-list'));
+        $this->addBreadcrumb($title);
 
         return $this->view('admin.tags.list', compact('tags', 'trashed'));
     }
@@ -79,8 +79,8 @@ class TagsController extends Controller
     {
         $this->authorize(TagsPolicy::PERMISSION_CREATE);
 
-        $this->setTitle('Blog - Tags');
-        $this->addBreadcrumb('Create tag');
+        $this->setTitle($title = trans('blog::tags.titles.create-tag'));
+        $this->addBreadcrumb($title);
 
         return $this->view('admin.tags.create');
     }
@@ -92,9 +92,7 @@ class TagsController extends Controller
         $tag->fill($request->only(['name']));
         $tag->save();
 
-        $message = "The tag {$tag->name} was created successfully !";
-        Log::info($message, $tag->toArray());
-        $this->notifySuccess($message, 'Tag created !');
+        $this->transNotification('created', ['name' => $tag->name], $tag->toArray());
 
         return redirect()->route('admin::blog.tags.index');
     }
@@ -105,8 +103,8 @@ class TagsController extends Controller
 
         $tag->load(['posts']);
 
-        $this->setTitle('Blog - Tags');
-        $this->addBreadcrumb("Tag - {$tag->name}");
+        $this->setTitle(trans('blog::tags.titles.tag-details'));
+        $this->addBreadcrumb($tag->name);
 
         return $this->view('admin.tags.show', compact('tag'));
     }
@@ -115,8 +113,8 @@ class TagsController extends Controller
     {
         $this->authorize(TagsPolicy::PERMISSION_UPDATE);
 
-        $this->setTitle('Blog - Tags');
-        $this->addBreadcrumb('Update tag');
+        $this->setTitle($title = trans('blog::tags.titles.edit-tag'));
+        $this->addBreadcrumb($title);
 
         return $this->view('admin.tags.edit', compact('tag'));
     }
@@ -127,9 +125,7 @@ class TagsController extends Controller
 
         $tag->update($request->only(['name']));
 
-        $message = "The tag {$tag->name} was updated successfully !";
-        Log::info($message, $tag->toArray());
-        $this->notifySuccess($message, 'Tag updated !');
+        $this->transNotification('updated', ['name' => $tag->name], $tag->toArray());
 
         return redirect()->route('admin::blog.tags.show', [$tag]);
     }
@@ -141,11 +137,9 @@ class TagsController extends Controller
         try {
             $tag->restore();
 
-            $message = "The tag {$tag->name} has been successfully restored !";
-            Log::info($message, $tag->toArray());
-            $this->notifySuccess($message, 'Tag restored !');
-
-            return $this->jsonResponseSuccess(['message' => $message]);
+            return $this->jsonResponseSuccess([
+                'message' => $this->transNotification('restored', ['name' => $tag->name], $tag->toArray())
+            ]);
         }
         catch (\Exception $e) {
             return $this->jsonResponseError($e->getMessage(), 500);
@@ -159,14 +153,37 @@ class TagsController extends Controller
         try {
             $tag->trashed() ? $tag->forceDelete() : $tag->delete();
 
-            $message = "The tag {$tag->name} has been successfully deleted !";
-            Log::info($message, $tag->toArray());
-            $this->notifySuccess($message, 'Tag deleted !');
-
-            return $this->jsonResponseSuccess(['message' => $message]);
+            return $this->jsonResponseSuccess([
+                'message' => $this->transNotification('deleted', ['name' => $tag->name], $tag->toArray())
+            ]);
         }
         catch(\Exception $e) {
             return $this->jsonResponseError($e->getMessage(), 500);
         }
+    }
+
+    /* -----------------------------------------------------------------
+     |  Other Methods
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Notify with translation.
+     *
+     * @param  string  $action
+     * @param  array   $replace
+     * @param  array   $context
+     *
+     * @return string
+     */
+    protected function transNotification($action, array $replace = [], array $context = [])
+    {
+        $title   = trans("blog::tags.messages.{$action}.title");
+        $message = trans("blog::tags.messages.{$action}.message", $replace);
+
+        Log::info($message, $context);
+        $this->notifySuccess($message, $title);
+
+        return $message;
     }
 }

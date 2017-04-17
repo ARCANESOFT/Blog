@@ -1,117 +1,120 @@
+<?php /** @var  \Arcanesoft\Blog\Models\Tag  $tag */ ?>
+
 @section('header')
-    <h1><i class="fa fa-fw fa-tags"></i> Tags <small>{{ $tag->name }}</small></h1>
+    <h1><i class="fa fa-fw fa-tags"></i> {{ trans('blog::tags.titles.tags') }} <small>{{ $tag->name }}</small></h1>
 @endsection
 
 @section('content')
     <div class="row">
         <div class="col-md-4">
+            {{-- TAG DETAILS --}}
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Tag details</h3>
+                    <h3 class="box-title">{{ trans('blog::tags.titles.tag-details') }}</h3>
                 </div>
                 <div class="box-body no-padding">
-                    <table class="table">
-                        <tbody>
+                    <div class="table-responsive">
+                        <table class="table table-condensed no-margin">
+                            <tbody>
                             <tr>
-                                <th>Name</th>
+                                <th>{{ trans('blog::tags.attributes.name') }} :</th>
                                 <td>{{ $tag->name }}</td>
                             </tr>
                             <tr>
-                                <th>Slug</th>
+                                <th>{{ trans('blog::tags.attributes.slug') }} :</th>
                                 <td>
                                     <span class="label label-primary">{{ $tag->slug }}</span>
                                 </td>
                             </tr>
                             <tr>
-                                <th>Nb. Posts</th>
+                                <th>{{ trans('blog::posts.titles.posts') }} :</th>
                                 <td>
-                                    <span class="label label-{{ $tag->posts->count() ? 'info' : 'default' }}">
-                                        {{ $tag->posts->count() }} Posts
-                                    </span>
+                                    {{ label_count($tag->posts->count()) }}
                                 </td>
                             </tr>
                             <tr>
-                                <th>Created at</th>
+                                <th>{{ trans('core::generals.created_at') }} :</th>
                                 <td>
                                     <small>{{ $tag->created_at }}</small>
                                 </td>
                             </tr>
                             <tr>
-                                <th>Updated at</th>
+                                <th>{{ trans('core::generals.updated_at') }} :</th>
                                 <td>
                                     <small>{{ $tag->updated_at }}</small>
                                 </td>
                             </tr>
                             @if ($tag->trashed())
                                 <tr>
-                                    <th>Deleted at</th>
+                                    <th>{{ trans('core::generals.deleted_at') }} :</th>
                                     <td>
                                         <small>{{ $tag->deleted_at }}</small>
                                     </td>
                                 </tr>
                             @endif
-                        </tbody>
-                    </table>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="box-footer text-right">
-                    @can('blog.tags.update')
-                        <a href="{{ route('admin::blog.categories.edit', [$tag]) }}" class="btn btn-xs btn-warning">
-                            <i class="fa fa-fw fa-pencil"></i> Update
-                        </a>
+                    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
+                        {{ ui_link('edit', route('admin::blog.tags.edit', [$tag])) }}
 
                         @if ($tag->trashed())
-                            <button class="btn btn-xs btn-primary" data-toggle="modal" data-target="#restoreTagModal">
-                                <i class="fa fa-fw fa-reply"></i> Restore
-                            </button>
+                            {{ ui_link('restore', '#restore-tag-modal') }}
                         @endif
                     @endcan
 
-                    @can('blog.tags.delete')
-                        <button class="btn btn-xs btn-danger" data-toggle="modal" data-target="#deleteTagModal">
-                            <i class="fa fa-fw fa-trash-o"></i> Delete
-                        </button>
+                    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
+                        {{ ui_link('delete', '#delete-tag-modal') }}
                     @endcan
                 </div>
             </div>
         </div>
         <div class="col-md-8">
+            {{-- POSTS --}}
             <div class="box box-primary">
                 <div class="box-header">
-                    <h3 class="box-title">Posts</h3>
+                    <h3 class="box-title">{{ trans('blog::posts.titles.posts') }}</h3>
                 </div>
                 <div class="box-body no-padding">
-                    <table class="table table-condensed table-hover">
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Slug</th>
-                                <th class="text-right" style="width: 80px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if ($tag->hasPosts())
-                                @foreach($tag->posts as $post)
+                    <div class="table-responsive">
+                        <table class="table table-condensed table-hover no-margin">
+                            <thead>
+                                <tr>
+                                    <th>{{ trans('blog::posts.attributes.title') }}</th>
+                                    <th>{{ trans('blog::posts.attributes.slug') }}</th>
+                                    <th class="text-right" style="width: 80px;">{{ trans('core::generals.actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($tag->posts as $post)
+                                    <?php /** @var  \Arcanesoft\Blog\Models\Post  $post */ ?>
                                     <tr>
                                         <td>{{ $post->title }}</td>
                                         <td>
                                             <span class="label label-primary">{{ $post->slug }}</span>
                                         </td>
                                         <td class="text-right">
-                                            <a href="{{ route('admin::blog.posts.show', [$post]) }}" class="btn btn-xs btn-info">
-                                                <i class="fa fa-fw fa-search"></i>
-                                            </a>
+                                            @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_SHOW)
+                                                {{ ui_link('show', route('admin::blog.posts.show', [$post])) }}
+                                            @endcan
+
+                                            @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
+                                                {{ ui_link('edit', route('admin::blog.posts.edit', [$post])) }}
+                                            @endcan
                                         </td>
                                     </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="3" class="text-center">
-                                        <span class="label label-default">The list of posts is empty.</span>
-                                    </td>
-                                </tr>
-                            @endif
-                        </tbody>
-                    </table>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center">
+                                            <span class="label label-default">{{ trans('blog::tags.has-no-posts') }}</span>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -119,55 +122,51 @@
 @endsection
 
 @section('modals')
-    @if ($tag->trashed())
-        @can('blog.tags.update')
-            {{-- RESTORE MODAL --}}
-            <div id="restoreTagModal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog" aria-labelledby="restoreTagModalLabel">
+    {{-- RESTORE MODAL --}}
+    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
+        @if ($tag->trashed())
+            <div id="restore-tag-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
-                    {{ Form::open(['route' => ['admin::blog.tags.restore', $tag], 'method' => 'PUT', 'id' => 'restoreTagForm', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                    {{ Form::open(['route' => ['admin::blog.tags.restore', $tag], 'method' => 'PUT', 'id' => 'restore-tag-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
-                                <h4 class="modal-title" id="restoreTagModalLabel">Restore Tag</h4>
+                                <h4 class="modal-title">{{ trans('blog::tags.modals.restore.title') }}</h4>
                             </div>
                             <div class="modal-body">
-                                <p>Are you sure you want to <span class="label label-primary">restore</span> this tag : <strong>{{ $tag->name }}</strong> ?</p>
+                                <p>{!! trans('blog::tags.modals.restore.message', ['name' => $tag->name]) !!}</p>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-sm btn-default pull-left" data-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-sm btn-primary" data-loading-text="Loading&hellip;">
-                                    <i class="fa fa-fw fa-reply"></i> RESTORE
-                                </button>
+                                {{ ui_button('cancel')->appendClass('pull-left')->setAttribute('data-dismiss', 'modal') }}
+                                {{ ui_button('restore', 'submit')->withLoadingText() }}
                             </div>
                         </div>
                     {{ Form::close() }}
                 </div>
             </div>
-        @endcan
-    @endif
+        @endif
+    @endcan
 
-    @can('blog.tags.delete')
-        {{-- DELETE MODAL --}}
-        <div id="deleteTagModal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog" aria-labelledby="deleteTagModalLabel">
+    {{-- DELETE MODAL --}}
+    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
+        <div id="delete-tag-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
-                {{ Form::open(['route' => ['admin::blog.tags.delete', $tag], 'method' => 'DELETE', 'id' => 'deleteTagForm', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                {{ Form::open(['route' => ['admin::blog.tags.delete', $tag], 'method' => 'DELETE', 'id' => 'delete-tag-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title" id="deleteTagModalLabel">Delete Tag</h4>
+                            <h4 class="modal-title">{{ trans('blog::tags.modals.delete.title') }}</h4>
                         </div>
                         <div class="modal-body">
-                            <p>Are you sure you want to <span class="label label-danger">delete</span> this tag : <strong>{{ $tag->name }}</strong> ?</p>
+                            <p>{!! trans('blog::tags.modals.delete.message', ['name' => $tag->name]) !!}</p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-sm btn-default pull-left" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-sm btn-danger" data-loading-text="Loading&hellip;">
-                                <i class="fa fa-fw fa-trash-o"></i> DELETE
-                            </button>
+                            {{ ui_button('cancel')->appendClass('pull-left')->setAttribute('data-dismiss', 'modal') }}
+                            {{ ui_button('delete', 'submit')->withLoadingText() }}
                         </div>
                     </div>
                 {{ Form::close() }}
@@ -177,82 +176,94 @@
 @endsection
 
 @section('scripts')
-    @if ($tag->trashed())
-        @can('blog.tags.update')
-        {{-- RESTORE SCRIPT --}}
+    {{-- RESTORE SCRIPT --}}
+    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
+        @if ($tag->trashed())
         <script>
-            var $restoreTagModal = $('div#restoreTagModal'),
-                $restoreTagForm  = $('form#restoreTagForm');
+            $(function () {
+                var $restoreTagModal = $('div#restore-tag-modal'),
+                    $restoreTagForm  = $('form#restore-tag-form');
 
-            $restoreTagForm.submit(function (event) {
-                event.preventDefault();
-                var submitBtn = $restoreTagForm.find('button[type="submit"]');
+                $('a[href="#restore-tag-modal"]').on('click', function (e) {
+                    e.preventDefault();
+
+                    $restoreTagModal.modal('show');
+                });
+
+                $restoreTagForm.on('submit', function (e) {
+                    e.preventDefault();
+
+                    var submitBtn = $restoreTagForm.find('button[type="submit"]');
+                        submitBtn.button('loading');
+
+                    axios.put($restoreTagForm.attr('action'))
+                         .then(function (response) {
+                             if (response.data.status === 'success') {
+                                 $restoreTagModal.modal('hide');
+                                 location.reload();
+                             }
+                             else {
+                                 alert('ERROR ! Check the console !');
+                                 console.error(response.data.message);
+                                 submitBtn.button('reset');
+                             }
+                         })
+                         .catch(function (error) {
+                             alert('AJAX ERROR ! Check the console !');
+                             console.log(error);
+                             submitBtn.button('reset');
+                         });
+
+                    return false;
+                });
+            });
+        </script>
+        @endif
+    @endcan
+
+    {{-- DELETE SCRIPT --}}
+    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
+    <script>
+        $(function () {
+            var $deleteTagModal = $('div#delete-tag-modal'),
+                $deleteTagForm  = $('form#delete-tag-form');
+
+            $('a[href="#delete-tag-modal"]').on('click', function (e) {
+                e.preventDefault();
+
+                $deleteTagModal.modal('show');
+            });
+
+            $deleteTagForm.on('submit', function (e) {
+                e.preventDefault();
+
+                var submitBtn = $deleteTagForm.find('button[type="submit"]');
                     submitBtn.button('loading');
 
-                $.ajax({
-                    url:      $restoreTagForm.attr('action'),
-                    type:     $restoreTagForm.attr('method'),
-                    dataType: 'json',
-                    data:     $restoreTagForm.serialize(),
-                    success: function(data) {
-                        if (data.status === 'success') {
-                            $restoreTagModal.modal('hide');
-                            location.reload();
-                        }
-                        else {
-                            alert('ERROR ! Check the console !');
-                            console.error(data.message);
-                            submitBtn.button('reset');
-                        }
-                    },
-                    error: function(xhr) {
-                        alert('AJAX ERROR ! Check the console !');
-                        console.error(xhr);
-                        submitBtn.button('reset');
-                    }
-                });
+                axios.delete($deleteTagForm.attr('action'))
+                     .then(function (response) {
+                         if (response.data.status === 'success') {
+                             $deleteTagModal.modal('hide');
+                             @if ($tag->trashed())
+                                 location.replace("{{ route('admin::blog.tags.index') }}");
+                             @else
+                                 location.reload();
+                             @endif
+                         }
+                         else {
+                             alert('ERROR ! Check the console !');
+                             console.error(response.data.message);
+                             submitBtn.button('reset');
+                         }
+                     })
+                     .catch(function (error) {
+                         alert('AJAX ERROR ! Check the console !');
+                         console.log(error);
+                         submitBtn.button('reset');
+                     });
 
                 return false;
             });
-        </script>
-        @endcan
-    @endif
-
-    @can('blog.tags.delete')
-    {{-- DELETE SCRIPT --}}
-    <script>
-        var $deleteTagModal = $('div#deleteTagModal'),
-            $deleteTagForm  = $('form#deleteTagForm');
-
-        $deleteTagForm.submit(function (event) {
-            event.preventDefault();
-            var submitBtn = $deleteTagForm.find('button[type="submit"]');
-                submitBtn.button('loading');
-
-            $.ajax({
-                url:      $deleteTagForm.attr('action'),
-                type:     $deleteTagForm.attr('method'),
-                dataType: 'json',
-                data:     $deleteTagForm.serialize(),
-                success: function(data) {
-                    if (data.status === 'success') {
-                        $deleteTagModal.modal('hide');
-                        location.replace("{{ route('admin::blog.tags.index') }}");
-                    }
-                    else {
-                        alert('ERROR ! Check the console !');
-                        console.error(data.message);
-                        submitBtn.button('reset');
-                    }
-                },
-                error: function(xhr) {
-                    alert('AJAX ERROR ! Check the console !');
-                    console.error(xhr);
-                    submitBtn.button('reset');
-                }
-            });
-
-            return false;
         });
     </script>
     @endcan

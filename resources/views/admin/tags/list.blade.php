@@ -1,33 +1,25 @@
+<?php /** @var  \Illuminate\Pagination\LengthAwarePaginator  $tags */ ?>
+
 @section('header')
-    <h1><i class="fa fa-fw fa-tags"></i> Tags <small></small></h1>
+    <h1><i class="fa fa-fw fa-tags"></i> {{ trans('blog::tags.titles.tags') }} <small>{{ trans('blog::tags.titles.tags-list') }}</small></h1>
 @endsection
 
 @section('content')
     <div class="box box-primary">
         <div class="box-header with-border">
-            <span class="label label-info" style="margin-right: 5px;">
-                Total of tags : {{ $tags->total() }}
-            </span>
-
-            @if ($tags->hasPages())
-                <span class="label label-info">
-                    {{ trans('foundation::pagination.pages', ['current' => $tags->currentPage(), 'last' => $tags->lastPage()]) }}
-                </span>
-            @endif
+            @include('core::admin._includes.pagination.labels', ['paginator' => $tags])
 
             <div class="box-tools">
                 <div class="btn-group" role="group">
                     <a href="{{ route('admin::blog.tags.index') }}" class="btn btn-xs btn-default {{ route_is('admin::blog.tags.index') ? 'active' : '' }}">
-                        <i class="fa fa-fw fa-bars"></i> All
+                        <i class="fa fa-fw fa-bars"></i> {{ trans('core::generals.all') }}
                     </a>
                     <a href="{{ route('admin::blog.tags.trash') }}" class="btn btn-xs btn-default {{ route_is('admin::blog.tags.trash') ? 'active' : '' }}">
-                        <i class="fa fa-fw fa-trash-o"></i> Trashed
+                        <i class="fa fa-fw fa-trash-o"></i> {{ trans('core::generals.trashed') }}
                     </a>
                 </div>
 
-                <a href="{{ route('admin::blog.tags.create') }}" class="btn btn-xs btn-primary" data-toggle="tooltip" data-original-title="Add">
-                    <i class="fa fa-plus"></i>
-                </a>
+                {{ ui_link_icon('add', route('admin::blog.tags.create')) }}
             </div>
         </div>
         <div class="box-body no-padding">
@@ -35,50 +27,47 @@
                 <table class="table table-condensed table-hover no-margin">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Slug</th>
-                            <th class="text-center" style="width: 80px;">Nb. posts</th>
-                            <th class="text-right" style="width: 130px;">Actions</th>
+                            <th>{{ trans('blog::tags.attributes.name') }}</th>
+                            <th>{{ trans('blog::tags.attributes.slug') }}</th>
+                            <th class="text-center" style="width: 80px;">{{ trans('blog::posts.titles.posts') }}</th>
+                            <th class="text-right" style="width: 130px;">{{ trans('core::generals.actions') }}</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if ($tags->count())
-                            @foreach($tags as $tag)
-                                <tr>
-                                    <td>{{ $tag->name }}</td>
-                                    <td>
-                                        <span class="label label-primary">{{ $tag->slug }}</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="label label-{{ $tag->hasPosts() ? 'info' : 'default' }}">
-                                            {{ $tag->posts->count() }}
-                                        </span>
-                                    </td>
-                                    <td class="text-right">
-                                        <a href="{{ route('admin::blog.tags.show', [$tag]) }}" class="btn btn-xs btn-info" data-toggle="tooltip" data-original-title="Show">
-                                            <i class="fa fa-fw fa-search"></i>
-                                        </a>
-                                        <a href="{{ route('admin::blog.tags.edit', [$tag]) }}" class="btn btn-xs btn-warning" data-toggle="tooltip" data-original-title="Edit">
-                                            <i class="fa fa-fw fa-pencil"></i>
-                                        </a>
-                                        @if ($tag->trashed())
-                                            <a href="#restoreTagModal" class="btn btn-xs btn-primary" data-tag-id="{{ $tag->id }}" data-tag-name="{{ $tag->name }}" data-toggle="tooltip" data-original-title="Restore">
-                                                <i class="fa fa-fw fa-reply"></i>
-                                            </a>
-                                        @endif
-                                        <a href="#deleteTagModal" class="btn btn-xs btn-danger" data-tag-id="{{ $tag->id }}" data-tag-name="{{ $tag->name }}" data-toggle="tooltip" data-original-title="Delete">
-                                            <i class="fa fa-fw fa-trash-o"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @else
+                        @forelse($tags as $tag)
+                            <?php /** @var  \Arcanesoft\Blog\Models\Tag  $tag */ ?>
                             <tr>
-                                <td colspan="7" class="text-center">
-                                    <span class="label label-default">The list of tags is empty.</span>
+                                <td>{{ $tag->name }}</td>
+                                <td>
+                                    <span class="label label-primary">{{ $tag->slug }}</span>
+                                </td>
+                                <td class="text-center">
+                                    {{ label_count($tag->posts->count()) }}
+                                </td>
+                                <td class="text-right">
+                                    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_SHOW)
+                                        {{ ui_link_icon('show', route('admin::blog.tags.show', [$tag])) }}
+                                    @endcan
+
+                                    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
+                                        {{ ui_link_icon('edit', route('admin::blog.tags.edit', [$tag])) }}
+                                        @if ($tag->trashed())
+                                            {{ ui_link_icon('restore', '#restore-tag-modal', ['data-tag-id' => $tag->id, 'data-tag-name' => $tag->name]) }}
+                                        @endif
+                                    @endcan
+
+                                    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
+                                        {{ ui_link_icon('delete', '#delete-tag-modal', ['data-tag-id' => $tag->id, 'data-tag-name' => $tag->name]) }}
+                                    @endcan
                                 </td>
                             </tr>
-                        @endif
+                        @empty
+                            <tr>
+                                <td colspan="7" class="text-center">
+                                    <span class="label label-default">{{ trans('blog::tags.list-empty') }}</span>
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -90,55 +79,51 @@
 @endsection
 
 @section('modals')
-    @if ($trashed)
-        @can('blog.tags.update')
-            {{-- RESTORE MODAL --}}
-            <div id="restoreTagModal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog" aria-labelledby="restoreTagModalLabel">
+    {{-- RESTORE MODAL --}}
+    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
+        @if ($trashed)
+            <div id="restore-tag-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
-                    {{ Form::open(['method' => 'PUT', 'id' => 'restoreTagForm', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                    {{ Form::open(['method' => 'PUT', 'id' => 'restore-tag-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
-                                <h4 class="modal-title" id="restoreTagModalLabel">Restore Tag</h4>
+                                <h4 class="modal-title">{{ trans('blog::tags.modals.restore.title') }}</h4>
                             </div>
                             <div class="modal-body">
                                 <p></p>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-sm btn-default pull-left" data-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-sm btn-primary" data-loading-text="Loading&hellip;">
-                                    <i class="fa fa-fw fa-reply"></i> RESTORE
-                                </button>
+                                {{ ui_button('cancel')->appendClass('pull-left')->setAttribute('data-dismiss', 'modal') }}
+                                {{ ui_button('restore', 'submit')->withLoadingText() }}
                             </div>
                         </div>
                     {{ Form::close() }}
                 </div>
             </div>
-        @endcan
-    @endif
+        @endif
+    @endcan
 
-    @can('blog.tags.delete')
-        {{-- DELETE MODAL --}}
-        <div id="deleteTagModal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog" aria-labelledby="deleteTagModalLabel">
+    {{-- DELETE MODAL --}}
+    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
+        <div id="delete-tag-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
-                {{ Form::open(['method' => 'DELETE', 'id' => 'deleteTagForm', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                {{ Form::open(['method' => 'DELETE', 'id' => 'delete-tag-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title" id="deleteTagModalLabel">Delete Tag</h4>
+                            <h4 class="modal-title">{{ trans('blog::tags.modals.delete.title') }}</h4>
                         </div>
                         <div class="modal-body">
                             <p></p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-sm btn-default pull-left" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-sm btn-danger" data-loading-text="Loading&hellip;">
-                                <i class="fa fa-fw fa-trash-o"></i> DELETE
-                            </button>
+                            {{ ui_button('cancel')->appendClass('pull-left')->setAttribute('data-dismiss', 'modal') }}
+                            {{ ui_button('delete', 'submit')->withLoadingText() }}
                         </div>
                     </div>
                 {{ Form::close() }}
@@ -148,116 +133,112 @@
 @endsection
 
 @section('scripts')
-    @if ($trashed)
-        @can('blog.tags.update')
-        {{-- RESTORE SCRIPT --}}
+    {{-- RESTORE SCRIPT --}}
+    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
+        @if ($trashed)
         <script>
-            var $restoreTagModal = $('div#restoreTagModal'),
-                $restoreTagForm  = $('form#restoreTagForm'),
-                restoreTagUrl   = "{{ route('admin::blog.tags.restore', [':id']) }}";
+            $(function () {
+                var $restoreTagModal = $('div#restore-tag-modal'),
+                    $restoreTagForm  = $('form#restore-tag-form'),
+                    restoreTagAction = "{{ route('admin::blog.tags.restore', [':id']) }}";
 
-            $('a[href="#restoreTagModal"]').click(function (event) {
-                event.preventDefault();
+                $('a[href="#restore-tag-modal"]').on('click', function (e) {
+                    e.preventDefault();
 
-                var $this         = $(this),
-                    modalMessage = 'Are you sure you want to <span class="label label-primary">restore</span> this tag : <strong>:tag</strong> ?';
+                    var that = $(this);
 
-                $restoreTagForm.attr('action', restoreTagUrl.replace(':id', $this.data('tag-id')));
-                $restoreTagModal.find('.modal-body p').html(modalMessage.replace(':tag', $this.data('tag-name')));
+                    $restoreTagForm.attr('action', restoreTagAction.replace(':id', that.attr('data-tag-id')));
+                    $restoreTagModal.find('.modal-body p').html(
+                        '{!! trans("blog::tags.modals.restore.message") !!}'.replace(':name', that.attr('data-tag-name'))
+                    );
 
-                $restoreTagModal.modal('show');
-            });
-
-            $restoreTagModal.on('hidden.bs.modal', function () {
-                $restoreTagForm.removeAttr('action');
-                $restoreTagModal.find('.modal-body p').html('');
-            });
-
-            $restoreTagForm.submit(function (event) {
-                event.preventDefault();
-                var submitBtn = $restoreTagForm.find('button[type="submit"]');
-                    submitBtn.button('loading');
-
-                $.ajax({
-                    url:      $restoreTagForm.attr('action'),
-                    type:     $restoreTagForm.attr('method'),
-                    dataType: 'json',
-                    data:     $restoreTagForm.serialize(),
-                    success: function(data) {
-                        if (data.status === 'success') {
-                            $restoreTagModal.modal('hide');
-                            location.reload();
-                        }
-                        else {
-                            alert('ERROR ! Check the console !');
-                            console.error(data.message);
-                            submitBtn.button('reset');
-                        }
-                    },
-                    error: function(xhr) {
-                        alert('AJAX ERROR ! Check the console !');
-                        console.error(xhr);
-                        submitBtn.button('reset');
-                    }
+                    $restoreTagModal.modal('show');
                 });
 
-                return false;
+                $restoreTagModal.on('hidden.bs.modal', function () {
+                    $restoreTagForm.attr('action', restoreTagAction);
+                    $restoreTagModal.find('.modal-body p').html('');
+                });
+
+                $restoreTagForm.submit(function (e) {
+                    e.preventDefault();
+
+                    var submitBtn = $restoreTagForm.find('button[type="submit"]');
+                        submitBtn.button('loading');
+
+                    axios.put($restoreTagForm.attr('action'))
+                         .then(function (response) {
+                             if (response.data.status === 'success') {
+                                 $restoreTagModal.modal('hide');
+                                 location.reload();
+                             }
+                             else {
+                                 alert('ERROR ! Check the console !');
+                                 console.error(response.data.message);
+                                 submitBtn.button('reset');
+                             }
+                         })
+                         .catch(function (error) {
+                             alert('AJAX ERROR ! Check the console !');
+                             console.log(error);
+                             submitBtn.button('reset');
+                         });
+
+                    return false;
+                });
             });
         </script>
-        @endcan
-    @endif
+        @endif
+    @endcan
 
-    @can('blog.tags.delete')
     {{-- DELETE SCRIPT --}}
+    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
     <script>
-        var $deleteTagModal = $('div#deleteTagModal'),
-            $deleteTagForm  = $('form#deleteTagForm'),
-            deleteTagUrl   = "{{ route('admin::blog.tags.delete', [':id']) }}";
+        var $deleteTagModal = $('div#delete-tag-modal'),
+            $deleteTagForm  = $('form#delete-tag-form'),
+            deleteTagAction = "{{ route('admin::blog.tags.delete', [':id']) }}";
 
-        $('a[href="#deleteTagModal"]').click(function (event) {
-            event.preventDefault();
+        $('a[href="#delete-tag-modal"]').on('click', function (e) {
+            e.preventDefault();
 
-            var $this        = $(this),
-                modalMessage = 'Are you sure you want to <span class="label label-danger">delete</span> this tag : <strong>:tag</strong> ?';
+            var that = $(this);
 
-            $deleteTagForm.attr('action', deleteTagUrl.replace(':id', $this.data('tag-id')));
-            $deleteTagModal.find('.modal-body p').html(modalMessage.replace(':tag', $this.data('tag-name')));
+            $deleteTagForm.attr('action', deleteTagAction.replace(':id', that.attr('data-tag-id')));
+            $deleteTagModal.find('.modal-body p').html(
+                '{!! trans('blog::tags.modals.delete.message') !!}'.replace(':name', that.attr('data-tag-name'))
+            );
 
             $deleteTagModal.modal('show');
         });
 
         $deleteTagModal.on('hidden.bs.modal', function () {
-            $deleteTagForm.removeAttr('action');
+            $deleteTagForm.attr('action', deleteTagAction);
             $deleteTagModal.find('.modal-body p').html('');
         });
 
-        $deleteTagForm.submit(function (event) {
-            event.preventDefault();
+        $deleteTagForm.on('submit', function (e) {
+            e.preventDefault();
+
             var submitBtn = $deleteTagForm.find('button[type="submit"]');
                 submitBtn.button('loading');
 
-            $.ajax({
-                url:      $deleteTagForm.attr('action'),
-                type:     $deleteTagForm.attr('method'),
-                dataType: 'json',
-                data:     $deleteTagForm.serialize(),
-                success: function(data) {
-                    if (data.status === 'success') {
-                        $deleteTagModal.modal('hide');
-                        location.reload();
-                    }
-                    else {
-                        alert('ERROR ! Check the console !');
-                        console.error(data.message);
-                        submitBtn.button('reset');
-                    }
-                },
-                error: function(xhr) {
-                    alert('AJAX ERROR ! Check the console !');
-                    console.error(xhr);
-                    submitBtn.button('reset');
-                }
-            });
+            axios.delete($deleteTagForm.attr('action'))
+                 .then(function (response) {
+                     if (response.data.status === 'success') {
+                         $deleteTagModal.modal('hide');
+                         location.reload();
+                     }
+                     else {
+                         alert('ERROR ! Check the console !');
+                         console.error(response.data.message);
+                         submitBtn.button('reset');
+                     }
+                 })
+                 .catch(function (error) {
+                     alert('AJAX ERROR ! Check the console !');
+                     console.log(error);
+                     submitBtn.button('reset');
+                 });
 
             return false;
         });

@@ -83,13 +83,13 @@ return [
 
     'modals' => [
         'delete' => [
-            'title' => 'Delete Category',
-            'message' => 'Are you sure you want to <span class="label label-danger">delete</span> this category: <strong>:name</strong> ?',
+            'title'   => 'Supprimer la publication',
+            'message' => 'Êtes-vous sûr de vouloir <span class="label label-danger">supprimer</span> cette publication: <strong>:title</strong> ?',
         ],
 
         'restore' => [
-            'title'   => 'Restore Category',
-            'message' => 'Are you sure you want to <span class="label label-primary">restore</span> this category: <strong>:name</strong> ?',
+            'title'   => 'Restaurer la publication',
+            'message' => 'Êtes-vous sûr de vouloir <span class="label label-primary">restaurer</span> cette publication: <strong>:title</strong> ?',
         ],
     ],
 
