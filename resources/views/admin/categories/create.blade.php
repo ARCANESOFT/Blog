@@ -1,5 +1,5 @@
 @section('header')
-    <h1><i class="fa fa-fw fa-bookmark-o"></i> Categories <small>New Category</small></h1>
+    <h1><i class="fa fa-fw fa-bookmark-o"></i> {{ trans('blog::categories.titles.categories') }} <small>{{ trans('blog::categories.titles.new-category') }}</small></h1>
 @endsection
 
 @section('content')
@@ -8,11 +8,11 @@
             {{ Form::open(['route' => 'admin::blog.categories.store', 'method' => 'POST', 'id' => 'createCategoriesForm', 'class' => 'form form-loading']) }}
                 <div class="box box-primary">
                     <div class="box-header with-border">
-                        <h2 class="box-title">New Category</h2>
+                        <h2 class="box-title">{{ trans('blog::categories.titles.new-category') }}</h2>
                     </div>
                     <div class="box-body">
                         <div class="form-group {{ $errors->first('name', 'has-error') }}">
-                            {{ Form::label('name', 'Name :') }}
+                            {{ Form::label('name', trans('blog::categories.attributes.name').' :') }}
                             {{ Form::text('name', old('name'), ['class' => 'form-control']) }}
                             @if ($errors->has('name'))
                                 <span class="text-red">{!! $errors->first('name') !!}</span>
@@ -20,12 +20,8 @@
                         </div>
                     </div>
                     <div class="box-footer">
-                        <a href="{{ route('admin::blog.categories.index') }}" class="btn btn-sm btn-default">
-                            Cancel
-                        </a>
-                        <button type="submit" class="btn btn-sm btn-primary pull-right">
-                            <i class="fa fa-fw fa-plus"></i> Add
-                        </button>
+                        {{ ui_link('cancel', route('admin::blog.categories.index')) }}
+                        {{ ui_button('add', 'submit')->appendClass('pull-right') }}
                     </div>
                 </div>
             {{ Form::close() }}

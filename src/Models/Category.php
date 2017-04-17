@@ -133,6 +133,16 @@ class Category extends AbstractModel
         return ! $this->posts->isEmpty();
     }
 
+    /**
+     * Check if the category is deletable.
+     *
+     * @return bool
+     */
+    public function isDeletable()
+    {
+        return ! $this->hasPosts();
+    }
+
     /* -----------------------------------------------------------------
      |  Other Methods
      | -----------------------------------------------------------------

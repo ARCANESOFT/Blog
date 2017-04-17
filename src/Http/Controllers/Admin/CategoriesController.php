@@ -68,8 +68,8 @@ class CategoriesController extends Controller
             ? $categories->onlyTrashed()->paginate(30)
             : $categories->paginate(30);
 
-        $this->setTitle($title = 'Blog - Categories');
-        $this->addBreadcrumb('List all categories');
+        $this->setTitle($title = trans('blog::categories.titles.categories-list'));
+        $this->addBreadcrumb($title);
 
         return $this->view('admin.categories.list', compact('categories', 'trashed'));
     }
@@ -83,8 +83,8 @@ class CategoriesController extends Controller
     {
         $this->authorize(CategoriesPolicy::PERMISSION_CREATE);
 
-        $this->setTitle('Blog - Categories');
-        $this->addBreadcrumb('Create category');
+        $this->setTitle($title = trans('blog::categories.titles.create-category'));
+        $this->addBreadcrumb($title);
 
         return $this->view('admin.categories.create');
     }
@@ -96,9 +96,7 @@ class CategoriesController extends Controller
         $category->fill($request->only(['name']));
         $category->save();
 
-        $message = "The category {$category->name} was created successfully !";
-        Log::info($message, $category->toArray());
-        $this->notifySuccess($message, 'Category created !');
+        $this->transNotification('created', ['name' => $category->name], $category->toArray());
 
         return redirect()->route('admin::blog.categories.index');
     }
@@ -109,8 +107,8 @@ class CategoriesController extends Controller
 
         $category->load(['posts']);
 
-        $this->setTitle('Blog - Categories');
-        $this->addBreadcrumb("Category - {$category->name}");
+        $this->setTitle($title = trans('blog::categories.titles.category-details'));
+        $this->addBreadcrumb($category->name);
 
         return $this->view('admin.categories.show', compact('category'));
     }
@@ -119,8 +117,8 @@ class CategoriesController extends Controller
     {
         $this->authorize(CategoriesPolicy::PERMISSION_UPDATE);
 
-        $this->setTitle('Blog - Categories');
-        $this->addBreadcrumb('Update category');
+        $this->setTitle($title = trans('blog::categories.titles.edit-category'));
+        $this->addBreadcrumb($title);
 
         return $this->view('admin.categories.edit', compact('category'));
     }
@@ -131,11 +129,25 @@ class CategoriesController extends Controller
 
         $category->update($request->only(['name']));
 
-        $message = "The category {$category->name} was updated successfully !";
-        Log::info($message, $category->toArray());
-        $this->notifySuccess($message, 'Category updated !');
+        $this->transNotification('updated', ['name' => $category->name], $category->toArray());
 
         return redirect()->route('admin::blog.categories.show', [$category]);
+    }
+
+    public function delete(Category $category)
+    {
+        $this->authorize(CategoriesPolicy::PERMISSION_DELETE);
+
+        try {
+            $category->trashed() ? $category->forceDelete() : $category->delete();
+
+            return $this->jsonResponseSuccess([
+                'message' => $this->transNotification('deleted', ['name' => $category->name], $category->toArray())
+            ]);
+        }
+        catch(\Exception $e) {
+            return $this->jsonResponseError($e->getMessage(), 500);
+        }
     }
 
     public function restore(Category $category)
@@ -145,34 +157,37 @@ class CategoriesController extends Controller
         try {
             $category->restore();
 
-            $message = "The category {$category->name} has been successfully restored !";
-            Log::info($message, $category->toArray());
-            $this->notifySuccess($message, 'Category restored !');
-
-            return $this->jsonResponseSuccess(['message' => $message]);
+            return $this->jsonResponseSuccess([
+                'message' => $this->transNotification('restored', ['name' => $category->name], $category->toArray())
+            ]);
         }
         catch (\Exception $e) {
             return $this->jsonResponseError($e->getMessage(), 500);
         }
     }
 
-    public function delete(Category $category)
+    /* -----------------------------------------------------------------
+     |  Other Methods
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Notify with translation.
+     *
+     * @param  string  $action
+     * @param  array   $replace
+     * @param  array   $context
+     *
+     * @return string
+     */
+    protected function transNotification($action, array $replace = [], array $context = [])
     {
-        $this->authorize(CategoriesPolicy::PERMISSION_DELETE);
+        $title   = trans("blog::categories.messages.{$action}.title");
+        $message = trans("blog::categories.messages.{$action}.message", $replace);
 
-        try {
-            $category->trashed()
-                ? $category->forceDelete()
-                : $category->delete();
+        Log::info($message, $context);
+        $this->notifySuccess($message, $title);
 
-            $message = "The category {$category->name} has been successfully deleted !";
-            Log::info($message, $category->toArray());
-            $this->notifySuccess($message, 'Category deleted !');
-
-            return $this->jsonResponseSuccess(['message' => $message]);
-        }
-        catch(\Exception $e) {
-            return $this->jsonResponseError($e->getMessage(), 500);
-        }
+        return $message;
     }
 }

@@ -1,7 +1,7 @@
 <?php /** @var  \Illuminate\Pagination\LengthAwarePaginator  $categories */ ?>
 
 @section('header')
-    <h1><i class="fa fa-fw fa-bookmark-o"></i> {{ trans('blog::categories.titles.categories') }} <small></small></h1>
+    <h1><i class="fa fa-fw fa-bookmark-o"></i> {{ trans('blog::categories.titles.categories') }} <small>{{ trans('blog::categories.titles.categories-list') }}</small></h1>
 @endsection
 
 @section('content')
@@ -58,7 +58,7 @@
                                     @endcan
 
                                     @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_DELETE)
-                                        {{ ui_link_icon('delete', '#delete-category-modal', ['data-category-id' => $category->id, 'data-category-name' => $category->name]) }}
+                                        {{ ui_link_icon('delete', '#delete-category-modal', ['data-category-id' => $category->id, 'data-category-name' => $category->name], ! $category->isDeletable()) }}
                                     @endcan
                                 </td>
                             </tr>
@@ -134,16 +134,16 @@
 @endsection
 
 @section('scripts')
-    @if ($trashed)
-        @can('blog.tags.update')
-        {{-- RESTORE SCRIPT --}}
+    {{-- RESTORE SCRIPT --}}
+    @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_UPDATE)
+        @if ($trashed)
         <script>
             $(function () {
                 var $restoreCategoryModal = $('div#restore-category-modal'),
                     $restoreCategoryForm  = $('form#restore-category-form'),
                     restoreCategoryAction = "{{ route('admin::blog.categories.restore', [':id']) }}";
 
-                $('a[href="#restore-category-modal"]').click(function (e) {
+                $('a[href="#restore-category-modal"]').on('click', function (e) {
                     e.preventDefault();
 
                     var that    = $(this),
@@ -189,25 +189,25 @@
                 });
             });
         </script>
-        @endcan
-    @endif
+        @endif
+    @endcan
 
-    @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_DELETE)
     {{-- DELETE SCRIPT --}}
+    @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_DELETE)
     <script>
         $(function () {
             var $deleteCategoryModal = $('div#delete-category-modal'),
                 $deleteCategoryForm  = $('form#delete-category-form'),
                 deleteCategoryAction = "{{ route('admin::blog.categories.delete', [':id']) }}";
 
-            $('a[href="#deleteCategoryModal"]').click(function (e) {
+            $('a[href="#delete-category-modal"]').on('click', function (e) {
                 e.preventDefault();
 
                 var that    = $(this),
                     message = '{!! trans("blog::categories.modals.delete.message") !!}';
 
                 $deleteCategoryForm.attr('action', deleteCategoryAction.replace(':id', that.attr('data-category-id')));
-                $deleteCategoryModal.find('.modal-body p').html(message.replace(':category', that.attr('data-category-name')));
+                $deleteCategoryModal.find('.modal-body p').html(message.replace(':name', that.attr('data-category-name')));
 
                 $deleteCategoryModal.modal('show');
             });

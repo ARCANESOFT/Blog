@@ -1,5 +1,7 @@
+<?php /** @var  \Arcanesoft\Blog\Models\Category  $category */ ?>
+
 @section('header')
-    <h1><i class="fa fa-fw fa-bookmark-o"></i> Categories <small>{{ $category->name }}</small></h1>
+    <h1><i class="fa fa-fw fa-bookmark-o"></i> {{ trans('blog::categories.titles.categories') }} <small>{{ $category->name }}</small></h1>
 @endsection
 
 @section('content')
@@ -7,110 +9,110 @@
         <div class="col-md-4">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Category details</h3>
+                    <h3 class="box-title">{{ trans('blog::categories.titles.category-details') }}</h3>
                 </div>
                 <div class="box-body no-padding">
-                    <table class="table no-margin">
-                        <tbody>
-                            <tr>
-                                <th>Name</th>
-                                <td>{{ $category->name }}</td>
-                            </tr>
-                            <tr>
-                                <th>Slug</th>
-                                <td>
-                                    <span class="label label-primary">{{ $category->slug }}</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Nb. Posts</th>
-                                <td>
-                                    <span class="label label-{{ $category->posts->count() ? 'info' : 'default' }}">
-                                        {{ $category->posts->count() }} Posts
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Created at</th>
-                                <td>
-                                    <small>{{ $category->created_at }}</small>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Updated at</th>
-                                <td>
-                                    <small>{{ $category->updated_at }}</small>
-                                </td>
-                            </tr>
-                            @if ($category->trashed())
+                    <div class="table-responsive">
+                        <table class="table table-condensed no-margin">
+                            <tbody>
                                 <tr>
-                                    <th>Deleted at</th>
+                                    <th>{{ trans('blog::categories.attributes.name') }} :</th>
+                                    <td>{{ $category->name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>{{ trans('blog::categories.attributes.slug') }} :</th>
                                     <td>
-                                        <small>{{ $category->deleted_at }}</small>
+                                        <span class="label label-primary">{{ $category->slug }}</span>
                                     </td>
                                 </tr>
-                            @endif
-                        </tbody>
-                    </table>
+                                <tr>
+                                    <th>{{ trans('blog::posts.titles.posts') }} :</th>
+                                    <td>
+                                        {{ label_count($category->posts->count()) }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>{{ trans('core::generals.created_at') }} :</th>
+                                    <td>
+                                        <small>{{ $category->created_at }}</small>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>{{ trans('core::generals.updated_at') }} :</th>
+                                    <td>
+                                        <small>{{ $category->updated_at }}</small>
+                                    </td>
+                                </tr>
+                                @if ($category->trashed())
+                                    <tr>
+                                        <th>{{ trans('core::generals.deleted_at') }} :</th>
+                                        <td>
+                                            <small>{{ $category->deleted_at }}</small>
+                                        </td>
+                                    </tr>
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="box-footer text-right">
-                    @can('blog.categories.update')
-                        <a href="{{ route('admin::blog.categories.edit', [$category]) }}" class="btn btn-sm btn-warning">
-                            <i class="fa fa-fw fa-pencil"></i> Update
-                        </a>
+                    @can(\Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_UPDATE)
+                        {{ ui_link('edit', route('admin::blog.categories.edit', [$category])) }}
+
                         @if ($category->trashed())
-                        <button data-target="#restoreCategoryModal" data-toggle="modal" class="btn btn-sm btn-primary">
-                            <i class="fa fa-fw fa-reply"></i> Restore
-                        </button>
+                            {{ ui_link('restore', '#restore-category-modal') }}
                         @endif
                     @endcan
 
-                    @can('blog.categories.delete')
-                        <button data-target="#deleteCategoryModal" data-toggle="modal" class="btn btn-sm btn-danger">
-                            <i class="fa fa-fw fa-trash-o"></i> Delete
-                        </button>
+                    @can(\Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_DELETE)
+                        {{ ui_link('delete', '#delete-category-modal', [], ! $category->isDeletable()) }}
                     @endcan
                 </div>
             </div>
         </div>
         <div class="col-md-8">
+            {{-- POSTS --}}
             <div class="box box-primary">
                 <div class="box-header">
-                    <h3 class="box-title">Posts</h3>
+                    <h3 class="box-title">{{ trans('blog::posts.titles.posts') }}</h3>
                 </div>
                 <div class="box-body no-padding">
-                    <table class="table table-condensed table-hover">
-                        <thead>
-                            <tr>
-                                <th>Title</th>
-                                <th>Slug</th>
-                                <th class="text-right" style="width: 80px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if ($category->hasPosts())
-                                @foreach($category->posts as $post)
+                    <div class="table-responsive">
+                        <table class="table table-condensed table-hover no-margin">
+                            <thead>
+                                <tr>
+                                    <th>{{ trans('blog::posts.attributes.title') }}</th>
+                                    <th>{{ trans('blog::posts.attributes.slug') }}</th>
+                                    <th class="text-right" style="width: 80px;">{{ trans('core::generals.actions') }}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($category->posts as $post)
                                     <tr>
                                         <td>{{ $post->title }}</td>
                                         <td>
                                             <span class="label label-primary">{{ $post->slug }}</span>
                                         </td>
                                         <td class="text-right">
-                                            <a href="{{ route('admin::blog.posts.show', [$post]) }}" class="btn btn-xs btn-info">
-                                                <i class="fa fa-fw fa-search"></i>
-                                            </a>
+                                            @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_SHOW)
+                                                {{ ui_link_icon('show', route('admin::blog.posts.show', [$post])) }}
+                                            @endcan
+
+                                            @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
+                                                {{ ui_link_icon('edit', route('admin::blog.posts.edit', [$post])) }}
+                                            @endcan
                                         </td>
                                     </tr>
-                                @endforeach
-                            @else
-                                <tr>
-                                    <td colspan="3" class="text-center">
-                                        <span class="label label-default">The list of categories is empty.</span>
-                                    </td>
-                                </tr>
-                            @endif
-                        </tbody>
-                    </table>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="text-center">
+                                            <span class="label label-default">{{ trans('blog::categories.has-no-posts') }}</span>
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -118,55 +120,51 @@
 @endsection
 
 @section('modals')
-    @if ($category->trashed())
-        @can('blog.categories.update')
+    @can(\Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_UPDATE)
+        @if ($category->trashed())
             {{-- RESTORE MODAL --}}
-            <div id="restoreCategoryModal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog" aria-labelledby="restoreCategoryModalLabel">
+            <div id="restore-category-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
-                    {{ Form::open(['route' => ['admin::blog.categories.restore', $category], 'method' => 'PUT', 'id' => 'restoreCategoryForm', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                    {{ Form::open(['route' => ['admin::blog.categories.restore', $category], 'method' => 'PUT', 'id' => 'restore-category-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
-                                <h4 class="modal-title" id="restoreCategoryModalLabel">Restore Category</h4>
+                                <h4 class="modal-title">{{ trans('blog::categories.modals.restore.title') }}</h4>
                             </div>
                             <div class="modal-body">
-                                <p>Are you sure you want to <span class="label label-primary">restore</span> this category : <strong>{{ $category->name }}</strong> ?</p>
+                                <p>{!! trans('blog::categories.modals.restore.message', ['name' => $category->name]) !!}</p>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-sm btn-default pull-left" data-dismiss="modal">Cancel</button>
-                                <button type="submit" class="btn btn-sm btn-primary" data-loading-text="Loading&hellip;">
-                                    <i class="fa fa-fw fa-reply"></i> RESTORE
-                                </button>
+                                {{ ui_button('cancel')->appendClass('pull-left')->setAttribute('data-dismiss', 'modal') }}
+                                {{ ui_button('restore', 'submit')->withLoadingText() }}
                             </div>
                         </div>
                     {{ Form::close() }}
                 </div>
             </div>
-        @endcan
-    @endif
+        @endif
+    @endcan
 
-    @can('blog.categories.delete')
+    @can(\Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_DELETE)
         {{-- DELETE MODAL --}}
-        <div id="deleteCategoryModal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog" aria-labelledby="deleteCategoryModalLabel">
+        <div id="delete-category-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
-                {{ Form::open(['route' => ['admin::blog.categories.delete', $category], 'method' => 'DELETE', 'id' => 'deleteCategoryForm', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                {{ Form::open(['route' => ['admin::blog.categories.delete', $category], 'method' => 'DELETE', 'id' => 'delete-category-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title" id="deleteCategoryModalLabel">Delete Category</h4>
+                            <h4 class="modal-title">{{ trans('blog::categories.modals.delete.title') }}</h4>
                         </div>
                         <div class="modal-body">
-                            <p>Are you sure you want to <span class="label label-danger">delete</span> this category : <strong>{{ $category->name }}</strong> ?</p>
+                            <p>{!! trans('blog::categories.modals.delete.message', ['name' => $category->name]) !!}</p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-sm btn-default pull-left" data-dismiss="modal">Cancel</button>
-                            <button type="submit" class="btn btn-sm btn-danger" data-loading-text="Loading&hellip;">
-                                <i class="fa fa-fw fa-trash-o"></i> DELETE
-                            </button>
+                            {{ ui_button('cancel')->appendClass('pull-left')->setAttribute('data-dismiss', 'modal') }}
+                            {{ ui_button('delete', 'submit')->withLoadingText() }}
                         </div>
                     </div>
                 {{ Form::close() }}
@@ -176,85 +174,97 @@
 @endsection
 
 @section('scripts')
-    @if ($category->trashed())
-        @can('blog.categories.update')
-        {{-- RESTORE SCRIPT --}}
-        <script>
-            var $restoreCategoryModal = $('div#restoreCategoryModal'),
-                $restoreCategoryForm  = $('form#restoreCategoryForm');
+    {{-- RESTORE SCRIPT --}}
+    @can(\Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_UPDATE)
+        @if ($category->trashed())
+            <script>
+                $(function () {
+                    var $restoreCategoryModal = $('div#restore-category-modal'),
+                        $restoreCategoryForm  = $('form#restore-category-form');
 
-            $restoreCategoryForm.on('submit', function (e) {
-                e.preventDefault();
+                    $('a[href="#restore-category-modal"]').on('click', function (e) {
+                        e.preventDefault();
 
-                var submitBtn = $restoreCategoryForm.find('button[type="submit"]');
-                    submitBtn.button('loading');
+                        $restoreCategoryModal.modal('show');
+                    });
 
-                $.ajax({
-                    url:      $restoreCategoryForm.attr('action'),
-                    type:     $restoreCategoryForm.attr('method'),
-                    dataType: 'json',
-                    data:     $restoreCategoryForm.serialize(),
-                    success: function(data) {
-                        if (data.status === 'success') {
-                            $restoreCategoryModal.modal('hide');
-                            location.reload();
-                        }
-                        else {
-                            alert('ERROR ! Check the console !');
-                            console.error(data.message);
-                            submitBtn.button('reset');
-                        }
-                    },
-                    error: function(xhr) {
-                        alert('AJAX ERROR ! Check the console !');
-                        console.error(xhr);
-                        submitBtn.button('reset');
-                    }
+                    $restoreCategoryForm.on('submit', function (e) {
+                        e.preventDefault();
+
+                        var submitBtn = $restoreCategoryForm.find('button[type="submit"]');
+                            submitBtn.button('loading');
+
+                        axios.put($restoreCategoryForm.attr('action'))
+                             .then(function (response) {
+                                 if (response.data.status === 'success') {
+                                     $restoreCategoryModal.modal('hide');
+                                     location.reload();
+                                 }
+                                 else {
+                                     alert('ERROR ! Check the console !');
+                                     console.error(response.data.message);
+                                     submitBtn.button('reset');
+                                 }
+                             })
+                             .catch(function (error) {
+                                 alert('AJAX ERROR ! Check the console !');
+                                 console.log(error);
+                                 submitBtn.button('reset');
+                             });
+
+                        return false;
+                    });
                 });
+            </script>
+        @endif
+    @endcan
 
-                return false;
-            });
-        </script>
-        @endcan
-    @endif
-
-    @can('blog.categories.delete')
     {{-- DELETE SCRIPT --}}
-    <script>
-        var $deleteCategoryModal = $('div#deleteCategoryModal'),
-            $deleteCategoryForm  = $('form#deleteCategoryForm');
+    @can(\Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_DELETE)
+        @if ($category->isDeletable())
+            <script>
+                $(function () {
+                    var $deleteCategoryModal = $('div#delete-category-modal'),
+                        $deleteCategoryForm  = $('form#delete-category-form');
 
-        $deleteCategoryForm.on('submit', function(e) {
-            e.preventDefault();
+                    $('a[href="#delete-category-modal"]').on('click', function (e) {
+                        e.preventDefault();
 
-            var submitBtn = $deleteCategoryForm.find('button[type="submit"]');
-                submitBtn.button('loading');
+                        $deleteCategoryModal.modal('show');
+                    });
 
-            $.ajax({
-                url:      $deleteCategoryForm.attr('action'),
-                type:     $deleteCategoryForm.attr('method'),
-                dataType: 'json',
-                data:     $deleteCategoryForm.serialize(),
-                success: function(data) {
-                    if (data.status === 'success') {
-                        $deleteCategoryModal.modal('hide');
-                        location.replace("{{ route('admin::blog.categories.index') }}");
-                    }
-                    else {
-                        alert('ERROR ! Check the console !');
-                        console.error(data.message);
-                        submitBtn.button('reset');
-                    }
-                },
-                error: function(xhr) {
-                    alert('AJAX ERROR ! Check the console !');
-                    console.error(xhr);
-                    submitBtn.button('reset');
-                }
-            });
+                    $deleteCategoryForm.on('submit', function(e) {
+                        e.preventDefault();
 
-            return false;
-        });
-    </script>
+                        var submitBtn = $deleteCategoryForm.find('button[type="submit"]');
+                            submitBtn.button('loading');
+
+                        axios.delete($deleteCategoryForm.attr('action'))
+                             .then(function (response) {
+                                 if (response.data.status === 'success') {
+                                     $deleteCategoryModal.modal('hide');
+                                     @if ($category->trashed())
+                                         location.replace("{{ route('admin::blog.categories.index') }}");
+                                     @else
+                                         location.reload();
+                                     @endif
+                                 }
+                                 else {
+                                     alert('ERROR ! Check the console !');
+                                     console.error(response.data.message);
+                                     submitBtn.button('reset');
+                                 }
+                             })
+                             .catch(function (error) {
+                                 alert('AJAX ERROR ! Check the console !');
+                                 console.log(error);
+                                 submitBtn.button('reset');
+                             });
+
+                        return false;
+                    });
+                });
+            </script>
+        @endif
     @endcan
 @endsection

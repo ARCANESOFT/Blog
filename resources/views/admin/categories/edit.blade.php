@@ -1,18 +1,20 @@
+<?php /** @var  \Arcanesoft\Blog\Models\Category  $category */ ?>
+
 @section('header')
-    <h1><i class="fa fa-fw fa-bookmark-o"></i> Categories <small>Update Category</small></h1>
+    <h1><i class="fa fa-fw fa-bookmark-o"></i> {{ trans('blog::categories.titles.categories') }} <small>{{ trans('blog::categories.titles.edit-category') }}</small></h1>
 @endsection
 
 @section('content')
     <div class="row">
         <div class="col-md-4">
-            {{ Form::open(['route' => ['admin::blog.categories.update', $category->id], 'method' => 'PUT', 'id' => 'updateCategoriesForm', 'class' => 'form form-loading']) }}
+            {{ Form::open(['route' => ['admin::blog.categories.update', $category], 'method' => 'PUT', 'id' => 'update-category-form', 'class' => 'form form-loading']) }}
                 <div class="box box-primary">
                     <div class="box-header with-border">
-                        <h2 class="box-title">Update Category</h2>
+                        <h2 class="box-title">{{ trans('blog::categories.titles.update-category') }}</h2>
                     </div>
                     <div class="box-body">
                         <div class="form-group {{ $errors->first('name', 'has-error') }}">
-                            {{ Form::label('name', 'Name :') }}
+                            {{ Form::label('name', trans('blog::categories.attributes.name').' :') }}
                             {{ Form::text('name', old('name', $category->name), ['class' => 'form-control']) }}
                             @if ($errors->has('name'))
                                 <span class="text-red">{!! $errors->first('name') !!}</span>
@@ -20,12 +22,8 @@
                         </div>
                     </div>
                     <div class="box-footer">
-                        <a href="{{ route('admin::blog.categories.index') }}" class="btn btn-sm btn-default">
-                            Cancel
-                        </a>
-                        <button type="submit" class="btn btn-sm btn-warning pull-right">
-                            <i class="fa fa-fw fa-pencil"></i> Update
-                        </button>
+                        {{ ui_link('cancel', route('admin::blog.categories.show', [$category])) }}
+                        {{ ui_button('update', 'submit')->appendClass('pull-right') }}
                     </div>
                 </div>
             {{ Form::close() }}

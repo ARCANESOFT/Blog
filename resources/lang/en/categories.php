@@ -18,7 +18,13 @@ return [
      */
 
     'titles' => [
-        'categories' => 'Categories',
+        'categories'       => 'Categories',
+        'categories-list'  => 'List of categories',
+        'create-category'  => 'Create a category',
+        'new-category'     => 'New Category',
+        'edit-category'    => 'Edit a Category',
+        'update-category'  => 'Update a Category',
+        'category-details' => 'Category details',
     ],
 
     /* -----------------------------------------------------------------
@@ -28,6 +34,29 @@ return [
 
     'list-empty'      => 'The list of categories is empty.',
     'select-category' => '-- Select a category --',
+    'has-no-posts'    => 'This category has no posts !',
+
+    'messages'        => [
+        'created' => [
+            'title'   => 'Category created !',
+            'message' => 'The category [:name] was created successfully !',
+        ],
+
+        'updated' => [
+            'title'   => 'Category updated !',
+            'message' => 'The category [:name] was updated successfully !',
+        ],
+
+        'deleted' => [
+            'title'   => 'Category deleted !',
+            'message' => 'The category [:name] has been successfully deleted !',
+        ],
+
+        'restored' => [
+            'title'   => 'Category restored !',
+            'message' => 'The category [:name] has been successfully restored !',
+        ],
+    ],
 
     /* -----------------------------------------------------------------
      |  Modals
