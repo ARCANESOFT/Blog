@@ -1,6 +1,6 @@
 <div class="box box-default">
     <div class="box-header with-border">
-        <h3 class="box-title">Categories ratios</h3>
+        <h3 class="box-title">{{ trans('blog::dashboard.titles.categories-ratios') }}</h3>
     </div>
     <div class="box-body">
         <div class="chart-responsive">

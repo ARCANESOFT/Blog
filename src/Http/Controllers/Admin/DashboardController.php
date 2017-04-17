@@ -23,6 +23,7 @@ class DashboardController extends Controller
         parent::__construct();
 
         $this->setCurrentPage('blog-dashboard');
+        $this->addBreadcrumbRoute(trans('blog::dashboard.titles.statistics'), 'admin::blog.dashboard');
     }
 
     /* -----------------------------------------------------------------
@@ -30,12 +31,16 @@ class DashboardController extends Controller
      | -----------------------------------------------------------------
      */
 
+    /**
+     * Get the dashboard page.
+     *
+     * @return \Illuminate\View\View
+     */
     public function index()
     {
         $this->authorize(DashboardPolicy::PERMISSION_STATS);
 
-        $this->setTitle($title = 'Blog - Dashboard');
-        $this->addBreadcrumb('Statistics');
+        $this->setTitle(trans('blog::dashboard.titles.statistics'));
 
         return $this->view('admin.dashboard');
     }
