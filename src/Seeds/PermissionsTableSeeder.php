@@ -2,6 +2,7 @@
 
 use Arcanesoft\Auth\Seeds\PermissionsSeeder;
 use Arcanesoft\Blog\Policies\CategoriesPolicy;
+use Arcanesoft\Blog\Policies\DashboardPolicy;
 use Arcanesoft\Blog\Policies\PostsPolicy;
 use Arcanesoft\Blog\Policies\TagsPolicy;
 
@@ -56,7 +57,7 @@ class PermissionsTableSeeder extends PermissionsSeeder
             [
                 'name'        => 'Statistics - Show all the stats',
                 'description' => 'Show all the blog stats.',
-                'slug'        => PostsPolicy::PERMISSION_LIST,
+                'slug'        => DashboardPolicy::PERMISSION_STATS,
             ],
         ];
     }
@@ -106,7 +107,7 @@ class PermissionsTableSeeder extends PermissionsSeeder
     {
         return [
             [
-                'name'        => 'Categories - List all posts',
+                'name'        => 'Categories - List all categories',
                 'description' => 'Allow to list all categories.',
                 'slug'        => CategoriesPolicy::PERMISSION_LIST,
             ],
