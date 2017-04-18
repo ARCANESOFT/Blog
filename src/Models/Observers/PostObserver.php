@@ -11,14 +11,14 @@ use Arcanesoft\Blog\Models\Post;
 class PostObserver extends AbstractObserver
 {
     /**
-     * Listen to the Category deleted event.
+     * Listen to the Post deleted event.
      *
      * @param  \Arcanesoft\Blog\Models\Post  $post
      */
     public function deleting(Post $post)
     {
         if ($post->isForceDeleting()) {
-            //
+            $post->deleteSeo();
         }
     }
 }

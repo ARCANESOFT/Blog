@@ -143,7 +143,7 @@ class PostsController extends Controller
     {
         $this->authorize(PostsPolicy::PERMISSION_SHOW);
 
-        $post = $post->load(['author', 'category', 'tags']);
+        $post = $post->load(['author', 'category', 'tags', 'seo']);
 
         $this->setTitle(trans('blog::posts.titles.post-details'));
         $this->addBreadcrumb($post->title);

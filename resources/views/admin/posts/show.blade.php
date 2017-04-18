@@ -7,6 +7,7 @@
 @section('content')
     <div class="row">
         <div class="col-md-5 col-lg-4">
+            {{-- POST DETAILS --}}
             <div class="box">
                 <div class="box-header">
                     <h2 class="box-title">{{ trans('blog::posts.titles.post-details') }}</h2>
@@ -140,6 +141,8 @@
                     </div>
                 </div>
             </div>
+
+            @includeIf('seo::admin._includes.seo-details-box', ['seo' => $post->seo])
         </div>
     </div>
 @endsection
