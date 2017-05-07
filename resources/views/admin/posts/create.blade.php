@@ -92,7 +92,7 @@
             </div>
         </div>
 
-        @includeIf('seo::admin._composers.seo-form-box')
+        @includeIf('seo::admin._includes.seo-form-box')
 
         <div class="box">
             <div class="box-body">

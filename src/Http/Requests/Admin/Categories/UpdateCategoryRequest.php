@@ -8,10 +8,11 @@
  */
 class UpdateCategoryRequest extends CategoryFormRequest
 {
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -29,8 +30,9 @@ class UpdateCategoryRequest extends CategoryFormRequest
      */
     public function rules()
     {
+        // TODO: Adding an 'exists' rule to check if the name exists
         return [
-            'name' => ['required', 'min:3'],
+            'name' => ['required', 'string', 'min:3'],
         ];
     }
 }

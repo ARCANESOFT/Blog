@@ -8,7 +8,7 @@
     {{ Form::open(['route' => ['admin::blog.posts.update', $post], 'method' => 'PUT', 'id' => 'update-post-form', 'class' => 'form form-loading']) }}
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h2 class="box-title">{{ trans('blog::posts.title.update-post') }}</h2>
+                <h2 class="box-title">{{ trans('blog::posts.titles.update-post') }}</h2>
             </div>
             <div class="box-body">
                 <div class="row">
@@ -94,9 +94,7 @@
             </div>
         </div>
 
-        @if (view()->exists('seo::admin._composers.seo-form-box'))
-            @include('seo::admin._composers.seo-form-box', ['model' => $post])
-        @endif
+        @includeIf('seo::admin._includes.seo-form-box', ['model' => $post])
 
         <div class="box">
             <div class="box-body">

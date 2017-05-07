@@ -117,15 +117,16 @@ class PostsController extends Controller
      * Store the post.
      *
      * @param  \Arcanesoft\Blog\Http\Requests\Admin\Posts\CreatePostRequest  $request
-     * @param  \Arcanesoft\Blog\Models\Post                                  $post
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(CreatePostRequest $request, Post $post)
+    public function store(CreatePostRequest $request)
     {
         $this->authorize(PostsPolicy::PERMISSION_CREATE);
 
-        $post->createOne($request->getValidatedInputs());
+        $post = Post::createOne(
+            $request->getValidatedInputs()
+        );
 
         $this->transNotification('created', ['title' => $post->title], $post->toArray());
 
@@ -175,12 +176,12 @@ class PostsController extends Controller
     /**
      * Update the post.
      *
-     * @param  \Arcanesoft\Blog\Http\Requests\Admin\Posts\UpdatePostRequest  $request
      * @param  \Arcanesoft\Blog\Models\Post                                  $post
+     * @param  \Arcanesoft\Blog\Http\Requests\Admin\Posts\UpdatePostRequest  $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(UpdatePostRequest $request, Post $post)
+    public function update(Post $post, UpdatePostRequest $request)
     {
         $this->authorize(PostsPolicy::PERMISSION_UPDATE);
 

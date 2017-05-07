@@ -227,29 +227,23 @@ class Post extends AbstractModel
     /**
      * Create a post.
      *
-     * @param  array  $inputs
+     * @param  array  $attributes
      *
-     * @return bool
+     * @return self
      */
-    public function createOne(array $inputs)
+    public static function createOne(array $attributes)
     {
-        $attributes = [
-            'author_id'   => auth()->user()->getAuthIdentifier(),
-            'category_id' => $inputs['category'],
-        ] + Arr::only($inputs, [
-            'title', 'excerpt', 'content', 'published_at', 'status'
-        ]);
+        $post = new self($attributes);
 
-        $this->fill($attributes);
+        $post->save();
 
-        $saved = $this->save();
-        $this->tags()->sync($inputs['tags']);
+        $post->tags()->sync($attributes['tags']);
 
-        $this->createSeo(
-            $this->extractSeoAttributes($inputs)
+        $post->createSeo(
+            static::extractSeoAttributes($attributes)
         );
 
-        return $saved;
+        return $post;
     }
 
     /**
@@ -261,14 +255,12 @@ class Post extends AbstractModel
      */
     public function updateOne(array $inputs)
     {
-        $attributes = ['category_id' => $inputs['category']] + Arr::only($inputs, [
-            'title', 'excerpt', 'content', 'published_at', 'status'
-        ]);
+        $updated = $this->update(Arr::except($inputs, ['author_id']));
 
-        $updated = $this->update($attributes);
         $this->tags()->sync($inputs['tags']);
 
-        $seoAttributes = $this->extractSeoAttributes($inputs);
+        $seoAttributes = static::extractSeoAttributes($inputs);
+
         $this->hasSeo() ? $this->updateSeo($seoAttributes) : $this->createSeo($seoAttributes);
 
         return $updated;
@@ -323,7 +315,7 @@ class Post extends AbstractModel
      *
      * @return array
      */
-    protected function extractSeoAttributes(array $inputs)
+    protected static function extractSeoAttributes(array $inputs)
     {
         return [
             'title'       => Arr::get($inputs, 'seo_title'),
@@ -331,5 +323,25 @@ class Post extends AbstractModel
             'keywords'    => Arr::get($inputs, 'seo_keywords'),
             'metas'       => Arr::get($inputs, 'seo_metas'),
         ];
+    }
+
+    /**
+     * Get the show url.
+     *
+     * @return string
+     */
+    public function getShowUrl()
+    {
+        return route('admin::blog.posts.show', [$this]);
+    }
+
+    /**
+     * Get the edit url.
+     *
+     * @return string
+     */
+    public function getEditUrl()
+    {
+        return route('admin::blog.posts.edit', [$this]);
     }
 }

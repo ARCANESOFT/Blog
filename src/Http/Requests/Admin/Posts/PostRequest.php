@@ -26,13 +26,14 @@ abstract class PostRequest extends FormRequest
      */
     public function rules()
     {
+        // TODO: Adding seo rules
         return [
-            'title'        => 'required|max:255',
-            'excerpt'      => 'required|max:200',
-            'content'      => 'required',
+            'title'        => ['required', 'string', 'max:255'],
+            'excerpt'      => ['required', 'string', 'max:200'],
+            'content'      => ['required', 'string'],
             'category'     => static::getCategoryRule(),
             'tags'         => static::getTagsRule(),
-            'published_at' => 'required|date_format:Y-m-d',
+            'published_at' => ['required', 'date_format:Y-m-d'],
             'status'       => static::getPostStatusRule(),
         ];
     }
@@ -41,15 +42,24 @@ abstract class PostRequest extends FormRequest
      |  Other Methods
      | -----------------------------------------------------------------
      */
+
+    /**
+     * Get the validated inputs.
+     *
+     * @return array
+     */
     public function getValidatedInputs()
     {
-        return $this->only([
+        return array_merge([
+            'author_id'   => $this->user()->getAuthIdentifier(),
+            'category_id' => $this->get('category')
+        ], $this->only([
             // POST inputs
-            'title', 'excerpt', 'content', 'category', 'tags', 'published_at', 'status',
+            'title', 'excerpt', 'content', 'tags', 'published_at', 'status',
 
             // SEO inputs
             'seo_title', 'seo_description', 'seo_keywords',
-        ]);
+        ]));
     }
 
     /**
@@ -69,30 +79,30 @@ abstract class PostRequest extends FormRequest
     /**
      * Get the category rule.
      *
-     * @return string
+     * @return array
      */
     protected static function getCategoryRule()
     {
-        return 'required|min:1|in:'.Category::getSelectOptions(false)->keys()->implode(',');
+        return ['required', 'integer', 'in:'.Category::getSelectOptions(false)->keys()->implode(',')];
     }
 
     /**
      * Get the tags rule.
      *
-     * @return string
+     * @return array
      */
     protected static function getTagsRule()
     {
-        return 'required|array|min:1|in:'.Tag::getSelectOptions()->keys()->implode(',');
+        return ['required', 'array', 'min:1', 'in:'.Tag::getSelectOptions()->keys()->implode(',')];
     }
 
     /**
      * Get the post status rule.
      *
-     * @return string
+     * @return array
      */
     protected static function getPostStatusRule()
     {
-        return 'required|in:'.Post::getStatuses()->keys()->implode(',');
+        return ['required', 'string', 'in:'.Post::getStatuses()->keys()->implode(',')];
     }
 }

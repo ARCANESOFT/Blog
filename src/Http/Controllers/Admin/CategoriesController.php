@@ -40,7 +40,7 @@ class CategoriesController extends Controller
      */
 
     /**
-     * Instantiate the controller.
+     * CategoriesController constructor.
      *
      * @param  \Arcanesoft\Blog\Models\Category  $category
      */
@@ -89,12 +89,11 @@ class CategoriesController extends Controller
         return $this->view('admin.categories.create');
     }
 
-    public function store(CreateCategoryRequest $request, Category $category)
+    public function store(CreateCategoryRequest $request)
     {
         $this->authorize(CategoriesPolicy::PERMISSION_CREATE);
 
-        $category->fill($request->only(['name']));
-        $category->save();
+        $category = Category::createOne($request->getValidatedInputs());
 
         $this->transNotification('created', ['name' => $category->name], $category->toArray());
 
@@ -123,11 +122,11 @@ class CategoriesController extends Controller
         return $this->view('admin.categories.edit', compact('category'));
     }
 
-    public function update(UpdateCategoryRequest $request, Category $category)
+    public function update(Category $category, UpdateCategoryRequest $request)
     {
         $this->authorize(CategoriesPolicy::PERMISSION_UPDATE);
 
-        $category->update($request->only(['name']));
+        $category->update($request->getValidatedInputs());
 
         $this->transNotification('updated', ['name' => $category->name], $category->toArray());
 

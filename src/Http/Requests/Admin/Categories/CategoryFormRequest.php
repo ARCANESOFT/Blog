@@ -10,5 +10,18 @@ use Arcanesoft\Blog\Http\Requests\Admin\FormRequest;
  */
 abstract class CategoryFormRequest extends FormRequest
 {
-    //
+    /* -----------------------------------------------------------------
+     |  Other Methods
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Get the validated inputs.
+     *
+     * @return array
+     */
+    public function getValidatedInputs()
+    {
+        return $this->only(['name']);
+    }
 }

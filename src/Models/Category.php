@@ -100,6 +100,22 @@ class Category extends AbstractModel
      */
 
     /**
+     * Create a new category.
+     *
+     * @param  array  $inputs
+     *
+     * @return self
+     */
+    public static function createOne(array $inputs)
+    {
+        $category = new self($inputs);
+
+        $category->save();
+
+        return $category;
+    }
+
+    /**
      * Get the categories options for select input.
      *
      * @param  bool  $placeholder

@@ -35,7 +35,7 @@ class UpdatePostRequest extends PostRequest
         $post = $this->route('blog_post');
 
         return parent::rules() + [
-            'slug' => ['required', $this->getSlugRule()->ignore($post->id)],
+            'slug' => ['required', 'string', $this->getSlugRule()->ignore($post->id)],
         ];
     }
 

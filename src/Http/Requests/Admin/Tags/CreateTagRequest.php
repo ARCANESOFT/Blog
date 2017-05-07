@@ -8,10 +8,11 @@
  */
 class CreateTagRequest extends TagFormRequest
 {
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -29,8 +30,9 @@ class CreateTagRequest extends TagFormRequest
      */
     public function rules()
     {
+        // TODO: Adding an 'exists' rule to check if the name exists
         return [
-            'name' => ['required', 'min:3'],
+            'name' => ['required', 'string', 'min:3'],
         ];
     }
 }

@@ -10,10 +10,11 @@ use Illuminate\Support\Str;
  */
 class CreatePostRequest extends PostRequest
 {
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -32,7 +33,7 @@ class CreatePostRequest extends PostRequest
     public function rules()
     {
         return parent::rules() + [
-            'slug' => ['required', $this->getSlugRule()],
+            'slug' => ['required', 'string', $this->getSlugRule()],
         ];
     }
 
