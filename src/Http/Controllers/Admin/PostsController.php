@@ -225,7 +225,7 @@ class PostsController extends Controller
             ]);
         }
         catch (\Exception $e) {
-            return $this->jsonResponseError($e->getMessage(), 500);
+            return $this->jsonResponseError(['message' => $e->getMessage()], 500);
         }
     }
 
@@ -248,7 +248,7 @@ class PostsController extends Controller
             ]);
         }
         catch(\Exception $e) {
-            return $this->jsonResponseError($e->getMessage(), 500);
+            return $this->jsonResponseError(['message' => $e->getMessage()], 500);
         }
     }
 

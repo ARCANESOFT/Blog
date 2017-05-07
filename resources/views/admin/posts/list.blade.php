@@ -19,7 +19,9 @@
                     </a>
                 </div>
 
-                {{ ui_link_icon('add', route('admin::blog.posts.create')) }}
+                @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_CREATE)
+                    {{ ui_link_icon('add', route('admin::blog.posts.create')) }}
+                @endcan
             </div>
         </div>
         <div class="box-body no-padding">
@@ -45,20 +47,20 @@
                                     @include('blog::admin.posts._includes.post-status-name', compact('post'))
                                 </td>
                                 <td class="text-right">
-                                    @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_SHOW)
+                                    @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_SHOW)
                                         {{ ui_link_icon('show', route('admin::blog.posts.show', [$post])) }}
                                     @endcan
 
-                                    @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
+                                    @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
                                         {{ ui_link_icon('edit', route('admin::blog.posts.edit', [$post])) }}
 
                                         @if ($post->trashed())
-                                            {{ ui_link_icon('restore', '#resotre-post-modal', ['data-post-id' => $post->id]) }}
+                                            {{ ui_link_icon('restore', '#resotre-post-modal', ['data-post-id' => $post->id, 'data-post-title' => $post->title]) }}
                                         @endif
                                     @endcan
 
-                                    @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_DELETE)
-                                        {{ ui_link_icon('delete', '#delete-post-modal', ['data-post-id' => $post->id]) }}
+                                    @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_DELETE)
+                                        {{ ui_link_icon('delete', '#delete-post-modal', ['data-post-id' => $post->id, 'data-post-title' => $post->title]) }}
                                     @endcan
                                 </td>
                             </tr>
@@ -79,5 +81,158 @@
     </div>
 @endsection
 
+@section('modals')
+    {{-- RESTORE MODAL --}}
+    @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
+        @if ($trashed)
+            <div id="restore-post-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    {{ Form::open(['route' => ['admin::blog.posts.restore', ':id'], 'method' => 'PUT', 'id' => 'restore-post-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title">{{ trans('blog::posts.modals.restore.title') }}</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p></p>
+                            </div>
+                            <div class="modal-footer">
+                                {{ ui_button('cancel')->appendClass('pull-left')->setAttribute('data-dismiss', 'modal') }}
+                                {{ ui_button('restore', 'submit')->withLoadingText() }}
+                            </div>
+                        </div>
+                    {{ Form::close() }}
+                </div>
+            </div>
+        @endif
+    @endcan
+
+    {{-- DELETE MODAL --}}
+    @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_DELETE)
+        <div id="delete-post-modal" class="modal fade">
+            {{ Form::open(['route' => ['admin::blog.posts.delete', ':id'], 'method' => 'DELETE', 'id' => 'delete-post-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">{{ trans('blog::posts.modals.delete.title') }}</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p></p>
+                        </div>
+                        <div class="modal-footer">
+                            {{ ui_button('cancel')->appendClass('pull-left')->setAttribute('data-dismiss', 'modal') }}
+                            {{ ui_button('delete', 'submit')->withLoadingText() }}
+                        </div>
+                    </div>
+                </div>
+            {{ Form::close() }}
+        </div>
+    @endcan
+@endsection
+
 @section('scripts')
+    {{-- RESTORE SCRIPT --}}
+    @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
+        @if ($post->trashed())
+            <script>
+                $(function () {
+                    var $restorePostModal = $('div#restore-post-modal'),
+                        $restorePostForm  = $('form#restore-post-form'),
+                        restorePostAction = $restorePostForm.attr('action');
+
+                    $('a[href="#restore-post-modal"]').on('click', function (e) {
+                        e.preventDefault();
+
+                        $restorePostForm.attr('action', restorePostAction.replace(':id', that.attr('data-post-id')));
+                        $restorePostForm.find('.modal-body p').html(
+                            '{{ trans('blog::posts.modals.restore.message') }}'.replace(':title', that.attr('data-post-title'))
+                        );
+
+                        $restorePostModal.modal('show');
+                    });
+
+                    $restorePostForm.on('submit', function (e) {
+                        e.preventDefault();
+
+                        var submitBtn = $restorePostForm.find('button[type="submit"]');
+                            submitBtn.button('loading');
+
+                        axios.put($restorePostForm.attr('action'))
+                             .then(function (response) {
+                                 if (response.data.code === 'success') {
+                                     $restorePostModal.modal('hide');
+                                     location.reload();
+                                 }
+                             })
+                             .catch(function (error) {
+                                 alert('AJAX ERROR ! Check the console !');
+                                 console.log(error);
+                                 submitBtn.button('reset');
+                             });
+
+                        return false;
+                    });
+
+                    $restorePostModal.on('hidden.bs.modal', function (e) {
+                        $restorePostForm.attr('action', restorePostAction);
+                        $restorePostForm.find('.modal-body p').html('');
+                    });
+                });
+            </script>
+        @endif
+    @endcan
+
+    {{-- DELETE SCRIPT --}}
+    @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_DELETE)
+        <script>
+            $(function () {
+                var $deletePostModal = $('div#delete-post-modal'),
+                    $deletePostForm  = $('form#delete-post-form'),
+                    deletePostAction = $deletePostForm.attr('action');
+
+                $('a[href="#delete-post-modal"]').on('click', function (e) {
+                    e.preventDefault();
+
+                    var that = $(this);
+
+                    $deletePostForm.attr('action', deletePostAction.replace(':id', that.attr('data-post-id')));
+                    $deletePostForm.find('.modal-body p').html(
+                        '{{ trans('blog::posts.modals.delete.message') }}'.replace(':title', that.attr('data-post-title'))
+                    );
+
+                    $deletePostModal.modal('show');
+                });
+
+                $deletePostForm.on('submit', function (e) {
+                    e.preventDefault();
+
+                    var submitBtn = $deletePostForm.find('button[type="submit"]');
+                        submitBtn.button('loading');
+
+                    axios.delete($deletePostForm.attr('action'))
+                         .then(function (response) {
+                             if (response.data.code === 'success') {
+                                 $deletePostModal.modal('hide');
+                                 location.reload();
+                             }
+                         })
+                         .catch(function (error) {
+                             alert('AJAX ERROR ! Check the console !');
+                             console.log(error);
+                             submitBtn.button('reset');
+                         });
+
+                    return false;
+                });
+
+                $deletePostModal.on('hidden.bs.modal', function () {
+                    $deletePostForm.attr('action', deletePostAction);
+                    $deletePostForm.find('.modal-body p').html('');
+                });
+            });
+        </script>
+    @endcan
 @endsection

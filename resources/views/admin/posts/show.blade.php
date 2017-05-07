@@ -224,14 +224,9 @@
 
                         axios.put($restorePostForm.attr('action'))
                              .then(function (response) {
-                                 if (response.data.status === 'success') {
+                                 if (response.data.code === 'success') {
                                      $restorePostModal.modal('hide');
                                      location.reload();
-                                 }
-                                 else {
-                                     alert('ERROR ! Check the console !');
-                                     console.error(response.data.message);
-                                     submitBtn.button('reset');
                                  }
                              })
                              .catch(function (error) {
@@ -268,18 +263,13 @@
 
                     axios.delete($deletePostForm.attr('action'))
                          .then(function (response) {
-                             if (response.data.status === 'success') {
+                             if (response.data.code === 'success') {
                                  $deletePostModal.modal('hide');
                                  @if ($post->trashed())
                                      location.replace("{{ route('admin::blog.posts.index') }}");
                                  @else
                                      location.reload();
                                  @endif
-                             }
-                             else {
-                                 alert('ERROR ! Check the console !');
-                                 console.error(response.data.message);
-                                 submitBtn.button('reset');
                              }
                          })
                          .catch(function (error) {
