@@ -31,16 +31,16 @@ class ViewComposerServiceProvider extends ServiceProvider
      */
     protected $composerClasses = [
         // Dashboard view composers
-        PostsCountComposer::VIEW => PostsCountComposer::class,
-        CategoriesCountComposer::VIEW => CategoriesCountComposer::class,
+        PostsCountComposer::VIEW       => PostsCountComposer::class,
+        CategoriesCountComposer::VIEW  => CategoriesCountComposer::class,
         CategoriesRatiosComposer::VIEW => CategoriesRatiosComposer::class,
-        TagsCountComposer::VIEW => TagsCountComposer::class,
-        TagsRatiosComposer::VIEW => TagsRatiosComposer::class,
-        CommentsCountComposer::VIEW => CommentsCountComposer::class,
+        TagsCountComposer::VIEW        => TagsCountComposer::class,
+        TagsRatiosComposer::VIEW       => TagsRatiosComposer::class,
+        CommentsCountComposer::VIEW    => CommentsCountComposer::class,
 
         // Public view composers (Widgets)
         CategoriesWidgetComposer::VIEW => CategoriesWidgetComposer::class,
-        TagsWidgetComposer::VIEW => TagsWidgetComposer::class,
-        ArchivesWidgetComposer::VIEW => ArchivesWidgetComposer::class,
+        TagsWidgetComposer::VIEW       => TagsWidgetComposer::class,
+        ArchivesWidgetComposer::VIEW   => ArchivesWidgetComposer::class,
     ];
 }

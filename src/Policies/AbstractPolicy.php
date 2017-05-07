@@ -1,6 +1,6 @@
 <?php namespace Arcanesoft\Blog\Policies;
 
-use Arcanedev\Support\Bases\Policy;
+use Arcanesoft\Core\Bases\Policy;
 
 /**
  * Class     AbstractPolicy

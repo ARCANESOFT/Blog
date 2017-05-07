@@ -40,6 +40,7 @@ class BlogServiceProvider extends PackageServiceProvider
         $this->registerProviders([
             Providers\AuthorizationServiceProvider::class,
             Providers\ViewComposerServiceProvider::class,
+            Providers\RouteServiceProvider::class,
             \Arcanedev\LaravelMarkdown\LaravelMarkdownServiceProvider::class,
         ]);
 
@@ -52,9 +53,6 @@ class BlogServiceProvider extends PackageServiceProvider
     public function boot()
     {
         parent::boot();
-
-        $this->registerProvider(Providers\RouteServiceProvider::class);
-        $this->registerProvider(Providers\ViewComposerServiceProvider::class);
 
         $this->registerObservers();
 

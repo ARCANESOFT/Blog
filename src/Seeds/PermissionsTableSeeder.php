@@ -32,10 +32,10 @@ class PermissionsTableSeeder extends PermissionsSeeder
                     'description' => 'Blog permissions group',
                 ],
                 'permissions' => array_merge(
-                    $this->getDashboardSeeds(),
-                    $this->getPostsSeeds(),
-                    $this->getCategoriesSeeds(),
-                    $this->getTagsSeeds()
+                    $this->getDashboardPermissions(),
+                    $this->getPostsPermissions(),
+                    $this->getCategoriesPermissions(),
+                    $this->getTagsPermissions()
                 ),
             ],
         ]);
@@ -51,7 +51,7 @@ class PermissionsTableSeeder extends PermissionsSeeder
      *
      * @return array
      */
-    private function getDashboardSeeds()
+    private function getDashboardPermissions()
     {
         return [
             [
@@ -67,7 +67,7 @@ class PermissionsTableSeeder extends PermissionsSeeder
      *
      * @return array
      */
-    private function getPostsSeeds()
+    private function getPostsPermissions()
     {
         return [
             [
@@ -103,7 +103,7 @@ class PermissionsTableSeeder extends PermissionsSeeder
      *
      * @return array
      */
-    private function getCategoriesSeeds()
+    private function getCategoriesPermissions()
     {
         return [
             [
@@ -139,7 +139,7 @@ class PermissionsTableSeeder extends PermissionsSeeder
      *
      * @return array
      */
-    private function getTagsSeeds()
+    private function getTagsPermissions()
     {
         return [
             [

@@ -1,6 +1,6 @@
 <?php namespace Arcanesoft\Blog\Console;
 
-use Arcanedev\Support\Bases\Command;
+use Arcanesoft\Blog\BlogServiceProvider;
 
 /**
  * Class     PublishCommand
@@ -8,12 +8,13 @@ use Arcanedev\Support\Bases\Command;
  * @package  Arcanesoft\Blog\Console
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class PublishCommand extends Command
+class PublishCommand extends AbstractCommand
 {
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Properties
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
+
     /**
      * The name and signature of the console command.
      *
@@ -28,17 +29,16 @@ class PublishCommand extends Command
      */
     protected $description = 'Publish blog config, migrations and other stuff.';
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
+
     /**
      * Execute the console command.
      */
     public function handle()
     {
-        $this->call('vendor:publish', [
-            '--provider' => \Arcanesoft\Blog\BlogServiceProvider::class,
-        ]);
+        $this->call('vendor:publish', ['--provider' => BlogServiceProvider::class]);
     }
 }
