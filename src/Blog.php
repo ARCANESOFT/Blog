@@ -41,10 +41,9 @@ class Blog
      */
     public static function routes()
     {
-        Route::middleware('web')
-            ->name('public::blog.')
+        Route::name('public::blog.')
             ->prefix('blog')
-            ->namespace('Arcanesoft\\Blog\\Http\\Controllers\\Front')
+            ->namespace('\\Arcanesoft\\Blog\\Http\\Controllers\\Front')
             ->group(function () {
                 Routes\PostsRoutes::register();
                 Routes\CategoriesRoutes::register();

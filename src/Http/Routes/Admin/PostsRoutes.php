@@ -12,7 +12,7 @@ use Arcanesoft\Blog\Models\Post;
 class PostsRoutes extends RouteRegistrar
 {
     /* -----------------------------------------------------------------
-     |  Main Functions
+     |  Main Methods
      | -----------------------------------------------------------------
      */
 

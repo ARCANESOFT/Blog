@@ -12,7 +12,7 @@ use Arcanesoft\Blog\Models\Category;
 class CategoriesRoutes extends RouteRegistrar
 {
     /* -----------------------------------------------------------------
-     |  Main Functions
+     |  Main Methods
      | -----------------------------------------------------------------
      */
 

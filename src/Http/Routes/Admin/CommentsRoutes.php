@@ -10,17 +10,18 @@ use Arcanedev\Support\Routing\RouteRegistrar;
  */
 class CommentsRoutes extends RouteRegistrar
 {
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
+
     /**
      * Map routes.
      */
     public function map()
     {
         $this->prefix('comments')->name('comments.')->group(function () {
-            //
+            // TODO: Adding comments or not ?
         });
     }
 }

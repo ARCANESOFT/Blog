@@ -196,14 +196,9 @@
 
                         axios.put($restoreCategoryForm.attr('action'))
                              .then(function (response) {
-                                 if (response.data.status === 'success') {
+                                 if (response.data.code === 'success') {
                                      $restoreCategoryModal.modal('hide');
                                      location.reload();
-                                 }
-                                 else {
-                                     alert('ERROR ! Check the console !');
-                                     console.error(response.data.message);
-                                     submitBtn.button('reset');
                                  }
                              })
                              .catch(function (error) {
@@ -241,18 +236,13 @@
 
                         axios.delete($deleteCategoryForm.attr('action'))
                              .then(function (response) {
-                                 if (response.data.status === 'success') {
+                                 if (response.data.code === 'success') {
                                      $deleteCategoryModal.modal('hide');
                                      @if ($category->trashed())
                                          location.replace("{{ route('admin::blog.categories.index') }}");
                                      @else
                                          location.reload();
                                      @endif
-                                 }
-                                 else {
-                                     alert('ERROR ! Check the console !');
-                                     console.error(response.data.message);
-                                     submitBtn.button('reset');
                                  }
                              })
                              .catch(function (error) {

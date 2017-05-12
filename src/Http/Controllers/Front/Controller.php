@@ -17,14 +17,13 @@ abstract class Controller extends BaseController
 
     /**
      * Controller constructor.
-     *
-     * @todo: Refactor this constructor to the core
      */
     public function __construct()
     {
         parent::__construct();
 
         $this->registerBreadcrumbs('public');
+        $this->addBreadcrumbRoute('Blog', 'public::blog.posts.index');
     }
 
     /* -----------------------------------------------------------------

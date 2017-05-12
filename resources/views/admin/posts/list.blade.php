@@ -31,6 +31,7 @@
                         <tr>
                             <th>{{ trans('blog::posts.attributes.category') }}</th>
                             <th>{{ trans('blog::posts.attributes.title') }}</th>
+                            <th>{{ trans('blog::posts.attributes.slug') }}</th>
                             <th class="text-center" style="width: 80px;">{{ trans('core::generals.status') }}</th>
                             <th class="text-right" style="width: 130px;">{{ trans('core::generals.actions') }}</th>
                         </tr>
@@ -42,7 +43,10 @@
                                 <td>
                                     <span class="label label-primary">{{ $post->category->name }}</span>
                                 </td>
-                                <td>{{ $post->title }}</td>
+                                <td><b>{{ $post->title }}</b></td>
+                                <td>
+                                    <span class="label label-default">{{ $post->slug }}</span>
+                                </td>
                                 <td class="text-center">
                                     @include('blog::admin.posts._includes.post-status-name', compact('post'))
                                 </td>
@@ -55,7 +59,7 @@
                                         {{ ui_link_icon('edit', route('admin::blog.posts.edit', [$post])) }}
 
                                         @if ($post->trashed())
-                                            {{ ui_link_icon('restore', '#resotre-post-modal', ['data-post-id' => $post->id, 'data-post-title' => $post->title]) }}
+                                            {{ ui_link_icon('restore', '#restore-post-modal', ['data-post-id' => $post->id, 'data-post-title' => $post->title]) }}
                                         @endif
                                     @endcan
 
@@ -66,7 +70,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center">
+                                <td colspan="5" class="text-center">
                                     <span class="label label-default">{{ trans('blog::posts.list-empty') }}</span>
                                 </td>
                             </tr>
@@ -111,7 +115,7 @@
 
     {{-- DELETE MODAL --}}
     @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_DELETE)
-        <div id="delete-post-modal" class="modal fade">
+        <div id="delete-post-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
             {{ Form::open(['route' => ['admin::blog.posts.delete', ':id'], 'method' => 'DELETE', 'id' => 'delete-post-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -136,7 +140,7 @@
 @section('scripts')
     {{-- RESTORE SCRIPT --}}
     @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
-        @if ($post->trashed())
+        @if ($trashed)
             <script>
                 $(function () {
                     var $restorePostModal = $('div#restore-post-modal'),
@@ -146,9 +150,10 @@
                     $('a[href="#restore-post-modal"]').on('click', function (e) {
                         e.preventDefault();
 
+                        var that = $(this);
                         $restorePostForm.attr('action', restorePostAction.replace(':id', that.attr('data-post-id')));
                         $restorePostForm.find('.modal-body p').html(
-                            '{{ trans('blog::posts.modals.restore.message') }}'.replace(':title', that.attr('data-post-title'))
+                            '{!! trans("blog::posts.modals.restore.message") !!}'.replace(':title', that.attr('data-post-title'))
                         );
 
                         $restorePostModal.modal('show');
@@ -200,7 +205,7 @@
 
                     $deletePostForm.attr('action', deletePostAction.replace(':id', that.attr('data-post-id')));
                     $deletePostForm.find('.modal-body p').html(
-                        '{{ trans('blog::posts.modals.delete.message') }}'.replace(':title', that.attr('data-post-title'))
+                        '{!! trans("blog::posts.modals.delete.message") !!}'.replace(':title', that.attr('data-post-title'))
                     );
 
                     $deletePostModal.modal('show');

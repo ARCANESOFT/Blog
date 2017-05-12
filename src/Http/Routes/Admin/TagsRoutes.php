@@ -12,7 +12,7 @@ use Arcanesoft\Blog\Models\Tag;
 class TagsRoutes extends RouteRegistrar
 {
     /* -----------------------------------------------------------------
-     |  Main Functions
+     |  Main Methods
      | -----------------------------------------------------------------
      */
 
