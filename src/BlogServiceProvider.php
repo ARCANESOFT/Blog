@@ -37,13 +37,13 @@ class BlogServiceProvider extends PackageServiceProvider
 
         $this->registerConfig();
         $this->registerSidebarItems();
+        
         $this->registerProviders([
             Providers\AuthorizationServiceProvider::class,
             Providers\ViewComposerServiceProvider::class,
             Providers\RouteServiceProvider::class,
             \Arcanedev\LaravelMarkdown\LaravelMarkdownServiceProvider::class,
         ]);
-
         $this->registerConsoleServiceProvider(Providers\CommandServiceProvider::class);
     }
 
@@ -90,9 +90,7 @@ class BlogServiceProvider extends PackageServiceProvider
         $config = $this->config()->get('arcanesoft.blog');
 
         foreach (Arr::only($config, ['posts', 'categories', 'tags']) as $entity) {
-            $this->app
-                 ->make($entity['model'])
-                 ->observe($entity['observer']);
+            $this->app->make($entity['model'])->observe($entity['observer']);
         }
     }
 }
