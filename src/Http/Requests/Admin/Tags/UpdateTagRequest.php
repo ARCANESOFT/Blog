@@ -34,4 +34,19 @@ class UpdateTagRequest extends TagFormRequest
             'name' => ['required', 'string', 'min:3'],
         ];
     }
+
+    /* -----------------------------------------------------------------
+     |  Other Methods
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Get the validated data.
+     *
+     * @return array
+     */
+    public function getValidatedData()
+    {
+        return $this->only(['name']);
+    }
 }

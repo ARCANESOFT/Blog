@@ -93,7 +93,7 @@ class CategoriesController extends Controller
     {
         $this->authorize(CategoriesPolicy::PERMISSION_CREATE);
 
-        $category = Category::createOne($request->getValidatedInputs());
+        $category = Category::createOne($request->getValidatedData());
 
         $this->transNotification('created', ['name' => $category->name], $category->toArray());
 
@@ -126,7 +126,7 @@ class CategoriesController extends Controller
     {
         $this->authorize(CategoriesPolicy::PERMISSION_UPDATE);
 
-        $category->update($request->getValidatedInputs());
+        $category->update($request->getValidatedData());
 
         $this->transNotification('updated', ['name' => $category->name], $category->toArray());
 

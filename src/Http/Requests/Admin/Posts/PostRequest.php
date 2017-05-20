@@ -48,7 +48,7 @@ abstract class PostRequest extends FormRequest
      *
      * @return array
      */
-    public function getValidatedInputs()
+    public function getValidatedData()
     {
         return array_merge([
             'author_id'   => $this->user()->getAuthIdentifier(),

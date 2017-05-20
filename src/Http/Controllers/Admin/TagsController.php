@@ -89,7 +89,7 @@ class TagsController extends Controller
     {
         $this->authorize(TagsPolicy::PERMISSION_CREATE);
 
-        $tag->fill($request->only(['name']));
+        $tag->fill($request->getValidatedData());
         $tag->save();
 
         $this->transNotification('created', ['name' => $tag->name], $tag->toArray());
@@ -123,7 +123,7 @@ class TagsController extends Controller
     {
         $this->authorize(TagsPolicy::PERMISSION_UPDATE);
 
-        $tag->update($request->only(['name']));
+        $tag->update($request->getValidatedData());
 
         $this->transNotification('updated', ['name' => $tag->name], $tag->toArray());
 

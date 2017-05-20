@@ -124,9 +124,7 @@ class PostsController extends Controller
     {
         $this->authorize(PostsPolicy::PERMISSION_CREATE);
 
-        $post = Post::createOne(
-            $request->getValidatedInputs()
-        );
+        $post = Post::createOne($request->getValidatedData());
 
         $this->transNotification('created', ['title' => $post->title], $post->toArray());
 
@@ -185,7 +183,7 @@ class PostsController extends Controller
     {
         $this->authorize(PostsPolicy::PERMISSION_UPDATE);
 
-        $post->updateOne($request->getValidatedInputs());
+        $post->updateOne($request->getValidatedData());
 
         $this->transNotification('updated', ['title' => $post->title], $post->toArray());
 
