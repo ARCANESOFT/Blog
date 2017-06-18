@@ -29,6 +29,7 @@
                 <table class="table table-condensed table-hover no-margin">
                     <thead>
                         <tr>
+                            <th>{{ trans('blog::posts.attributes.locale') }}</th>
                             <th>{{ trans('blog::posts.attributes.category') }}</th>
                             <th>{{ trans('blog::posts.attributes.title') }}</th>
                             <th>{{ trans('blog::posts.attributes.slug') }}</th>
@@ -40,6 +41,9 @@
                         @forelse($posts as $post)
                             <?php /** @var  \Arcanesoft\Blog\Models\Post  $post */ ?>
                             <tr>
+                                <td>
+                                    <span class="label label-inverse">{{ strtoupper($post->locale) }}</span>
+                                </td>
                                 <td>
                                     <span class="label label-primary">{{ $post->category->name }}</span>
                                 </td>

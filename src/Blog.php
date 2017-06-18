@@ -23,10 +23,26 @@ class Blog
      */
     public static $runsMigrations = true;
 
+    protected static $instance = null;
+
     /* -----------------------------------------------------------------
      |  Main Methods
      | -----------------------------------------------------------------
      */
+
+    /**
+     * Get the blog instance.
+     *
+     * @return Blog
+     */
+    public static function instance()
+    {
+        if (is_null(static::$instance)) {
+            static::$instance = new static;
+        }
+
+        return static::$instance;
+    }
 
     /**
      * Publish the migrations.
@@ -49,5 +65,44 @@ class Blog
                 Routes\CategoriesRoutes::register();
                 Routes\TagsRoutes::register();
             });
+    }
+
+    /**
+     * Check if the blog is translatable.
+     *
+     * @return bool
+     */
+    public function isTranslatable()
+    {
+        return config('arcanesoft.blog.translatable.enabled', false);
+    }
+
+    /**
+     * Get the supported locales.
+     *
+     * @return array
+     */
+    public function getSupportedLocalesKeys()
+    {
+        $default = [config('app.locale')];
+
+        return $this->isTranslatable()
+            ? array_unique(config('localization.supported-locales', $default))
+            : $default;
+    }
+
+    /**
+     * Check if the media manager is installed.
+     *
+     * @return bool
+     */
+    public function isMediaManagerInstalled()
+    {
+        return array_key_exists('Arcanesoft\Media\MediaServiceProvider', app()->getLoadedProviders());
+    }
+
+    protected function __clone()
+    {
+        // YOU ... SHALL NOT ... CLOOOOOONE!
     }
 }

@@ -30,9 +30,14 @@ class UpdateCategoryRequest extends CategoryFormRequest
      */
     public function rules()
     {
+        $rules = [];
+
         // TODO: Adding an 'exists' rule to check if the name exists
-        return [
-            'name' => ['required', 'string', 'min:3'],
-        ];
+        if ($this->isTranslatable())
+            $rules['name.*'] = ['required', 'string', 'min:3'];
+        else
+            $rules['name'] = ['required', 'string', 'min:3'];
+
+        return $rules;
     }
 }

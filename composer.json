@@ -16,14 +16,16 @@
     "require": {
         "php":                        ">=5.6.4",
         "arcanedev/laravel-markdown": "~1.2",
+        "arcanedev/localization":     "~1.2",
         "arcanedev/taxonomies":       "~0.2",
         "arcanesoft/auth":            "~2.2",
         "arcanesoft/core":            "~2.4",
         "arcanesoft/seo":             "~2.2"
     },
     "require-dev": {
-        "phpunit/phpcov":  "~3.0",
-        "phpunit/phpunit": "~5.0"
+        "phpunit/phpcov":   "~3.0",
+        "phpunit/phpunit":  "~5.0",
+        "arcanesoft/media": "^2.2"
     },
     "autoload": {
         "psr-4": {

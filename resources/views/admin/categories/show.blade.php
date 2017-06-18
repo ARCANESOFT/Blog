@@ -1,5 +1,7 @@
 <?php /** @var  \Arcanesoft\Blog\Models\Category  $category */ ?>
 
+@inject('blog', 'Arcanesoft\Blog\Blog')
+
 @section('header')
     <h1><i class="fa fa-fw fa-bookmark-o"></i> {{ trans('blog::categories.titles.categories') }} <small>{{ $category->name }}</small></h1>
 @endsection
@@ -17,12 +19,26 @@
                             <tbody>
                                 <tr>
                                     <th>{{ trans('blog::categories.attributes.name') }} :</th>
-                                    <td>{{ $category->name }}</td>
+                                    <td>
+                                        @if ($blog->isTranslatable())
+                                            @foreach ($category->getTranslations('name') as $name)
+                                                <span class="label label-inverse">{{ $name }}</span>
+                                            @endforeach
+                                        @else
+                                            <span class="label label-inverse">{{ $category->name }}</span>
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>{{ trans('blog::categories.attributes.slug') }} :</th>
                                     <td>
-                                        <span class="label label-primary">{{ $category->slug }}</span>
+                                        @if ($blog->isTranslatable())
+                                            @foreach ($category->getTranslations('slug') as $slug)
+                                                <span class="label label-primary">{{ $slug }}</span>
+                                            @endforeach
+                                        @else
+                                            <span class="label label-primary">{{ $category->slug }}</span>
+                                        @endif
                                     </td>
                                 </tr>
                                 <tr>
@@ -81,6 +97,7 @@
                         <table class="table table-condensed table-hover no-margin">
                             <thead>
                                 <tr>
+                                    <th>{{ trans('blog::posts.attributes.locale') }}</th>
                                     <th>{{ trans('blog::posts.attributes.title') }}</th>
                                     <th>{{ trans('blog::posts.attributes.slug') }}</th>
                                     <th class="text-right" style="width: 80px;">{{ trans('core::generals.actions') }}</th>
@@ -89,6 +106,9 @@
                             <tbody>
                                 @forelse($category->posts as $post)
                                     <tr>
+                                        <td style="width: 60px;">
+                                            <span class="label label-inverse">{{ strtoupper($post->locale) }}</span>
+                                        </td>
                                         <td>{{ $post->title }}</td>
                                         <td>
                                             <span class="label label-primary">{{ $post->slug }}</span>

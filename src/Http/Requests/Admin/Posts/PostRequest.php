@@ -28,8 +28,10 @@ abstract class PostRequest extends FormRequest
     {
         // TODO: Adding seo rules
         return [
+            'locale'       => $this->getLocaleRule(),
             'title'        => ['required', 'string', 'max:255'],
             'excerpt'      => ['required', 'string', 'max:200'],
+            'thumbnail'    => ['nullable', 'string', 'url'],
             'content'      => ['required', 'string'],
             'category'     => static::getCategoryRule(),
             'tags'         => static::getTagsRule(),
@@ -55,7 +57,7 @@ abstract class PostRequest extends FormRequest
             'category_id' => $this->get('category')
         ], $this->only([
             // POST inputs
-            'title', 'excerpt', 'content', 'tags', 'published_at', 'status',
+            'locale', 'title', 'excerpt', 'thumbnail', 'content', 'tags', 'published_at', 'status',
 
             // SEO inputs
             'seo_title', 'seo_description', 'seo_keywords',
@@ -104,5 +106,15 @@ abstract class PostRequest extends FormRequest
     protected static function getPostStatusRule()
     {
         return ['required', 'string', 'in:'.Post::getStatuses()->keys()->implode(',')];
+    }
+
+    /**
+     * Get the post local rule.
+     *
+     * @return array
+     */
+    protected function getLocaleRule()
+    {
+        return ['required', 'string', 'in:'.implode(',', $this->getSupportedLocales())];
     }
 }

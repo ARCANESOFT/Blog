@@ -1,5 +1,7 @@
 <?php /** @var  \Arcanesoft\Blog\Models\Post  $post */ ?>
 
+@inject('blog', 'Arcanesoft\Blog\Blog')
+
 @section('header')
     <h1><i class="fa fa-fw fa-files-o"></i> {{ trans('blog::posts.titles.posts') }} <small>{{ trans('blog::posts.titles.edit-post') }}</small></h1>
 @endsection
@@ -45,9 +47,23 @@
                     <div class="col-xs-12">
                         <div class="form-group {{ $errors->first('excerpt', 'has-error') }}">
                             {{ Form::label('excerpt', trans('blog::posts.attributes.excerpt').' :') }}
-                            {{ Form::textarea('excerpt', old('excerpt', $post->excerpt), ['class' => 'form-control', 'rows' => 1, 'style' => 'resize: none;']) }}
+                            {{ Form::textarea('excerpt', old('excerpt', $post->excerpt), ['class' => 'form-control', 'rows' => 2, 'style' => 'resize: none;']) }}
                             @if ($errors->has('excerpt'))
                                 <span class="text-red">{!! $errors->first('excerpt') !!}</span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12">
+                        <div class="form-group {{ $errors->first('thumbnail', 'has-error') }}">
+                            {{ Form::label('thumbnail', trans('blog::posts.attributes.thumbnail').' :') }}
+                            @if ($blog->isMediaManagerInstalled())
+                                <media-browser name="thumbnail" value="{{ old('thumbnail', $post->thumbnail) }}"></media-browser>
+                            @else
+                                {{ Form::text('thumbnail', old('thumbnail', $post->thumbnail), ['class' => 'form-control']) }}
+                            @endif
+                            @if ($errors->has('thumbnail'))
+                                <span class="text-red">{!! $errors->first('thumbnail') !!}</span>
                             @endif
                         </div>
                     </div>
@@ -67,6 +83,15 @@
                     <div class="clearfix visible-md visible-lg"></div>
 
                     <div class="col-md-4">
+                        <div class="form-group {{ $errors->first('status', 'has-error') }}">
+                            {{ Form::label('status', trans('blog::posts.attributes.status').' :') }}
+                            {{ Form::select('status', $statuses, old('status', $post->status), ['class' => 'form-control select-2-fw']) }}
+                            @if ($errors->has('status'))
+                                <span class="text-red">{!! $errors->first('status') !!}</span>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="col-md-4">
                         <div class="form-group {{ $errors->first('published_at', 'has-error') }}">
                             {{ Form::label('published_at', trans('blog::posts.attributes.published_at').' (YYYY-MM-DD) :') }}
                             <div class="input-group">
@@ -78,23 +103,19 @@
                             @endif
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="form-group {{ $errors->first('status', 'has-error') }}">
-                            {{ Form::label('status', trans('blog::posts.attributes.status').' :') }}
-                            {{ Form::select('status', $statuses, old('status', $post->status), ['class' => 'form-control']) }}
-                            @if ($errors->has('status'))
-                                <span class="text-red">{!! $errors->first('status') !!}</span>
-                            @endif
+
+                    @if ($blog->isTranslatable())
+                        <div class="col-md-4">
+                            @include('blog::admin.posts._includes.locale-select', ['selectedLocale' => $post->locale])
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        {{----------------}}
-                    </div>
+                    @else
+                        {{ Form::hidden('locale', config('app.locale')) }}
+                    @endif
                 </div>
             </div>
         </div>
 
-        @includeIf('seo::admin._includes.seo-form-box', ['model' => $post])
+        @includeIf('seo::admin._includes.seo-form-box', ['model' => $post->seo])
 
         <div class="box">
             <div class="box-body">

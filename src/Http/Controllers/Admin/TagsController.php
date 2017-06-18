@@ -85,12 +85,11 @@ class TagsController extends Controller
         return $this->view('admin.tags.create');
     }
 
-    public function store(CreateTagRequest $request, Tag $tag)
+    public function store(CreateTagRequest $request)
     {
         $this->authorize(TagsPolicy::PERMISSION_CREATE);
 
-        $tag->fill($request->getValidatedData());
-        $tag->save();
+        $tag = Tag::createOne($request->getValidatedData());
 
         $this->transNotification('created', ['name' => $tag->name], $tag->toArray());
 
@@ -123,7 +122,7 @@ class TagsController extends Controller
     {
         $this->authorize(TagsPolicy::PERMISSION_UPDATE);
 
-        $tag->update($request->getValidatedData());
+        $tag->updateOne($request->getValidatedData());
 
         $this->transNotification('updated', ['name' => $tag->name], $tag->toArray());
 
