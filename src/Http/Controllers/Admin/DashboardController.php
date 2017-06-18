@@ -1,6 +1,6 @@
 <?php namespace Arcanesoft\Blog\Http\Controllers\Admin;
 
-use Arcanesoft\Auth\Policies\DashboardPolicy;
+use Arcanesoft\Blog\Policies\DashboardPolicy;
 
 /**
  * Class     DashboardController
