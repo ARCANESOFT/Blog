@@ -1,6 +1,9 @@
 <?php namespace Arcanesoft\Blog\Models;
 
+use Arcanedev\Localization\Traits\HasTranslations;
+use Arcanesoft\Blog\Blog;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
@@ -26,7 +29,8 @@ class Category extends AbstractModel
      | -----------------------------------------------------------------
      */
 
-    use SoftDeletes;
+    use SoftDeletes,
+        HasTranslations;
 
     /* -----------------------------------------------------------------
      |  Properties
@@ -45,7 +49,7 @@ class Category extends AbstractModel
      *
      * @var array
      */
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'slug'];
 
     /**
      * The attributes that should be mutated to dates.
@@ -87,11 +91,34 @@ class Category extends AbstractModel
      * Set the name attribute.
      *
      * @param  string  $name
+     *
+     * @return string
      */
     public function setNameAttribute($name)
     {
-        $this->attributes['name'] = $name;
-        $this->attributes['slug'] = Str::slug($name);
+        return $this->attributes['name'] = $name;
+    }
+
+    /**
+     * Set the slug attribute.
+     *
+     * @param  string  $name
+     *
+     * @return string
+     */
+    public function setSlugAttribute($name)
+    {
+        return $this->attributes['slug'] = Str::slug($name);
+    }
+
+    /**
+     * Get the translatable attributes.
+     *
+     * @return array
+     */
+    public function getTranslatableAttributes()
+    {
+        return Blog::instance()->isTranslatable() ? ['name', 'slug'] : [];
     }
 
     /* -----------------------------------------------------------------
@@ -102,17 +129,30 @@ class Category extends AbstractModel
     /**
      * Create a new category.
      *
-     * @param  array  $inputs
+     * @param  array  $attributes
      *
      * @return self
      */
-    public static function createOne(array $inputs)
+    public static function createOne(array $attributes)
     {
-        $category = new self($inputs);
-
-        $category->save();
+        $category = new self;
+        $category->populate($attributes)->save();
 
         return $category;
+    }
+
+    /**
+     * Update the current category.
+     *
+     * @param  array  $attributes
+     *
+     * @return self
+     */
+    public function updateOne(array $attributes)
+    {
+        $this->populate($attributes)->save();
+
+        return $this;
     }
 
     /**
@@ -126,7 +166,11 @@ class Category extends AbstractModel
     {
         /** @var  \Illuminate\Database\Eloquent\Collection  $categories */
         $categories = Cache::remember('blog_categories_select_options', 5, function () {
-            return self::all()->pluck('name', 'id');
+            return self::all()->keyBy('id')->transform(function (Category $category) {
+                return  Blog::instance()->isTranslatable()
+                    ? implode(' / ', $category->getTranslations('name'))
+                    : $category->name;
+            });
         });
 
         return $placeholder
@@ -170,5 +214,23 @@ class Category extends AbstractModel
     public static function clearCache()
     {
         cache()->forget('blog_categories_select_options');
+    }
+
+    /**
+     * Fill the model with an array of attributes.
+     *
+     * @param  array  $attributes
+     *
+     * @return self
+     */
+    protected function populate(array $attributes)
+    {
+        if ( ! Blog::instance()->isTranslatable())
+            return $this->fill($attributes);
+
+        $this->setTranslations('name', $attributes['name'])
+             ->setTranslations('slug', $attributes['name']);
+
+        return $this->fill(Arr::except($attributes, ['name', 'slug']));
     }
 }

@@ -1,5 +1,7 @@
 <?php /** @var  \Illuminate\Pagination\LengthAwarePaginator  $tags */ ?>
 
+@inject('blog', 'Arcanesoft\Blog\Blog')
+
 @section('header')
     <h1><i class="fa fa-fw fa-tags"></i> {{ trans('blog::tags.titles.tags') }} <small>{{ trans('blog::tags.titles.tags-list') }}</small></h1>
 @endsection
@@ -37,9 +39,23 @@
                         @forelse($tags as $tag)
                             <?php /** @var  \Arcanesoft\Blog\Models\Tag  $tag */ ?>
                             <tr>
-                                <td>{{ $tag->name }}</td>
                                 <td>
-                                    <span class="label label-primary">{{ $tag->slug }}</span>
+                                    @if ($blog->isTranslatable())
+                                        @foreach($tag->getTranslations('name') as $name)
+                                            <span class="label label-inverse">{{ $name }}</span>
+                                        @endforeach
+                                    @else
+                                        <span class="label label-inverse">{{ $tag->name }}</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($blog->isTranslatable())
+                                        @foreach($tag->getTranslations('slug') as $slug)
+                                            <span class="label label-primary">{{ $slug }}</span>
+                                        @endforeach
+                                    @else
+                                        <span class="label label-inverse">{{ $tag->slug }}</span>
+                                    @endif
                                 </td>
                                 <td class="text-center">
                                     {{ label_count($tag->posts->count()) }}

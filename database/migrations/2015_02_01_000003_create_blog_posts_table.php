@@ -37,9 +37,11 @@ class CreateBlogPostsTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('author_id')->default(0);
             $table->unsignedInteger('category_id');
+            $table->string('locale', 5)->default(config('app.locale'));
             $table->string('title');
             $table->string('slug');
             $table->text('excerpt');
+            $table->string('thumbnail')->nullable();
             $table->longtext('content_raw');
             $table->longtext('content_html');
             $table->boolean('is_draft')->default(false);
@@ -47,7 +49,7 @@ class CreateBlogPostsTable extends Migration
             $table->timestamp('published_at');
             $table->softDeletes();
 
-            $table->unique('slug');
+            $table->unique(['locale', 'slug']);
         });
     }
 }

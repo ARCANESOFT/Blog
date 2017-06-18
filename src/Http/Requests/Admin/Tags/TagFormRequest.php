@@ -10,5 +10,21 @@ use Arcanesoft\Blog\Http\Requests\Admin\FormRequest;
  */
 abstract class TagFormRequest extends FormRequest
 {
-    //
+    /* -----------------------------------------------------------------
+     |  Other Methods
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Get the validated data.
+     *
+     * @return array
+     */
+    public function getValidatedData()
+    {
+        return [
+            'name' => $this->get('name'),
+            'slug' => $this->get('slug', $this->get('name')),
+        ];
+    }
 }

@@ -8,10 +8,11 @@
  */
 class UpdateTagRequest extends TagFormRequest
 {
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -29,24 +30,14 @@ class UpdateTagRequest extends TagFormRequest
      */
     public function rules()
     {
+        $rules = [];
+
         // TODO: Adding an 'exists' rule to check if the name exists
-        return [
-            'name' => ['required', 'string', 'min:3'],
-        ];
-    }
+        if ($this->isTranslatable())
+            $rules['name.*'] = ['required', 'string', 'min:3'];
+        else
+            $rules['name'] = ['required', 'string', 'min:3'];
 
-    /* -----------------------------------------------------------------
-     |  Other Methods
-     | -----------------------------------------------------------------
-     */
-
-    /**
-     * Get the validated data.
-     *
-     * @return array
-     */
-    public function getValidatedData()
-    {
-        return $this->only(['name']);
+        return $rules;
     }
 }

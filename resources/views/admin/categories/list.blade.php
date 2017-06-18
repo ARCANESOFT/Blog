@@ -1,5 +1,7 @@
 <?php /** @var  \Illuminate\Pagination\LengthAwarePaginator  $categories */ ?>
 
+@inject('blog', 'Arcanesoft\Blog\Blog')
+
 @section('header')
     <h1><i class="fa fa-fw fa-bookmark-o"></i> {{ trans('blog::categories.titles.categories') }} <small>{{ trans('blog::categories.titles.categories-list') }}</small></h1>
 @endsection
@@ -39,9 +41,23 @@
                         @forelse($categories as $category)
                             <?php /** @var  \Arcanesoft\Blog\Models\Category  $category */ ?>
                             <tr>
-                                <td>{{ $category->name }}</td>
                                 <td>
-                                    <span class="label label-primary">{{ $category->slug }}</span>
+                                    @if ($blog->isTranslatable())
+                                        @foreach ($category->getTranslations('name') as $name)
+                                            <span class="label label-inverse">{{ $name }}</span>
+                                        @endforeach
+                                    @else
+                                        <span class="label label-inverse">{{ $category->name }}</span>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if ($blog->isTranslatable())
+                                        @foreach ($category->getTranslations('slug') as $slug)
+                                            <span class="label label-primary">{{ $slug }}</span>
+                                        @endforeach
+                                    @else
+                                        <span class="label label-primary">{{ $category->slug }}</span>
+                                    @endif
                                 </td>
                                 <td class="text-center">
                                     {{ label_count($category->posts->count()) }}

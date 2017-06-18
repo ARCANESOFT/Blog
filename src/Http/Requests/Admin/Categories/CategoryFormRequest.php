@@ -22,6 +22,9 @@ abstract class CategoryFormRequest extends FormRequest
      */
     public function getValidatedData()
     {
-        return $this->only(['name']);
+        return [
+            'name' => $this->get('name'),
+            'slug' => $this->get('slug', $this->get('name')),
+        ];
     }
 }

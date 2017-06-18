@@ -37,7 +37,7 @@ class BlogServiceProvider extends PackageServiceProvider
 
         $this->registerConfig();
         $this->registerSidebarItems();
-        
+
         $this->registerProviders([
             Providers\AuthorizationServiceProvider::class,
             Providers\ViewComposerServiceProvider::class,

@@ -1,5 +1,7 @@
 <?php /** @var  \Arcanesoft\Blog\Models\Tag  $tag */ ?>
 
+@inject('blog', 'Arcanesoft\Blog\Blog')
+
 @section('header')
     <h1><i class="fa fa-fw fa-tags"></i> {{ trans('blog::tags.titles.tags') }} <small>{{ $tag->name }}</small></h1>
 @endsection
@@ -16,42 +18,56 @@
                     <div class="table-responsive">
                         <table class="table table-condensed no-margin">
                             <tbody>
-                            <tr>
-                                <th>{{ trans('blog::tags.attributes.name') }} :</th>
-                                <td>{{ $tag->name }}</td>
-                            </tr>
-                            <tr>
-                                <th>{{ trans('blog::tags.attributes.slug') }} :</th>
-                                <td>
-                                    <span class="label label-primary">{{ $tag->slug }}</span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>{{ trans('blog::posts.titles.posts') }} :</th>
-                                <td>
-                                    {{ label_count($tag->posts->count()) }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>{{ trans('core::generals.created_at') }} :</th>
-                                <td>
-                                    <small>{{ $tag->created_at }}</small>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>{{ trans('core::generals.updated_at') }} :</th>
-                                <td>
-                                    <small>{{ $tag->updated_at }}</small>
-                                </td>
-                            </tr>
-                            @if ($tag->trashed())
                                 <tr>
-                                    <th>{{ trans('core::generals.deleted_at') }} :</th>
+                                    <th>{{ trans('blog::tags.attributes.name') }} :</th>
                                     <td>
-                                        <small>{{ $tag->deleted_at }}</small>
+                                        @if ($blog->isTranslatable())
+                                            @foreach($tag->getTranslations('name') as $name)
+                                                <span class="label label-inverse">{{ $name }}</span>
+                                            @endforeach
+                                        @else
+                                            <span class="label label-inverse">{{ $tag->name }}</span>
+                                        @endif
                                     </td>
                                 </tr>
-                            @endif
+                                <tr>
+                                    <th>{{ trans('blog::tags.attributes.slug') }} :</th>
+                                    <td>
+                                        @if ($blog->isTranslatable())
+                                            @foreach($tag->getTranslations('slug') as $slug)
+                                                <span class="label label-primary">{{ $slug }}</span>
+                                            @endforeach
+                                        @else
+                                            <span class="label label-inverse">{{ $tag->slug }}</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>{{ trans('blog::posts.titles.posts') }} :</th>
+                                    <td>
+                                        {{ label_count($tag->posts->count()) }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>{{ trans('core::generals.created_at') }} :</th>
+                                    <td>
+                                        <small>{{ $tag->created_at }}</small>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>{{ trans('core::generals.updated_at') }} :</th>
+                                    <td>
+                                        <small>{{ $tag->updated_at }}</small>
+                                    </td>
+                                </tr>
+                                @if ($tag->trashed())
+                                    <tr>
+                                        <th>{{ trans('core::generals.deleted_at') }} :</th>
+                                        <td>
+                                            <small>{{ $tag->deleted_at }}</small>
+                                        </td>
+                                    </tr>
+                                @endif
                             </tbody>
                         </table>
                     </div>
@@ -82,6 +98,7 @@
                         <table class="table table-condensed table-hover no-margin">
                             <thead>
                                 <tr>
+                                    <th>{{ trans('blog::posts.attributes.locale') }}</th>
                                     <th>{{ trans('blog::posts.attributes.title') }}</th>
                                     <th>{{ trans('blog::posts.attributes.slug') }}</th>
                                     <th class="text-right" style="width: 80px;">{{ trans('core::generals.actions') }}</th>
@@ -91,17 +108,20 @@
                                 @forelse ($tag->posts as $post)
                                     <?php /** @var  \Arcanesoft\Blog\Models\Post  $post */ ?>
                                     <tr>
+                                        <td style="width: 60px;">
+                                            <span class="label label-inverse">{{ strtoupper($post->locale) }}</span>
+                                        </td>
                                         <td>{{ $post->title }}</td>
                                         <td>
                                             <span class="label label-primary">{{ $post->slug }}</span>
                                         </td>
                                         <td class="text-right">
                                             @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_SHOW)
-                                                {{ ui_link('show', route('admin::blog.posts.show', [$post])) }}
+                                                {{ ui_link_icon('show', route('admin::blog.posts.show', [$post])) }}
                                             @endcan
 
                                             @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
-                                                {{ ui_link('edit', route('admin::blog.posts.edit', [$post])) }}
+                                                {{ ui_link_icon('edit', route('admin::blog.posts.edit', [$post])) }}
                                             @endcan
                                         </td>
                                     </tr>

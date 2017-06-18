@@ -45,4 +45,13 @@ return [
         'observer' => \Arcanesoft\Blog\Models\Observers\TagObserver::class,
     ],
 
+    /* -----------------------------------------------------------------
+     |  Translatable
+     | -----------------------------------------------------------------
+     */
+
+    'translatable' => [
+        'enabled' => true,
+    ],
+
 ];

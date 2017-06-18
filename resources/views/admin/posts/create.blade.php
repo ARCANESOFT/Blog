@@ -1,3 +1,5 @@
+@inject('blog', 'Arcanesoft\Blog\Blog')
+
 @section('header')
     <h1><i class="fa fa-fw fa-files-o"></i> {{ trans('blog::posts.titles.posts') }} <small>{{ trans('blog::posts.titles.create-post') }}</small></h1>
 @endsection
@@ -43,9 +45,23 @@
                     <div class="col-xs-12">
                         <div class="form-group {{ $errors->first('excerpt', 'has-error') }}">
                             {{ Form::label('excerpt', trans('blog::posts.attributes.excerpt').' :') }}
-                            {{ Form::textarea('excerpt', old('excerpt'), ['class' => 'form-control', 'rows' => 1, 'style' => 'resize: none;']) }}
+                            {{ Form::textarea('excerpt', old('excerpt'), ['class' => 'form-control', 'rows' => 2, 'style' => 'resize: none;']) }}
                             @if ($errors->has('excerpt'))
                                 <span class="text-red">{!! $errors->first('excerpt') !!}</span>
+                            @endif
+                        </div>
+                    </div>
+
+                    <div class="col-xs-12">
+                        <div class="form-group {{ $errors->first('thumbnail', 'has-error') }}">
+                            {{ Form::label('thumbnail', trans('blog::posts.attributes.thumbnail').' :') }}
+                            @if ($blog->isMediaManagerInstalled())
+                                <media-browser name="thumbnail" value="{{ old('thumbnail') }}"></media-browser>
+                            @else
+                                {{ Form::text('thumbnail', old('thumbnail'), ['class' => 'form-control']) }}
+                            @endif
+                            @if ($errors->has('thumbnail'))
+                                <span class="text-red">{!! $errors->first('thumbnail') !!}</span>
                             @endif
                         </div>
                     </div>
@@ -85,9 +101,14 @@
                             @endif
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        {{----------------}}
-                    </div>
+
+                    @if ($blog->isTranslatable())
+                        <div class="col-md-4">
+                            @include('blog::admin.posts._includes.locale-select')
+                        </div>
+                    @else
+                        {{ Form::hidden('locale', config('app.locale')) }}
+                    @endif
                 </div>
             </div>
         </div>

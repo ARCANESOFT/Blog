@@ -126,7 +126,7 @@ class CategoriesController extends Controller
     {
         $this->authorize(CategoriesPolicy::PERMISSION_UPDATE);
 
-        $category->update($request->getValidatedData());
+        $category->updateOne($request->getValidatedData());
 
         $this->transNotification('updated', ['name' => $category->name], $category->toArray());
 

@@ -11,10 +11,12 @@ return [
 
     'attributes' => [
         'author'       => 'Author',
+        'locale'       => 'Language',
         'title'        => 'Title',
         'slug'         => 'Slug',
         'permalink'    => 'Permalink',
         'excerpt'      => 'Excerpt',
+        'thumbnail'    => 'Thumbnail',
         'content'      => 'Content',
         'category'     => 'Category',
         'tags'         => 'Tags',

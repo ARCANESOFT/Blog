@@ -63,6 +63,14 @@
                                         @endforeach
                                     </td>
                                 </tr>
+
+                                <tr>
+                                    <th>{{ trans('blog::posts.attributes.locale') }}:</th>
+                                    <td class="text-right">
+                                        <span class="label label-inverse">{{ strtoupper($post->locale) }}</span>
+                                    </td>
+                                </tr>
+
                                 <tr>
                                     <th>{{ trans('blog::posts.attributes.status') }}:</th>
                                     <td class="text-right">
@@ -113,6 +121,18 @@
                     @endcan
                 </div>
             </div>
+
+            {{-- POST THUMBNAIL --}}
+            @if ($post->hasThumbnail())
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h2 class="box-title">{{ trans('blog::posts.attributes.thumbnail') }}</h2>
+                    </div>
+                    <div class="box-body">
+                        {{ html()->image($post->thumbnail, $post->title, ['class' => 'img-responsive']) }}
+                    </div>
+                </div>
+            @endif
         </div>
         <div class="col-md-7 col-lg-8">
             {{-- POST CONTENT --}}

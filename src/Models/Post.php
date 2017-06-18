@@ -5,9 +5,7 @@ use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 
 /**
@@ -19,9 +17,11 @@ use Illuminate\Support\Str;
  * @property  int             id
  * @property  int             author_id
  * @property  int             category_id
+ * @property  string          locale
  * @property  string          title
  * @property  string          slug
  * @property  string          excerpt
+ * @property  string|null     thumbnail
  * @property  string          content_raw
  * @property  string          content_html
  * @property  bool            is_draft
@@ -35,6 +35,7 @@ use Illuminate\Support\Str;
  *
  * @method  static  \Illuminate\Database\Eloquent\Builder  published()
  * @method  static  \Illuminate\Database\Eloquent\Builder  publishedAt(int $year)
+ * @method  static  \Illuminate\Database\Eloquent\Builder  localized(string|null $locale)
  */
 class Post extends AbstractModel
 {
@@ -73,7 +74,7 @@ class Post extends AbstractModel
      * @var array
      */
     protected $fillable = [
-        'author_id', 'category_id', 'title', 'excerpt', 'content', 'published_at'
+        'author_id', 'category_id', 'locale', 'title', 'excerpt', 'thumbnail', 'content', 'published_at',
     ];
 
     /**
@@ -102,24 +103,41 @@ class Post extends AbstractModel
     /**
      * Scope only published posts.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopePublished(Builder $builder)
+    public function scopePublished(Builder $query)
     {
-        $builder->where('is_draft', false)
-                ->where('published_at', '<=', Carbon::now());
+        return $query->where('is_draft', false)
+                     ->where('published_at', '<=', Carbon::now());
     }
 
     /**
      * Scope only published posts.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  int                                    $year
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopePublishedAt(Builder $builder, $year)
+    public function scopePublishedAt(Builder $query, $year)
     {
-        $this->scopePublished($builder);
-        $builder->where(DB::raw('YEAR(published_at)'), $year);
+        return $this->scopePublished($query)
+                    ->where(DB::raw('YEAR(published_at)'), $year);
+    }
+
+    /**
+     * Scope by post's locale.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string|null                            $locale
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeLocalized(Builder $query, $locale = null)
+    {
+        return $query->where('locale', $locale ?: config('app.locale'));
     }
 
     /* -----------------------------------------------------------------
@@ -135,7 +153,7 @@ class Post extends AbstractModel
     public function author()
     {
         return $this->belongsTo(
-            config('auth.providers.users.model', \App\Models\User::class),
+            config('auth.providers.users.model', 'App\Models\User'),
             'author_id'
         );
     }
@@ -187,38 +205,6 @@ class Post extends AbstractModel
         $this->attributes['content_html'] = markdown($content);
     }
 
-    /**
-     * Get the content attribute.
-     *
-     * @return \Illuminate\Support\HtmlString
-     */
-    public function getContentAttribute()
-    {
-        return new HtmlString($this->content_html);
-    }
-
-    /**
-     * Set the status attribute.
-     *
-     * @param  string  $status
-     */
-    public function setStatusAttribute($status)
-    {
-        $this->attributes['is_draft'] = ($status === self::STATUS_DRAFT);
-    }
-
-    /**
-     * Get the status name attribute.
-     *
-     * @return string|null
-     */
-    public function getStatusNameAttribute()
-    {
-        return self::getStatuses()->get(
-            $this->isDraft() ? self::STATUS_DRAFT : self::STATUS_PUBLISHED
-        );
-    }
-
     /* -----------------------------------------------------------------
      |  Main Functions
      | -----------------------------------------------------------------
@@ -234,7 +220,6 @@ class Post extends AbstractModel
     public static function createOne(array $attributes)
     {
         $post = new self($attributes);
-
         $post->save();
 
         $post->tags()->sync($attributes['tags']);
@@ -255,7 +240,8 @@ class Post extends AbstractModel
      */
     public function updateOne(array $inputs)
     {
-        $updated = $this->update(Arr::except($inputs, ['author_id']));
+        $updated = $this->setStatusAttribute($inputs['status'])
+            ->update(Arr::except($inputs, ['author_id']));
 
         $this->tags()->sync($inputs['tags']);
 
@@ -291,22 +277,20 @@ class Post extends AbstractModel
         return ! $this->isDraft();
     }
 
+    /**
+     * Check if the post has thumbnail.
+     *
+     * @return bool
+     */
+    public function hasThumbnail()
+    {
+        return ! is_null($this->thumbnail);
+    }
+
     /* -----------------------------------------------------------------
      |  Other Methods
      | -----------------------------------------------------------------
      */
-
-    /**
-     * Get the post statuses.
-     *
-     * @return \Illuminate\Support\Collection
-     */
-    public static function getStatuses()
-    {
-        return Collection::make(
-            trans('blog::posts.statuses', [])
-        );
-    }
 
     /**
      * Extract the seo attributes.
