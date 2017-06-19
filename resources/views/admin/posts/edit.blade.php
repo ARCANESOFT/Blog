@@ -103,14 +103,9 @@
                             @endif
                         </div>
                     </div>
-
-                    @if ($blog->isTranslatable())
-                        <div class="col-md-4">
-                            @include('blog::admin.posts._includes.locale-select', ['selectedLocale' => $post->locale])
-                        </div>
-                    @else
-                        {{ Form::hidden('locale', config('app.locale')) }}
-                    @endif
+                    <div class="col-md-4">
+                        @includeWhen($blog->isTranslatable(), Arcanesoft\Blog\ViewComposers\Admin\Forms\LocalesSelectComposer::VIEW, ['selectedLocale' => $post->locale])
+                    </div>
                 </div>
             </div>
         </div>

@@ -46,6 +46,20 @@ abstract class PostRequest extends FormRequest
      */
 
     /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        parent::prepareForValidation();
+
+        if ( ! $this->isTranslatable()) {
+            $this->merge(['locale' => config('app.locale')]);
+        }
+    }
+
+    /**
      * Get the validated inputs.
      *
      * @return array

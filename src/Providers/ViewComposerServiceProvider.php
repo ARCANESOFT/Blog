@@ -7,6 +7,7 @@ use Arcanesoft\Blog\ViewComposers\Admin\Dashboard\CommentsCountComposer;
 use Arcanesoft\Blog\ViewComposers\Admin\Dashboard\PostsCountComposer;
 use Arcanesoft\Blog\ViewComposers\Admin\Dashboard\TagsCountComposer;
 use Arcanesoft\Blog\ViewComposers\Admin\Dashboard\TagsRatiosComposer;
+use Arcanesoft\Blog\ViewComposers\Admin\Forms\LocalesSelectComposer;
 use Arcanesoft\Blog\ViewComposers\Front\Widgets\ArchivesWidgetComposer;
 use Arcanesoft\Blog\ViewComposers\Front\Widgets\CategoriesWidgetComposer;
 use Arcanesoft\Blog\ViewComposers\Front\Widgets\TagsWidgetComposer;
@@ -37,6 +38,9 @@ class ViewComposerServiceProvider extends ServiceProvider
         TagsCountComposer::VIEW        => TagsCountComposer::class,
         TagsRatiosComposer::VIEW       => TagsRatiosComposer::class,
         CommentsCountComposer::VIEW    => CommentsCountComposer::class,
+
+        // Admin view composers
+        LocalesSelectComposer::VIEW    => LocalesSelectComposer::class,
 
         // Public view composers (Widgets)
         CategoriesWidgetComposer::VIEW => CategoriesWidgetComposer::class,
