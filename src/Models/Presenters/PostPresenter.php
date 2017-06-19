@@ -28,7 +28,17 @@ trait PostPresenter
      */
     public function getLocaleNativeAttribute()
     {
-        return localization()->getSupportedLocales()->get($this->locale)->native();
+        $locale = $this->getAttributeFromArray('locale');
+
+        try {
+            return localization()
+                ->getSupportedLocales()
+                ->get($locale)
+                ->native();
+        }
+        catch (\Exception $e) {
+            return strtoupper($locale);
+        }
     }
 
     /**
@@ -38,7 +48,7 @@ trait PostPresenter
      */
     public function getContentAttribute()
     {
-        return new HtmlString($this->content_html);
+        return new HtmlString($this->getAttributeFromArray('content_html'));
     }
 
     /**
@@ -60,7 +70,7 @@ trait PostPresenter
      */
     public function setStatusAttribute($status)
     {
-        $this->attributes['is_draft'] = ($status === self::STATUS_DRAFT);
+        $this->setAttribute('is_draft', $status === self::STATUS_DRAFT);
 
         return $this;
     }
@@ -113,4 +123,27 @@ trait PostPresenter
     {
         return route('admin::blog.posts.edit', $this);
     }
+
+    /* -----------------------------------------------------------------
+     |  Eloquent Methods
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Get an attribute from the $attributes array.
+     *
+     * @param  string  $key
+     * @return mixed
+     */
+    abstract protected function getAttributeFromArray($key);
+
+    /**
+     * Set a given attribute on the model.
+     *
+     * @param  string  $key
+     * @param  mixed   $value
+     *
+     * @return self
+     */
+    abstract public function setAttribute($key, $value);
 }
