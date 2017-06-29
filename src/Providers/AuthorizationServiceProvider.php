@@ -1,8 +1,8 @@
 <?php namespace Arcanesoft\Blog\Providers;
 
 use Arcanedev\Support\Providers\AuthorizationServiceProvider as ServiceProvider;
-use Arcanesoft\Blog\Policies\DashboardPolicy;
 use Arcanesoft\Blog\Policies\CategoriesPolicy;
+use Arcanesoft\Blog\Policies\DashboardPolicy;
 use Arcanesoft\Blog\Policies\PostsPolicy;
 use Arcanesoft\Blog\Policies\TagsPolicy;
 

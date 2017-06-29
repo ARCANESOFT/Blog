@@ -1,5 +1,6 @@
 <?php namespace Arcanesoft\Blog\Console;
 
+use Arcanedev\Support\Bases\Command;
 use Arcanesoft\Blog\BlogServiceProvider;
 
 /**
@@ -8,7 +9,7 @@ use Arcanesoft\Blog\BlogServiceProvider;
  * @package  Arcanesoft\Blog\Console
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class PublishCommand extends AbstractCommand
+class PublishCommand extends Command
 {
     /* -----------------------------------------------------------------
      |  Properties

@@ -1,6 +1,7 @@
-<?php namespace Arcanesoft\Blog\Tests;
+<?php namespace Arcanesoft\Blog\Tests\Unit;
 
 use Arcanesoft\Blog\Blog;
+use Arcanesoft\Blog\Tests\TestCase;
 
 /**
  * Class     BlogTest

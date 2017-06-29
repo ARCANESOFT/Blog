@@ -1,14 +1,15 @@
 <?php namespace Arcanesoft\Blog\Policies;
 
 use Arcanesoft\Contracts\Auth\Models\User;
+use Arcanesoft\Core\Bases\Policy;
 
 /**
- * Class DashboardPolicy
+ * Class     DashboardPolicy
  *
  * @package  Arcanesoft\Blog\Policies
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class DashboardPolicy extends AbstractPolicy
+class DashboardPolicy extends Policy
 {
     /* -----------------------------------------------------------------
      |  Constants

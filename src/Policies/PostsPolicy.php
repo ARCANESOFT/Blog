@@ -1,6 +1,7 @@
 <?php namespace Arcanesoft\Blog\Policies;
 
 use Arcanesoft\Contracts\Auth\Models\User;
+use Arcanesoft\Core\Bases\Policy;
 
 /**
  * Class     PostsPolicy
@@ -8,7 +9,7 @@ use Arcanesoft\Contracts\Auth\Models\User;
  * @package  Arcanesoft\Blog\Policies
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class PostsPolicy extends AbstractPolicy
+class PostsPolicy extends Policy
 {
     /* -----------------------------------------------------------------
      |  Constants

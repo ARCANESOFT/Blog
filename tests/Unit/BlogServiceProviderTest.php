@@ -1,6 +1,7 @@
-<?php namespace Arcanesoft\Blog\Tests;
+<?php namespace Arcanesoft\Blog\Tests\Unit;
 
 use Arcanesoft\Blog\BlogServiceProvider;
+use Arcanesoft\Blog\Tests\TestCase;
 
 /**
  * Class     BlogServiceProviderTest
@@ -10,17 +11,19 @@ use Arcanesoft\Blog\BlogServiceProvider;
  */
 class BlogServiceProviderTest extends TestCase
 {
-    /* ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
      |  Properties
-     | ------------------------------------------------------------------------------------------------
+     | -----------------------------------------------------------------
      */
-    /** @var BlogServiceProvider */
+
+    /** @var \Arcanesoft\Blog\BlogServiceProvider */
     private $provider;
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
+
     public function setUp()
     {
         parent::setUp();
@@ -35,10 +38,11 @@ class BlogServiceProviderTest extends TestCase
         parent::tearDown();
     }
 
-    /* ------------------------------------------------------------------------------------------------
-     |  Test Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Tests
+     | -----------------------------------------------------------------
      */
+
     /** @test */
     public function it_can_be_instantiated()
     {

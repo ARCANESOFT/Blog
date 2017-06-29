@@ -49,7 +49,7 @@ class RouteServiceProvider extends ServiceProvider
     }
 
     /**
-     * Define the foundation routes for the application.
+     * Define the admin routes for the application.
      */
     private function mapAdminRoutes()
     {

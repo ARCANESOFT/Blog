@@ -1,5 +1,6 @@
 <?php namespace Arcanesoft\Blog\Console;
 
+use Arcanedev\Support\Bases\Command;
 use Arcanesoft\Blog\Seeds\DatabaseSeeder;
 
 /**
@@ -8,7 +9,7 @@ use Arcanesoft\Blog\Seeds\DatabaseSeeder;
  * @package  Arcanesoft\Blog\Console
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
-class InstallCommand extends AbstractCommand
+class InstallCommand extends Command
 {
     /* -----------------------------------------------------------------
      |  Properties

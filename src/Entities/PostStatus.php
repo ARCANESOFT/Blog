@@ -30,28 +30,37 @@ class PostStatus
      */
     public static function keys()
     {
-        return self::all()->keys();
+        return new Collection([
+            static::STATUS_DRAFT,
+            static::STATUS_PUBLISHED,
+        ]);
     }
 
     /**
      * Get all posts status
      *
+     * @param  string|null  $locale
+     *
      * @return \Illuminate\Support\Collection
      */
-    public static function all()
+    public static function all($locale = null)
     {
-        return new Collection(trans('blog::posts.statuses'));
+        return static::keys()->mapWithKeys(function ($key) use ($locale) {
+            return [$key => trans("blog::posts.statuses.{$key}", [], $locale)];
+        });
     }
 
     /**
      * Get a post status.
      *
-     * @param  string  $key
+     * @param  string       $key
+     * @param  mixed        $default
+     * @param  string|null  $locale
      *
      * @return string|null
      */
-    public static function get($key)
+    public static function get($key, $default = null, $locale = null)
     {
-        return self::all()->get($key);
+        return self::all($locale)->get($key, $default);
     }
 }
