@@ -18,7 +18,7 @@
         "arcanedev/laravel-markdown": "~1.2",
         "arcanedev/localization":     "~1.2",
         "arcanedev/taxonomies":       "~0.2",
-        "arcanesoft/auth":            "~2.2",
+        "arcanesoft/auth":            "~3.0",
         "arcanesoft/core":            "~2.4",
         "arcanesoft/seo":             "~2.2"
     },

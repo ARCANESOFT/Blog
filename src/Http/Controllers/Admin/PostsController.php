@@ -72,16 +72,15 @@ class PostsController extends Controller
     {
         $this->authorize(PostsPolicy::PERMISSION_LIST);
 
-        $posts = $this->post->with(['author', 'category']);
-        $posts = $trashed
-            ? $posts->onlyTrashed()->paginate(30)
-            : $posts->paginate(30);
+        $posts = $this->post->with(['author', 'category'])->when($trashed, function ($query) {
+            return $query->onlyTrashed();
+        })->paginate(30);
 
         $title = trans('blog::posts.titles.posts-list');
         $this->setTitle($title . ($trashed ? ' - '.trans('core::generals.trashed') : ''));
         $this->addBreadcrumb($title);
 
-        return $this->view('admin.posts.list', compact('trashed', 'posts'));
+        return $this->view('admin.posts.index', compact('trashed', 'posts'));
     }
 
     /**
