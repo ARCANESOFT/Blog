@@ -86,7 +86,7 @@
                                 <tr>
                                     <th>{{ trans('core::generals.updated_at') }}:</th>
                                     <td class="text-right">
-                                        <small>{{ $post->created_at }}</small>
+                                        <small>{{ $post->updated_at }}</small>
                                     </td>
                                 </tr>
                                 <tr>

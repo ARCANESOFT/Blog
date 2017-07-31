@@ -63,15 +63,14 @@ class CategoriesController extends Controller
     {
         $this->authorize(CategoriesPolicy::PERMISSION_LIST);
 
-        $categories = $this->category->with(['posts']);
-        $categories = $trashed
-            ? $categories->onlyTrashed()->paginate(30)
-            : $categories->paginate(30);
+        $categories = $this->category->with(['posts'])->when($trashed, function ($query) {
+            return $query->onlyTrashed();
+        })->paginate(30);
 
         $this->setTitle($title = trans('blog::categories.titles.categories-list'));
         $this->addBreadcrumb($title);
 
-        return $this->view('admin.categories.list', compact('categories', 'trashed'));
+        return $this->view('admin.categories.index', compact('categories', 'trashed'));
     }
 
     public function trash()

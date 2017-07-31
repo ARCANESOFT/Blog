@@ -59,15 +59,14 @@ class TagsController extends Controller
     {
         $this->authorize(TagsPolicy::PERMISSION_LIST);
 
-        $tags = $this->tag->with(['posts']);
-        $tags = $trashed
-            ? $tags->onlyTrashed()->paginate(30)
-            : $tags->paginate(30);
+        $tags = $this->tag->with(['posts'])->when($trashed, function ($query) {
+            return $query->onlyTrashed();
+        })->paginate(30);
 
         $this->setTitle($title = trans('blog::tags.titles.tags-list'));
         $this->addBreadcrumb($title);
 
-        return $this->view('admin.tags.list', compact('tags', 'trashed'));
+        return $this->view('admin.tags.index', compact('tags', 'trashed'));
     }
 
     public function trash()
