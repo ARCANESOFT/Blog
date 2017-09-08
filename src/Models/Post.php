@@ -1,6 +1,7 @@
 <?php namespace Arcanesoft\Blog\Models;
 
 use Arcanedev\LaravelSeo\Traits\Seoable;
+use Arcanesoft\Blog\Events\Posts as PostEvents;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -93,6 +94,24 @@ class Post extends AbstractModel
         'author_id'   => 'integer',
         'category_id' => 'integer',
         'is_draft'    => 'boolean',
+    ];
+
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $events = [
+        'creating'  => PostEvents\PostCreating::class,
+        'created'   => PostEvents\PostCreated::class,
+        'updating'  => PostEvents\PostUpdating::class,
+        'updated'   => PostEvents\PostUpdated::class,
+        'saving'    => PostEvents\PostSaving::class,
+        'saved'     => PostEvents\PostSaved::class,
+        'deleting'  => PostEvents\PostDeleting::class,
+        'deleted'   => PostEvents\PostDeleted::class,
+        'restoring' => PostEvents\PostRestoring::class,
+        'restored'  => PostEvents\PostRestored::class,
     ];
 
     /* -----------------------------------------------------------------

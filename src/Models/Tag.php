@@ -2,9 +2,9 @@
 
 use Arcanedev\Localization\Traits\HasTranslations;
 use Arcanesoft\Blog\Blog;
+use Arcanesoft\Blog\Events\Tags as TagEvents;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 /**
@@ -24,6 +24,13 @@ use Illuminate\Support\Str;
  */
 class Tag extends AbstractModel
 {
+    /* -----------------------------------------------------------------
+     |  Constants
+     | -----------------------------------------------------------------
+     */
+
+    const SELECT_CACHE_NAME = 'blog::tags.select-data';
+
     /* -----------------------------------------------------------------
      |  Traits
      | -----------------------------------------------------------------
@@ -58,6 +65,24 @@ class Tag extends AbstractModel
      */
     protected $dates = ['deleted_at'];
 
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $events = [
+        'creating'  => TagEvents\TagCreating::class,
+        'created'   => TagEvents\TagCreated::class,
+        'updating'  => TagEvents\TagUpdating::class,
+        'updated'   => TagEvents\TagUpdated::class,
+        'saving'    => TagEvents\TagSaving::class,
+        'saved'     => TagEvents\TagSaved::class,
+        'deleting'  => TagEvents\TagDeleting::class,
+        'deleted'   => TagEvents\TagDeleted::class,
+        'restoring' => TagEvents\TagRestoring::class,
+        'restored'  => TagEvents\TagRestored::class,
+    ];
+
     /* -----------------------------------------------------------------
      |  Relationships
      | -----------------------------------------------------------------
@@ -70,7 +95,7 @@ class Tag extends AbstractModel
      */
     public function posts()
     {
-        return $this->belongsToMany(Post::class, $this->getPrefix()."post_tag");
+        return $this->belongsToMany(Post::class, $this->getPrefix().'post_tag');
     }
 
     /* -----------------------------------------------------------------
@@ -152,7 +177,7 @@ class Tag extends AbstractModel
      */
     public static function getSelectOptions()
     {
-        return Cache::remember('blog_tags_select_options', 5, function () {
+        return cache()->remember(self::SELECT_CACHE_NAME, 5, function () {
             return self::all()->keyBy('id')->transform(function (Tag $tag) {
                 return Blog::instance()->isTranslatable()
                     ? implode(' / ', $tag->getTranslations('name'))
@@ -180,14 +205,6 @@ class Tag extends AbstractModel
      |  Other Methods
      | -----------------------------------------------------------------
      */
-
-    /**
-     * Clear the cached tags.
-     */
-    public static function clearCache()
-    {
-        cache()->forget('blog_tags_select_options');
-    }
 
     /**
      * Fill the model with an array of attributes.
