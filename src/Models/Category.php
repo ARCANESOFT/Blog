@@ -4,8 +4,8 @@ use Arcanedev\Localization\Traits\HasTranslations;
 use Arcanesoft\Blog\Blog;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Arcanesoft\Blog\Events\Categories as CategoryEvents;
 
 /**
  * Class     Category
@@ -25,6 +25,13 @@ use Illuminate\Support\Str;
 class Category extends AbstractModel
 {
     /* -----------------------------------------------------------------
+     |  Constants
+     | -----------------------------------------------------------------
+     */
+
+    const SELECT_CACHE_NAME = 'blog::categories.select-data';
+
+    /* -----------------------------------------------------------------
      |  Traits
      | -----------------------------------------------------------------
      */
@@ -42,7 +49,7 @@ class Category extends AbstractModel
      *
      * @var string
      */
-    protected $table    = 'categories';
+    protected $table = 'categories';
 
     /**
      * The attributes that are mass assignable
@@ -56,7 +63,7 @@ class Category extends AbstractModel
      *
      * @var array
      */
-    protected $dates    = ['deleted_at'];
+    protected $dates = ['deleted_at'];
 
     /**
      * The attributes that should be cast to native types.
@@ -65,6 +72,24 @@ class Category extends AbstractModel
      */
     protected $casts = [
         'id' => 'integer',
+    ];
+
+    /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $events = [
+        'creating'  => CategoryEvents\CategoryCreating::class,
+        'created'   => CategoryEvents\CategoryCreated::class,
+        'updating'  => CategoryEvents\CategoryUpdating::class,
+        'updated'   => CategoryEvents\CategoryUpdated::class,
+        'saving'    => CategoryEvents\CategorySaving::class,
+        'saved'     => CategoryEvents\CategorySaved::class,
+        'deleting'  => CategoryEvents\CategoryDeleting::class,
+        'deleted'   => CategoryEvents\CategoryDeleted::class,
+        'restoring' => CategoryEvents\CategoryRestoring::class,
+        'restored'  => CategoryEvents\CategoryRestored::class,
     ];
 
     /* -----------------------------------------------------------------
@@ -164,7 +189,7 @@ class Category extends AbstractModel
     public static function getSelectOptions($placeholder = true)
     {
         /** @var  \Illuminate\Database\Eloquent\Collection  $categories */
-        $categories = Cache::remember('blog_categories_select_options', 5, function () {
+        $categories = cache()->remember(self::SELECT_CACHE_NAME, 5, function () {
             return self::all()->keyBy('id')->transform(function (Category $category) {
                 return  Blog::instance()->isTranslatable()
                     ? implode(' / ', $category->getTranslations('name'))
@@ -206,14 +231,6 @@ class Category extends AbstractModel
      |  Other Methods
      | -----------------------------------------------------------------
      */
-
-    /**
-     * Clear the cached categories.
-     */
-    public static function clearCache()
-    {
-        cache()->forget('blog_categories_select_options');
-    }
 
     /**
      * Fill the model with an array of attributes.
