@@ -32,9 +32,9 @@ class CreatePostRequest extends PostRequest
      */
     public function rules()
     {
-        return parent::rules() + [
+        return array_merge(parent::rules(), [
             'slug' => ['required', 'string', $this->getSlugRule()],
-        ];
+        ]);
     }
 
     /**

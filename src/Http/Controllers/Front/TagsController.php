@@ -20,10 +20,10 @@ class TagsController extends Controller
     public function show($slug)
     {
         /** @var  \Arcanesoft\Blog\Models\Tag  $tag */
-        $tag   = Tag::where('slug', $slug)->firstOrFail();
+        $tag   = Tag::query()->where('slug', $slug)->firstOrFail();
         $posts = $tag->posts()->paginate();
 
-        $this->setTitle($title = 'Tag: '.$tag->name);
+        $this->setTitle($title = "Tag: {$tag->name}");
         $this->addBreadcrumb($title);
 
         return $this->view('blog::front.tags.show', compact('tag', 'posts'));

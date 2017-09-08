@@ -47,8 +47,6 @@ abstract class PostRequest extends FormRequest
 
     /**
      * Prepare the data for validation.
-     *
-     * @return void
      */
     protected function prepareForValidation()
     {

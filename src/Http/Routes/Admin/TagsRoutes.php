@@ -21,10 +21,8 @@ class TagsRoutes extends RouteRegistrar
      */
     public static function bindings()
     {
-        $registrar = new static;
-
-        $registrar->bind('blog_tag', function ($id) {
-            return Tag::withTrashed()->findOrFail($id);
+        (new static)->bind('blog_tag', function ($id) {
+            return Tag::query()->withTrashed()->findOrFail($id);
         });
     }
 

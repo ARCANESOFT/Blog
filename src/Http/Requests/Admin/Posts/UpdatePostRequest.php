@@ -10,10 +10,11 @@ use Illuminate\Support\Str;
  */
 class UpdatePostRequest extends PostRequest
 {
-    /* ------------------------------------------------------------------------------------------------
-     |  Main Functions
-     | ------------------------------------------------------------------------------------------------
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
      */
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -34,9 +35,9 @@ class UpdatePostRequest extends PostRequest
         /** @var  \Arcanesoft\Blog\Models\Post  $post */
         $post = $this->route('blog_post');
 
-        return parent::rules() + [
+        return array_merge(parent::rules(), [
             'slug' => ['required', 'string', $this->getSlugRule()->ignore($post->id)],
-        ];
+        ]);
     }
 
     /**

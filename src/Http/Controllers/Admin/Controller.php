@@ -1,5 +1,6 @@
 <?php namespace Arcanesoft\Blog\Http\Controllers\Admin;
 
+use Arcanedev\LaravelApiHelper\Traits\JsonResponses;
 use Arcanesoft\Core\Http\Controllers\AdminController;
 use Arcanesoft\Core\Traits\Notifyable;
 
@@ -16,7 +17,8 @@ class Controller extends AdminController
      | -----------------------------------------------------------------
      */
 
-    use Notifyable;
+    use Notifyable,
+        JsonResponses;
 
     /* -----------------------------------------------------------------
      |  Properties

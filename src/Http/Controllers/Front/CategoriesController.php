@@ -20,10 +20,10 @@ class CategoriesController extends Controller
     public function show($slug)
     {
         /** @var  \Arcanesoft\Blog\Models\Category  $category */
-        $category = Category::where('slug', $slug)->firstOrFail();
+        $category = Category::query()->where('slug', $slug)->firstOrFail();
         $posts    = $category->posts()->paginate();
 
-        $this->setTitle($title = 'Category: '.$category->name);
+        $this->setTitle($title = "Category: {$category->name}");
         $this->addBreadcrumb($title);
 
         return $this->view('blog::front.categories.show', compact('category', 'posts'));

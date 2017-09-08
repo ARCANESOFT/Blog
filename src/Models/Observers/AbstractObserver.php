@@ -7,6 +7,8 @@ use Illuminate\Contracts\Events\Dispatcher;
  *
  * @package  Arcanesoft\Blog\Models\Observers
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
+ *
+ * @todo: Replace Observers by Events/Listeners
  */
 abstract class AbstractObserver
 {

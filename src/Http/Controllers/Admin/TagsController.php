@@ -1,6 +1,5 @@
 <?php namespace Arcanesoft\Blog\Http\Controllers\Admin;
 
-use Arcanedev\LaravelApiHelper\Traits\JsonResponses;
 use Arcanesoft\Blog\Http\Requests\Admin\Tags\CreateTagRequest;
 use Arcanesoft\Blog\Http\Requests\Admin\Tags\UpdateTagRequest;
 use Arcanesoft\Blog\Models\Tag;
@@ -15,13 +14,6 @@ use Illuminate\Support\Facades\Log;
  */
 class TagsController extends Controller
 {
-    /* -----------------------------------------------------------------
-     |  Traits
-     | -----------------------------------------------------------------
-     */
-
-    use JsonResponses;
-
     /* -----------------------------------------------------------------
      |  Properties
      | -----------------------------------------------------------------
@@ -167,6 +159,8 @@ class TagsController extends Controller
 
     /**
      * Notify with translation.
+     *
+     * @todo: Refactor this methods to the core package ?
      *
      * @param  string  $action
      * @param  array   $replace
