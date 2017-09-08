@@ -41,7 +41,7 @@ class CategoriesWidgetComposer extends AbstractComposer
                   ->where('published_at', '<=', Carbon::now());
             })
             ->get()
-            ->sortByDesc(function($category) {
+            ->sortByDesc(function(Category $category) {
                 return $category->posts->count();
             });
 

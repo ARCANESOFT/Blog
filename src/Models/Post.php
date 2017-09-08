@@ -219,16 +219,15 @@ class Post extends AbstractModel
      */
     public static function createOne(array $attributes)
     {
-        $post = new self($attributes);
-        $post->save();
+        return tap(new self($attributes), function (self $post) use ($attributes) {
+            $post->save();
 
-        $post->tags()->sync($attributes['tags']);
+            $post->tags()->sync($attributes['tags']);
 
-        $post->createSeo(
-            static::extractSeoAttributes($attributes)
-        );
-
-        return $post;
+            $post->createSeo(
+                static::extractSeoAttributes($attributes)
+            );
+        });
     }
 
     /**

@@ -30,8 +30,6 @@ class TagsCountComposer extends AbstractComposer
      */
     public function compose(View $view)
     {
-        $tags = $this->cachedTags();
-
-        $view->with('tagsCount', $tags->count());
+        $view->with('tagsCount', $this->cachedTags()->count());
     }
 }

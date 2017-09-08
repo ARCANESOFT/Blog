@@ -84,6 +84,8 @@ class BlogServiceProvider extends PackageServiceProvider
 
     /**
      * Register the observers.
+     *
+     * @todo: Replace it with events.
      */
     private function registerObservers()
     {

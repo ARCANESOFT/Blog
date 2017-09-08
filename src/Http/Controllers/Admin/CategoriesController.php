@@ -1,6 +1,5 @@
 <?php namespace Arcanesoft\Blog\Http\Controllers\Admin;
 
-use Arcanedev\LaravelApiHelper\Traits\JsonResponses;
 use Arcanesoft\Blog\Http\Requests\Admin\Categories\CreateCategoryRequest;
 use Arcanesoft\Blog\Http\Requests\Admin\Categories\UpdateCategoryRequest;
 use Arcanesoft\Blog\Models\Category;
@@ -15,13 +14,6 @@ use Illuminate\Support\Facades\Log;
  */
 class CategoriesController extends Controller
 {
-    /* -----------------------------------------------------------------
-     |  Traits
-     | -----------------------------------------------------------------
-     */
-
-    use JsonResponses;
-
     /* -----------------------------------------------------------------
      |  Properties
      | -----------------------------------------------------------------
@@ -171,6 +163,8 @@ class CategoriesController extends Controller
 
     /**
      * Notify with translation.
+     *
+     * @todo: Refactor this methods to the core package ?
      *
      * @param  string  $action
      * @param  array   $replace

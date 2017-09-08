@@ -30,8 +30,6 @@ class PostsCountComposer extends AbstractComposer
      */
     public function compose(View $view)
     {
-        $posts = $this->cachedPosts();
-
-        $view->with('postsCount', $posts->count());
+        $view->with('postsCount', $this->cachedPosts()->count());
     }
 }

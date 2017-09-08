@@ -135,10 +135,9 @@ class Category extends AbstractModel
      */
     public static function createOne(array $attributes)
     {
-        $category = new self;
-        $category->populate($attributes)->save();
-
-        return $category;
+        return tap(new self, function (self $category) use ($attributes) {
+            $category->populate($attributes)->save();
+        });
     }
 
     /**

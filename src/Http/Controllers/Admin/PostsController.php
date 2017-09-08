@@ -1,6 +1,5 @@
 <?php namespace Arcanesoft\Blog\Http\Controllers\Admin;
 
-use Arcanedev\LaravelApiHelper\Traits\JsonResponses;
 use Arcanesoft\Blog\Http\Requests\Admin\Posts\CreatePostRequest;
 use Arcanesoft\Blog\Http\Requests\Admin\Posts\UpdatePostRequest;
 use Arcanesoft\Blog\Models\Category;
@@ -17,13 +16,6 @@ use Illuminate\Support\Facades\Log;
  */
 class PostsController extends Controller
 {
-    /* -----------------------------------------------------------------
-     |  Traits
-     | -----------------------------------------------------------------
-     */
-
-    use JsonResponses;
-
     /* -----------------------------------------------------------------
      |  Properties
      | -----------------------------------------------------------------
@@ -256,6 +248,8 @@ class PostsController extends Controller
 
     /**
      * Notify with translation.
+     *
+     * @todo: Refactor this methods to the core package ?
      *
      * @param  string  $action
      * @param  array   $replace

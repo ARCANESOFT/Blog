@@ -21,10 +21,8 @@ class CategoriesRoutes extends RouteRegistrar
      */
     public static function bindings()
     {
-        $registrar = new static;
-
-        $registrar->bind('blog_category', function ($id) {
-            return Category::withTrashed()->findOrFail($id);
+        (new static)->bind('blog_category', function ($id) {
+            return Category::query()->withTrashed()->findOrFail($id);
         });
     }
 

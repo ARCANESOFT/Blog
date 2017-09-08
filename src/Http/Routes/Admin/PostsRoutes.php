@@ -21,10 +21,8 @@ class PostsRoutes extends RouteRegistrar
      */
     public static function bindings()
     {
-        $registrar = new static;
-
-        $registrar->bind('blog_post', function($postId) {
-            return Post::withTrashed()->findOrFail($postId);
+        (new static)->bind('blog_post', function($postId) {
+            return Post::query()->withTrashed()->findOrFail($postId);
         });
     }
 

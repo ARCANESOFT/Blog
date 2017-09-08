@@ -126,10 +126,9 @@ class Tag extends AbstractModel
      */
     public static function createOne(array $attributes)
     {
-        $tag = new self;
-        $tag->populate($attributes)->save();
-
-        return $tag;
+        return tap(new self, function (self $tag) use ($attributes) {
+            $tag->populate($attributes)->save();
+        });
     }
 
     /**

@@ -30,8 +30,6 @@ class CategoriesCountComposer extends AbstractComposer
      */
     public function compose(View $view)
     {
-        $categories = $this->cachedCategories();
-
-        $view->with('categoriesCount', $categories->count());
+        $view->with('categoriesCount', $this->cachedCategories()->count());
     }
 }

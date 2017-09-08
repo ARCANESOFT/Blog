@@ -7,6 +7,8 @@ use Arcanesoft\Blog\Models\Post;
  *
  * @package  Arcanesoft\Blog\Models\Observers
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
+ *
+ * @todo: Replace Observers by Events/Listeners
  */
 class PostObserver extends AbstractObserver
 {
