@@ -1,6 +1,6 @@
 <?php namespace Arcanesoft\Blog\Models\Presenters;
 
-use Illuminate\Support\Collection;
+use Arcanesoft\Blog\Entities\PostStatus;
 use Illuminate\Support\HtmlString;
 
 /**
@@ -58,7 +58,7 @@ trait PostPresenter
      */
     public function getStatusAttribute()
     {
-        return $this->isDraft() ? self::STATUS_DRAFT : self::STATUS_PUBLISHED;
+        return $this->isDraft() ? PostStatus::STATUS_DRAFT : PostStatus::STATUS_PUBLISHED;
     }
 
     /**
@@ -70,7 +70,7 @@ trait PostPresenter
      */
     public function setStatusAttribute($status)
     {
-        $this->setAttribute('is_draft', $status === self::STATUS_DRAFT);
+        $this->setAttribute('is_draft', $status === PostStatus::STATUS_DRAFT);
 
         return $this;
     }
@@ -82,7 +82,7 @@ trait PostPresenter
      */
     public function getStatusNameAttribute()
     {
-        return self::getStatuses()->get(
+        return PostStatus::get(
             $this->getStatusAttribute()
         );
     }
@@ -94,9 +94,7 @@ trait PostPresenter
      */
     public static function getStatuses()
     {
-        return new Collection(
-            trans('blog::posts.statuses', [])
-        );
+        return PostStatus::all();
     }
 
     /* -----------------------------------------------------------------
@@ -123,7 +121,7 @@ trait PostPresenter
      */
     public function getShowUrl()
     {
-        return route('admin::blog.posts.show', $this);
+        return route('admin::blog.posts.show', [$this]);
     }
 
     /**
@@ -133,7 +131,7 @@ trait PostPresenter
      */
     public function getEditUrl()
     {
-        return route('admin::blog.posts.edit', $this);
+        return route('admin::blog.posts.edit', [$this]);
     }
 
     /* -----------------------------------------------------------------

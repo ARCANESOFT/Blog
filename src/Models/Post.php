@@ -31,8 +31,9 @@ use Illuminate\Support\Str;
  * @property  \Carbon\Carbon  updated_at
  * @property  \Carbon\Carbon  deleted_at
  *
- * @property  \Arcanesoft\Contracts\Auth\Models\User  user
- * @property  \Arcanesoft\Blog\Models\Category        category
+ * @property  \Arcanesoft\Contracts\Auth\Models\User    author
+ * @property  \Arcanesoft\Blog\Models\Category          category
+ * @property  \Illuminate\Database\Eloquent\Collection  tags
  *
  * @method  static  \Illuminate\Database\Eloquent\Builder  published()
  * @method  static  \Illuminate\Database\Eloquent\Builder  publishedAt(int $year)
@@ -40,14 +41,6 @@ use Illuminate\Support\Str;
  */
 class Post extends AbstractModel
 {
-    /* -----------------------------------------------------------------
-     |  Constants
-     | -----------------------------------------------------------------
-     */
-
-    const STATUS_DRAFT     = 'draft';
-    const STATUS_PUBLISHED = 'published';
-
     /* -----------------------------------------------------------------
      |  Traits
      | -----------------------------------------------------------------
@@ -75,7 +68,7 @@ class Post extends AbstractModel
      * @var array
      */
     protected $fillable = [
-        'author_id', 'category_id', 'locale', 'title', 'excerpt', 'thumbnail', 'content', 'published_at',
+        'author_id', 'category_id', 'locale', 'title', 'excerpt', 'thumbnail', 'content', 'published_at', 'status',
     ];
 
     /**
@@ -101,7 +94,7 @@ class Post extends AbstractModel
      *
      * @var array
      */
-    protected $events = [
+    protected $dispatchesEvents = [
         'creating'  => PostEvents\PostCreating::class,
         'created'   => PostEvents\PostCreated::class,
         'updating'  => PostEvents\PostUpdating::class,
@@ -252,18 +245,17 @@ class Post extends AbstractModel
     /**
      * Create a post.
      *
-     * @param  array  $inputs
+     * @param  array  $attributes
      *
      * @return bool|int
      */
-    public function updateOne(array $inputs)
+    public function updateOne(array $attributes)
     {
-        $updated = $this->setStatusAttribute($inputs['status'])
-            ->update(Arr::except($inputs, ['author_id']));
+        $updated = $this->update(Arr::except($attributes, ['author_id']));
 
-        $this->tags()->sync($inputs['tags']);
+        $this->tags()->sync($attributes['tags']);
 
-        $seoAttributes = static::extractSeoAttributes($inputs);
+        $seoAttributes = static::extractSeoAttributes($attributes);
 
         $this->hasSeo() ? $this->updateSeo($seoAttributes) : $this->createSeo($seoAttributes);
 
@@ -282,7 +274,7 @@ class Post extends AbstractModel
      */
     public function isDraft()
     {
-        return $this->is_draft;
+        return is_null($this->is_draft) ? true : $this->is_draft;
     }
 
     /**
@@ -323,27 +315,7 @@ class Post extends AbstractModel
             'title'       => Arr::get($inputs, 'seo_title'),
             'description' => Arr::get($inputs, 'seo_description'),
             'keywords'    => Arr::get($inputs, 'seo_keywords'),
-            'metas'       => Arr::get($inputs, 'seo_metas'),
+            'metas'       => Arr::get($inputs, 'seo_metas', []),
         ];
-    }
-
-    /**
-     * Get the show url.
-     *
-     * @return string
-     */
-    public function getShowUrl()
-    {
-        return route('admin::blog.posts.show', [$this]);
-    }
-
-    /**
-     * Get the edit url.
-     *
-     * @return string
-     */
-    public function getEditUrl()
-    {
-        return route('admin::blog.posts.edit', [$this]);
     }
 }

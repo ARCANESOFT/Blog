@@ -97,7 +97,7 @@ abstract class PostRequest extends FormRequest
      */
     protected static function getCategoryRule()
     {
-        return ['required', 'integer', 'in:'.Category::getSelectOptions(false)->keys()->implode(',')];
+        return ['required', 'integer', 'in:'.Category::getSelectData(false)->keys()->implode(',')];
     }
 
     /**
@@ -107,7 +107,7 @@ abstract class PostRequest extends FormRequest
      */
     protected static function getTagsRule()
     {
-        return ['required', 'array', 'min:1', 'in:'.Tag::getSelectOptions()->keys()->implode(',')];
+        return ['required', 'array', 'min:1', 'in:'.Tag::getSelectData()->keys()->implode(',')];
     }
 
     /**

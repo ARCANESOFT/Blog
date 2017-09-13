@@ -1,6 +1,6 @@
 <?php
 
-use Arcanesoft\Blog\Models\Post;
+use Arcanesoft\Blog\Entities\PostStatus;
 
 return [
 
@@ -101,8 +101,8 @@ return [
      */
 
     'statuses' => [
-        POST::STATUS_DRAFT     => 'Draft',
-        POST::STATUS_PUBLISHED => 'Published',
+        PostStatus::STATUS_DRAFT     => 'Draft',
+        PostStatus::STATUS_PUBLISHED => 'Published',
     ],
 
 ];

@@ -1,5 +1,6 @@
 <?php namespace Arcanesoft\Blog\Tests;
 
+use Arcanesoft\Auth\AuthServiceProvider;
 use Orchestra\Testbench\TestCase as BaseTestCase;
 
 /**
@@ -15,6 +16,13 @@ abstract class TestCase extends BaseTestCase
      | -----------------------------------------------------------------
      */
 
+    protected function setUp()
+    {
+        parent::setUp();
+
+        $this->withFactories(__DIR__.'/database/factories');
+    }
+
     /**
      * Get package providers.
      *
@@ -25,6 +33,7 @@ abstract class TestCase extends BaseTestCase
     protected function getPackageProviders($app)
     {
         return [
+            \Arcanesoft\Auth\AuthServiceProvider::class,
             \Arcanesoft\Seo\SeoServiceProvider::class,
             \Arcanesoft\Blog\BlogServiceProvider::class,
         ];
@@ -51,6 +60,14 @@ abstract class TestCase extends BaseTestCase
      */
     protected function getEnvironmentSetUp($app)
     {
-        //
+        /** @var  \Illuminate\Contracts\Config\Repository  $config */
+        $config = $app['config'];
+
+        $config->set('database.default', 'testing');
+        $config->set('arcanesoft.blog.database.connection', 'testing');
+        $config->set('arcanesoft.auth.database.connection', 'testing');
+        $config->set('laravel-auth.database.connection', 'testing');
+
+        $config->set('auth.providers.users.model', \Arcanesoft\Auth\Models\User::class);
     }
 }
