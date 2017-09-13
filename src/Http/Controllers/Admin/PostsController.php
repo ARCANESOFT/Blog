@@ -94,8 +94,8 @@ class PostsController extends Controller
     {
         $this->authorize(PostsPolicy::PERMISSION_CREATE);
 
-        $categories = Category::getSelectOptions();
-        $tags       = Tag::getSelectOptions();
+        $categories = Category::getSelectData();
+        $tags       = Tag::getSelectData();
         $statuses   = Post::getStatuses();
 
         $this->setTitle($title = trans('blog::posts.titles.create-post'));
@@ -155,8 +155,8 @@ class PostsController extends Controller
         $this->setTitle($title = trans('blog::posts.titles.edit-post'));
         $this->addBreadcrumb($title);
 
-        $categories = Category::getSelectOptions();
-        $tags       = Tag::getSelectOptions();
+        $categories = Category::getSelectData();
+        $tags       = Tag::getSelectData();
         $statuses   = Post::getStatuses();
 
         return $this->view('admin.posts.edit', compact('post', 'categories', 'tags', 'statuses'));
