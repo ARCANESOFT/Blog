@@ -7,6 +7,8 @@ use Illuminate\Database\Schema\Blueprint;
  * Class     CreateBlogPostsTable
  *
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
+ *
+ * @see \Arcanesoft\Blog\Models\Post
  */
 class CreateBlogPostsTable extends Migration
 {

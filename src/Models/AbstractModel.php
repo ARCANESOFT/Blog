@@ -1,6 +1,6 @@
 <?php namespace Arcanesoft\Blog\Models;
 
-use Arcanedev\Support\Bases\Model as BaseModel;
+use Arcanedev\Support\Database\Model as BaseModel;
 
 /**
  * Class     AbstractModel
