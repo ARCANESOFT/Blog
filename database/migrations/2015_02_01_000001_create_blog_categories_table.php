@@ -8,7 +8,7 @@ use Illuminate\Database\Schema\Blueprint;
  *
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  *
- * @see \Arcanesoft\Blog\Models\Tag
+ * @see \Arcanesoft\Blog\Models\Category
  */
 class CreateBlogCategoriesTable extends Migration
 {

@@ -1,6 +1,6 @@
 <?php namespace Arcanesoft\Blog\Bases;
 
-use Arcanedev\Support\Bases\Migration as BaseMigration;
+use Arcanedev\Support\Database\Migration as BaseMigration;
 
 /**
  * Class     Migration

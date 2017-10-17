@@ -1,4 +1,4 @@
-<?php /** @var  \Arcanesoft\Blog\Models\Category  $category */ ?>
+<?php /** @var  Arcanesoft\Blog\Models\Category  $category */ ?>
 
 @inject('blog', 'Arcanesoft\Blog\Blog')
 
@@ -72,7 +72,7 @@
                     </div>
                 </div>
                 <div class="box-footer text-right">
-                    @can(\Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_UPDATE)
+                    @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_UPDATE)
                         {{ ui_link('edit', route('admin::blog.categories.edit', [$category])) }}
 
                         @if ($category->trashed())
@@ -80,7 +80,7 @@
                         @endif
                     @endcan
 
-                    @can(\Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_DELETE)
+                    @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_DELETE)
                         {{ ui_link('delete', '#delete-category-modal', [], ! $category->isDeletable()) }}
                     @endcan
                 </div>
@@ -114,11 +114,11 @@
                                             <span class="label label-primary">{{ $post->slug }}</span>
                                         </td>
                                         <td class="text-right">
-                                            @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_SHOW)
+                                            @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_SHOW)
                                                 {{ ui_link_icon('show', route('admin::blog.posts.show', [$post])) }}
                                             @endcan
 
-                                            @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
+                                            @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
                                                 {{ ui_link_icon('edit', route('admin::blog.posts.edit', [$post])) }}
                                             @endcan
                                         </td>
@@ -140,7 +140,7 @@
 @endsection
 
 @section('modals')
-    @can(\Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_UPDATE)
+    @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_UPDATE)
         @if ($category->trashed())
             {{-- RESTORE MODAL --}}
             <div id="restore-category-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
@@ -167,7 +167,7 @@
         @endif
     @endcan
 
-    @can(\Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_DELETE)
+    @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_DELETE)
         {{-- DELETE MODAL --}}
         <div id="delete-category-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
@@ -195,7 +195,7 @@
 
 @section('scripts')
     {{-- RESTORE SCRIPT --}}
-    @can(\Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_UPDATE)
+    @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_UPDATE)
         @if ($category->trashed())
             <script>
                 $(function () {
@@ -235,7 +235,7 @@
     @endcan
 
     {{-- DELETE SCRIPT --}}
-    @can(\Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_DELETE)
+    @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_DELETE)
         @if ($category->isDeletable())
             <script>
                 $(function () {
