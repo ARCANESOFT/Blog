@@ -1,4 +1,4 @@
-<?php /** @var  \Arcanesoft\Blog\Models\Tag  $tag */ ?>
+<?php /** @var  Arcanesoft\Blog\Models\Tag  $tag */ ?>
 
 @inject('blog', 'Arcanesoft\Blog\Blog')
 
@@ -73,7 +73,7 @@
                     </div>
                 </div>
                 <div class="box-footer text-right">
-                    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
+                    @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
                         {{ ui_link('edit', route('admin::blog.tags.edit', [$tag])) }}
 
                         @if ($tag->trashed())
@@ -81,7 +81,7 @@
                         @endif
                     @endcan
 
-                    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
+                    @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
                         {{ ui_link('delete', '#delete-tag-modal') }}
                     @endcan
                 </div>
@@ -106,7 +106,7 @@
                             </thead>
                             <tbody>
                                 @forelse ($tag->posts as $post)
-                                    <?php /** @var  \Arcanesoft\Blog\Models\Post  $post */ ?>
+                                    <?php /** @var  Arcanesoft\Blog\Models\Post  $post */ ?>
                                     <tr>
                                         <td style="width: 60px;">
                                             <span class="label label-inverse">{{ strtoupper($post->locale) }}</span>
@@ -116,11 +116,11 @@
                                             <span class="label label-primary">{{ $post->slug }}</span>
                                         </td>
                                         <td class="text-right">
-                                            @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_SHOW)
+                                            @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_SHOW)
                                                 {{ ui_link_icon('show', route('admin::blog.posts.show', [$post])) }}
                                             @endcan
 
-                                            @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
+                                            @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
                                                 {{ ui_link_icon('edit', route('admin::blog.posts.edit', [$post])) }}
                                             @endcan
                                         </td>
@@ -143,7 +143,7 @@
 
 @section('modals')
     {{-- RESTORE MODAL --}}
-    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
+    @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
         @if ($tag->trashed())
             <div id="restore-tag-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
@@ -170,7 +170,7 @@
     @endcan
 
     {{-- DELETE MODAL --}}
-    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
+    @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
         <div id="delete-tag-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 {{ Form::open(['route' => ['admin::blog.tags.delete', $tag], 'method' => 'DELETE', 'id' => 'delete-tag-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
@@ -197,7 +197,7 @@
 
 @section('scripts')
     {{-- RESTORE SCRIPT --}}
-    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
+    @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
         @if ($tag->trashed())
         <script>
             $(function () {
@@ -218,7 +218,7 @@
 
                     axios.put($restoreTagForm.attr('action'))
                          .then(function (response) {
-                             if (response.data.status === 'success') {
+                             if (response.data.code === 'success') {
                                  $restoreTagModal.modal('hide');
                                  location.reload();
                              }
@@ -242,7 +242,7 @@
     @endcan
 
     {{-- DELETE SCRIPT --}}
-    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
+    @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
     <script>
         $(function () {
             var $deleteTagModal = $('div#delete-tag-modal'),
@@ -262,7 +262,7 @@
 
                 axios.delete($deleteTagForm.attr('action'))
                      .then(function (response) {
-                         if (response.data.status === 'success') {
+                         if (response.data.code === 'success') {
                              $deleteTagModal.modal('hide');
                              @if ($tag->trashed())
                                  location.replace("{{ route('admin::blog.tags.index') }}");

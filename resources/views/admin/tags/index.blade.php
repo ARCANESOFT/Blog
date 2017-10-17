@@ -1,4 +1,4 @@
-<?php /** @var  \Illuminate\Pagination\LengthAwarePaginator  $tags */ ?>
+<?php /** @var  Illuminate\Pagination\LengthAwarePaginator  $tags */ ?>
 
 @inject('blog', 'Arcanesoft\Blog\Blog')
 
@@ -37,7 +37,7 @@
                     </thead>
                     <tbody>
                         @forelse($tags as $tag)
-                            <?php /** @var  \Arcanesoft\Blog\Models\Tag  $tag */ ?>
+                            <?php /** @var  Arcanesoft\Blog\Models\Tag  $tag */ ?>
                             <tr>
                                 <td>
                                     @if ($blog->isTranslatable())
@@ -61,18 +61,18 @@
                                     {{ label_count($tag->posts->count()) }}
                                 </td>
                                 <td class="text-right">
-                                    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_SHOW)
+                                    @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_SHOW)
                                         {{ ui_link_icon('show', route('admin::blog.tags.show', [$tag])) }}
                                     @endcan
 
-                                    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
+                                    @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
                                         {{ ui_link_icon('edit', route('admin::blog.tags.edit', [$tag])) }}
                                         @if ($tag->trashed())
                                             {{ ui_link_icon('restore', '#restore-tag-modal', ['data-tag-id' => $tag->id, 'data-tag-name' => $tag->name]) }}
                                         @endif
                                     @endcan
 
-                                    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
+                                    @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
                                         {{ ui_link_icon('delete', '#delete-tag-modal', ['data-tag-id' => $tag->id, 'data-tag-name' => $tag->name]) }}
                                     @endcan
                                 </td>
@@ -96,7 +96,7 @@
 
 @section('modals')
     {{-- RESTORE MODAL --}}
-    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
+    @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
         @if ($trashed)
             <div id="restore-tag-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
@@ -123,7 +123,7 @@
     @endcan
 
     {{-- DELETE MODAL --}}
-    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
+    @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
         <div id="delete-tag-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
                 {{ Form::open(['method' => 'DELETE', 'id' => 'delete-tag-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
@@ -150,7 +150,7 @@
 
 @section('scripts')
     {{-- RESTORE SCRIPT --}}
-    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
+    @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
         @if ($trashed)
         <script>
             $(function () {
@@ -184,7 +184,7 @@
 
                     axios.put($restoreTagForm.attr('action'))
                          .then(function (response) {
-                             if (response.data.status === 'success') {
+                             if (response.data.code === 'success') {
                                  $restoreTagModal.modal('hide');
                                  location.reload();
                              }
@@ -208,7 +208,7 @@
     @endcan
 
     {{-- DELETE SCRIPT --}}
-    @can(\Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
+    @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
     <script>
         var $deleteTagModal = $('div#delete-tag-modal'),
             $deleteTagForm  = $('form#delete-tag-form'),
@@ -240,7 +240,7 @@
 
             axios.delete($deleteTagForm.attr('action'))
                  .then(function (response) {
-                     if (response.data.status === 'success') {
+                     if (response.data.code === 'success') {
                          $deleteTagModal.modal('hide');
                          location.reload();
                      }
