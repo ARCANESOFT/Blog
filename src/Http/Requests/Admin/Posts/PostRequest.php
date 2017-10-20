@@ -69,7 +69,7 @@ abstract class PostRequest extends FormRequest
             'category_id' => $this->get('category')
         ], $this->only([
             // POST inputs
-            'locale', 'title', 'excerpt', 'thumbnail', 'content', 'tags', 'published_at', 'status',
+            'locale', 'title', 'slug', 'excerpt', 'thumbnail', 'content', 'tags', 'published_at', 'status',
 
             // SEO inputs
             'seo_title', 'seo_description', 'seo_keywords',

@@ -68,7 +68,7 @@ class Post extends AbstractModel
      * @var array
      */
     protected $fillable = [
-        'author_id', 'category_id', 'locale', 'title', 'excerpt', 'thumbnail', 'content', 'published_at', 'status',
+        'author_id', 'category_id', 'locale', 'title', 'slug', 'excerpt', 'thumbnail', 'content', 'published_at', 'status',
     ];
 
     /**
@@ -203,7 +203,16 @@ class Post extends AbstractModel
     public function setTitleAttribute($title)
     {
         $this->attributes['title'] = $title;
-        $this->attributes['slug']  = Str::slug($title);
+    }
+
+    /**
+     * Get the slug attribute.
+     *
+     * @param  string  $slug
+     */
+    public function setSlugAttribute($slug)
+    {
+        $this->attributes['slug'] = Str::slug($slug);
     }
 
     /**
