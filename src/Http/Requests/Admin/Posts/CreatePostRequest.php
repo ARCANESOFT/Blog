@@ -46,7 +46,7 @@ class CreatePostRequest extends PostRequest
     {
         return [
             'slug'      => Str::slug($this->get($this->has('slug') ? 'slug' : 'title', '')),
-            'seo_title' => $this->has('seo_title') ? $this->get('seo_title') : $this->get('title'),
+            'seo_title' => $this->get(empty($this->get('seo_title')) ? 'title' : 'seo_title'),
         ];
     }
 }

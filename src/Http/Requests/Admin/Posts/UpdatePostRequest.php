@@ -49,7 +49,7 @@ class UpdatePostRequest extends PostRequest
     {
         return [
             'slug'      => Str::slug($this->get($this->has('slug') ? 'slug' : 'title', '')),
-            'seo_title' => $this->get($this->has('seo_title') ? 'seo_title' : 'title'),
+            'seo_title' => $this->get(empty($this->get('seo_title')) ? 'title' : 'seo_title'),
         ];
     }
 }
