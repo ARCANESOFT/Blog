@@ -207,6 +207,7 @@ class TagTest extends TestCase
             'category_id'  => 1,
             'locale'       => 'en',
             'title'        => 'Learn how to zonda !',
+            'slug'         => 'Learn how to zonda !',
             'excerpt'      => 'Learn how to zonda !',
             'thumbnail'    => 'https://i2.wp.com/wp.laravel-news.com/wp-content/uploads/2016/12/valet-2.0.jpg?resize=2200%2C1125',
             'content'      => '# Zonda FTW !',
