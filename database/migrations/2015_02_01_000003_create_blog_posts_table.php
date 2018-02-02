@@ -50,7 +50,7 @@ class CreateBlogPostsTable extends Migration
             $table->longtext('content_html');
             $table->boolean('is_draft')->default(false);
             $table->timestamps();
-            $table->timestamp('published_at');
+            $table->timestamp('published_at')->nullable();
             $table->softDeletes();
 
             $table->unique(['locale', 'slug']);
