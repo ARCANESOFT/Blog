@@ -117,7 +117,7 @@
                     @endcan
 
                     @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_DELETE)
-                        {{ ui_link('delete', '#delete-post-modal') }}
+                        {{ ui_link('delete', '#delete-post-modal')->setDisabled( ! $post->isDeletable()) }}
                     @endcan
                 </div>
             </div>
@@ -162,18 +162,20 @@
                 </div>
             </div>
 
-            @includeIf('seo::admin._includes.seo-details-box', ['seo' => $post->seo])
+            @if (Arcanesoft\Blog\Blog::isSeoable())
+                @includeIf('seo::admin._includes.seo-details-box', ['seo' => $post->seo])
+            @endif
         </div>
     </div>
 @endsection
 
 @section('modals')
     {{-- RESTORE MODAL --}}
-    @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
-        @if ($post->trashed())
+    @if ($post->trashed())
+        @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
             <div id="restore-post-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
-                    {{ Form::open(['route' => ['admin::blog.posts.restore', $post], 'method' => 'PUT', 'id' => 'restore-post-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                    {{ form()->open(['route' => ['admin::blog.posts.restore', $post], 'method' => 'PUT', 'id' => 'restore-post-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -189,42 +191,44 @@
                                 {{ ui_button('restore', 'submit')->withLoadingText() }}
                             </div>
                         </div>
-                    {{ Form::close() }}
+                    {{ form()->close() }}
                 </div>
             </div>
-        @endif
-    @endcan
+        @endcan
+    @endif
 
     {{-- DELETE MODAL --}}
-    @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_DELETE)
-        <div id="delete-post-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
-            <div class="modal-dialog" role="document">
-                {{ Form::open(['route' => ['admin::blog.posts.delete', $post], 'method' => 'DELETE', 'id' => 'delete-post-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            <h4 class="modal-title">{{ trans('blog::posts.modals.delete.title') }}</h4>
+    @if ($post->isDeletable())
+        @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_DELETE)
+            <div id="delete-post-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    {{ form()->open(['route' => ['admin::blog.posts.delete', $post], 'method' => 'DELETE', 'id' => 'delete-post-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title">{{ trans('blog::posts.modals.delete.title') }}</h4>
+                            </div>
+                            <div class="modal-body">
+                                <p>{!! trans('blog::posts.modals.delete.message', ['title' => $post->title]) !!}</p>
+                            </div>
+                            <div class="modal-footer">
+                                {{ ui_button('cancel')->appendClass('pull-left')->setAttribute('data-dismiss', 'modal') }}
+                                {{ ui_button('delete', 'submit')->withLoadingText() }}
+                            </div>
                         </div>
-                        <div class="modal-body">
-                            <p>{!! trans('blog::posts.modals.delete.message', ['title' => $post->title]) !!}</p>
-                        </div>
-                        <div class="modal-footer">
-                            {{ ui_button('cancel')->appendClass('pull-left')->setAttribute('data-dismiss', 'modal') }}
-                            {{ ui_button('delete', 'submit')->withLoadingText() }}
-                        </div>
-                    </div>
-                {{ Form::close() }}
+                    {{ form()->close() }}
+                </div>
             </div>
-        </div>
-    @endcan
+        @endcan
+    @endif
 @endsection
 
 @section('scripts')
     {{-- RESTORE SCRIPT --}}
-    @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
-        @if ($post->trashed())
+    @if ($post->trashed())
+        @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
             <script>
                 $(function () {
                     var $restorePostModal = $('div#restore-post-modal'),
@@ -259,48 +263,50 @@
                     });
                 });
             </script>
-        @endif
-    @endcan
+        @endcan
+    @endif
 
     {{-- DELETE SCRIPT --}}
-    @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_DELETE)
-        <script>
-            $(function () {
-                var $deletePostModal = $('div#delete-post-modal'),
-                    $deletePostForm  = $('form#delete-post-form');
+    @if ($post->isDeletable())
+        @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_DELETE)
+            <script>
+                $(function () {
+                    var $deletePostModal = $('div#delete-post-modal'),
+                        $deletePostForm  = $('form#delete-post-form');
 
-                $('a[href="#delete-post-modal"]').on('click', function (e) {
-                    e.preventDefault();
+                    $('a[href="#delete-post-modal"]').on('click', function (e) {
+                        e.preventDefault();
 
-                    $deletePostModal.modal('show');
+                        $deletePostModal.modal('show');
+                    });
+
+                    $deletePostForm.on('submit', function (e) {
+                        e.preventDefault();
+
+                        var submitBtn = $deletePostForm.find('button[type="submit"]');
+                            submitBtn.button('loading');
+
+                        axios.delete($deletePostForm.attr('action'))
+                             .then(function (response) {
+                                 if (response.data.code === 'success') {
+                                     $deletePostModal.modal('hide');
+                                     @if ($post->trashed())
+                                         location.replace("{{ route('admin::blog.posts.index') }}");
+                                     @else
+                                         location.reload();
+                                     @endif
+                                 }
+                             })
+                             .catch(function (error) {
+                                 alert('AJAX ERROR ! Check the console !');
+                                 console.log(error);
+                                 submitBtn.button('reset');
+                             });
+
+                        return false;
+                    });
                 });
-
-                $deletePostForm.on('submit', function (e) {
-                    e.preventDefault();
-
-                    var submitBtn = $deletePostForm.find('button[type="submit"]');
-                        submitBtn.button('loading');
-
-                    axios.delete($deletePostForm.attr('action'))
-                         .then(function (response) {
-                             if (response.data.code === 'success') {
-                                 $deletePostModal.modal('hide');
-                                 @if ($post->trashed())
-                                     location.replace("{{ route('admin::blog.posts.index') }}");
-                                 @else
-                                     location.reload();
-                                 @endif
-                             }
-                         })
-                         .catch(function (error) {
-                             alert('AJAX ERROR ! Check the console !');
-                             console.log(error);
-                             submitBtn.button('reset');
-                         });
-
-                    return false;
-                });
-            });
-        </script>
-    @endcan
+            </script>
+        @endcan
+    @endif
 @endsection

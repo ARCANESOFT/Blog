@@ -34,7 +34,6 @@ abstract class TestCase extends BaseTestCase
     {
         return [
             \Arcanesoft\Auth\AuthServiceProvider::class,
-            \Arcanesoft\Seo\SeoServiceProvider::class,
             \Arcanesoft\Blog\BlogServiceProvider::class,
         ];
     }

@@ -145,7 +145,7 @@
             {{-- RESTORE MODAL --}}
             <div id="restore-category-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
-                    {{ Form::open(['route' => ['admin::blog.categories.restore', $category], 'method' => 'PUT', 'id' => 'restore-category-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                    {{ form()->open(['route' => ['admin::blog.categories.restore', $category], 'method' => 'PUT', 'id' => 'restore-category-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -161,7 +161,7 @@
                                 {{ ui_button('restore', 'submit')->withLoadingText() }}
                             </div>
                         </div>
-                    {{ Form::close() }}
+                    {{ form()->close() }}
                 </div>
             </div>
         @endif
@@ -171,7 +171,7 @@
         {{-- DELETE MODAL --}}
         <div id="delete-category-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
-                {{ Form::open(['route' => ['admin::blog.categories.delete', $category], 'method' => 'DELETE', 'id' => 'delete-category-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                {{ form()->open(['route' => ['admin::blog.categories.delete', $category], 'method' => 'DELETE', 'id' => 'delete-category-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -187,7 +187,7 @@
                             {{ ui_button('delete', 'submit')->withLoadingText() }}
                         </div>
                     </div>
-                {{ Form::close() }}
+                {{ form()->close() }}
             </div>
         </div>
     @endcan
@@ -195,8 +195,8 @@
 
 @section('scripts')
     {{-- RESTORE SCRIPT --}}
-    @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_UPDATE)
-        @if ($category->trashed())
+    @if ($category->trashed())
+        @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_UPDATE)
             <script>
                 $(function () {
                     var $restoreCategoryModal = $('div#restore-category-modal'),
@@ -231,12 +231,12 @@
                     });
                 });
             </script>
-        @endif
-    @endcan
+        @endcan
+    @endif
 
     {{-- DELETE SCRIPT --}}
-    @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_DELETE)
-        @if ($category->isDeletable())
+    @if ($category->isDeletable())
+        @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_DELETE)
             <script>
                 $(function () {
                     var $deleteCategoryModal = $('div#delete-category-modal'),
@@ -275,6 +275,6 @@
                     });
                 });
             </script>
-        @endif
-    @endcan
+        @endcan
+    @endif
 @endsection

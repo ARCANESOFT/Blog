@@ -47,49 +47,49 @@ class CategoryTest extends TestCase
     /** @test */
     public function it_can_create_without_translations()
     {
-        $this->assertFalse(Blog::instance()->isTranslatable());
+        static::assertFalse(Blog::isTranslatable());
 
         $category = Category::createOne(['name' => 'Laravel']);
 
-        $this->assertCategoryCreationEvents($category);
+        static::assertCategoryCreationEvents($category);
 
-        $this->assertDatabaseHas($category->getTable(), [
+        static::assertDatabaseHas($category->getTable(), [
             'name' => 'Laravel', 'slug' => 'laravel',
         ]);
 
         $category = Category::createOne(['name' => 'ARCANEDEV', 'slug' => 'Software Company']);
 
-        $this->assertDatabaseHas($category->getTable(), [
+        static::assertDatabaseHas($category->getTable(), [
             'name' => 'ARCANEDEV', 'slug' => 'software-company',
         ]);
 
-        $this->assertCategoryCreationEvents($category);
+        static::assertCategoryCreationEvents($category);
     }
 
     /** @test */
     public function it_can_update_without_translations()
     {
-        $this->assertFalse(Blog::instance()->isTranslatable());
+        static::assertFalse(Blog::isTranslatable());
 
         $category = Category::createOne(['name' => 'Laravel']);
 
-        $this->assertCategoryCreationEvents($category);
-        $this->assertDatabaseHas($category->getTable(), [
+        static::assertCategoryCreationEvents($category);
+        static::assertDatabaseHas($category->getTable(), [
             'name' => 'Laravel',
             'slug' => 'laravel',
         ]);
 
         $category->updateOne(['name' => 'Zonda']);
 
-        $this->assertCategoryModificationEvents($category);
-        $this->assertDatabaseHas($category->getTable(), [
+        static::assertCategoryModificationEvents($category);
+        static::assertDatabaseHas($category->getTable(), [
             'name' => 'Zonda', 'slug' => 'laravel',
         ]);
 
         $category->updateOne(['slug' => 'Zonda']);
 
-        $this->assertCategoryModificationEvents($category);
-        $this->assertDatabaseHas($category->getTable(), [
+        static::assertCategoryModificationEvents($category);
+        static::assertDatabaseHas($category->getTable(), [
             'name' => 'Zonda', 'slug' => 'zonda',
         ]);
     }
@@ -103,9 +103,9 @@ class CategoryTest extends TestCase
             'name' => ['en' => 'Tutorials', 'fr' => 'Tutoriaux']
         ]);
 
-        $this->assertCategoryCreationEvents($category);
+        static::assertCategoryCreationEvents($category);
 
-        $this->assertDatabaseHas($category->getTable(), [
+        static::assertDatabaseHas($category->getTable(), [
             'name' => json_encode(['en' => 'Tutorials', 'fr' => 'Tutoriaux']),
             'slug' => json_encode(['en' => 'tutorials', 'fr' => 'tutoriaux']),
         ]);
@@ -115,12 +115,12 @@ class CategoryTest extends TestCase
             'slug' => ['en' => 'Our latest news', 'fr' => 'Nos dernières nouvelles'],
         ]);
 
-        $this->assertDatabaseHas($category->getTable(), [
+        static::assertDatabaseHas($category->getTable(), [
             'name' => json_encode(['en' => 'News', 'fr' => 'Actualités']),
             'slug' => json_encode(['en' => 'our-latest-news', 'fr' => 'nos-dernieres-nouvelles']),
         ]);
 
-        $this->assertCategoryCreationEvents($category);
+        static::assertCategoryCreationEvents($category);
     }
 
     /** @test */
@@ -128,14 +128,14 @@ class CategoryTest extends TestCase
     {
         $this->enableTranslations();
 
-        $this->assertTrue(Blog::instance()->isTranslatable());
+        static::assertTrue(Blog::isTranslatable());
 
         $category = Category::createOne([
             'name' => ['en' => 'Tutorials', 'fr' => 'Tutoriaux'],
         ]);
 
-        $this->assertCategoryCreationEvents($category);
-        $this->assertDatabaseHas($category->getTable(), [
+        static::assertCategoryCreationEvents($category);
+        static::assertDatabaseHas($category->getTable(), [
             'name' => json_encode(['en' => 'Tutorials', 'fr' => 'Tutoriaux']),
             'slug' => json_encode(['en' => 'tutorials', 'fr' => 'tutoriaux']),
         ]);
@@ -144,8 +144,8 @@ class CategoryTest extends TestCase
             'name' => ['en' => 'Formation', 'fr' => 'Formations']
         ]);
 
-        $this->assertCategoryModificationEvents($category);
-        $this->assertDatabaseHas($category->getTable(), [
+        static::assertCategoryModificationEvents($category);
+        static::assertDatabaseHas($category->getTable(), [
             'name' => json_encode(['en' => 'Formation', 'fr' => 'Formations']),
             'slug' => json_encode(['en' => 'tutorials', 'fr' => 'tutoriaux']),
         ]);
@@ -154,8 +154,8 @@ class CategoryTest extends TestCase
             'slug' => ['en' => 'tutorials', 'fr' => 'tutoriaux'],
         ]);
 
-        $this->assertCategoryModificationEvents($category);
-        $this->assertDatabaseHas($category->getTable(), [
+        static::assertCategoryModificationEvents($category);
+        static::assertDatabaseHas($category->getTable(), [
             'name' => json_encode(['en' => 'Formation', 'fr' => 'Formations']),
             'slug' => json_encode(['en' => 'tutorials', 'fr' => 'tutoriaux']),
         ]);
@@ -164,7 +164,7 @@ class CategoryTest extends TestCase
     /** @test */
     public function it_can_get_data_for_select_input_without_translations()
     {
-        $this->assertFalse(Blog::instance()->isTranslatable());
+        static::assertFalse(Blog::isTranslatable());
 
         $categories = Category::createMany([
             ['name' => 'News'],
@@ -172,14 +172,14 @@ class CategoryTest extends TestCase
             ['name' => 'Videos'],
         ]);
 
-        $this->assertCount(3, $categories);
+        static::assertCount(3, $categories);
 
         // Test with placeholder
         $selectData = Category::getSelectData();
 
-        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $selectData);
-        $this->assertCount(4, $selectData);
-        $this->assertSame([
+        static::assertInstanceOf(\Illuminate\Support\Collection::class, $selectData);
+        static::assertCount(4, $selectData);
+        static::assertSame([
             0 => '-- Select a category --',
             1 => 'News',
             2 => 'Tutorials',
@@ -188,10 +188,10 @@ class CategoryTest extends TestCase
 
         // Test without placeholder
         $selectData = Category::getSelectData(false);
-        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $selectData);
+        static::assertInstanceOf(\Illuminate\Support\Collection::class, $selectData);
 
-        $this->assertCount(3, $selectData);
-        $this->assertSame([
+        static::assertCount(3, $selectData);
+        static::assertSame([
             1 => 'News',
             2 => 'Tutorials',
             3 => 'Videos',
@@ -203,15 +203,15 @@ class CategoryTest extends TestCase
     {
         $category = Category::createOne(['name' => 'Laravel']);
 
-        $this->assertCategoryCreationEvents($category);
-        $this->assertDatabaseHas($category->getTable(), [
+        static::assertCategoryCreationEvents($category);
+        static::assertDatabaseHas($category->getTable(), [
             'name' => 'Laravel',
             'slug' => 'laravel',
         ]);
 
-        $this->assertCount(0, $category->posts);
-        $this->assertFalse($category->hasPosts());
-        $this->assertTrue($category->isDeletable());
+        static::assertCount(0, $category->posts);
+        static::assertFalse($category->hasPosts());
+        static::assertTrue($category->isDeletable());
 
         /** @var  \Arcanesoft\Blog\Models\Post  $post */
         $post = $category->posts()->create([
@@ -227,11 +227,11 @@ class CategoryTest extends TestCase
 
         $category->load('posts');
 
-        $this->assertCount(1, $category->posts);
-        $this->assertTrue($category->hasPosts());
-        $this->assertFalse($category->isDeletable());
+        static::assertCount(1, $category->posts);
+        static::assertTrue($category->hasPosts());
+        static::assertFalse($category->isDeletable());
 
-        $this->assertDatabaseHas($post->getTable(), [
+        static::assertDatabaseHas($post->getTable(), [
             'author_id'    => 1,
             'category_id'  => 1,
             'locale'       => 'en',
@@ -251,7 +251,7 @@ class CategoryTest extends TestCase
 
     protected function assertCategoryCreationEvents(Category $category)
     {
-        $this->assertCategoryEvents([
+        static::assertCategoryEvents([
             CategoryCreating::class, CategoryCreated::class, CategorySaving::class, CategorySaved::class
         ], function (AbstractCategoryEvent $e) use ($category) {
             return $e->category->id === $category->id;
@@ -260,7 +260,7 @@ class CategoryTest extends TestCase
 
     protected function assertCategoryModificationEvents(Category $category)
     {
-        $this->assertCategoryEvents([
+        static::assertCategoryEvents([
             CategoryUpdating::class, CategoryUpdated::class, CategorySaving::class, CategorySaved::class
         ], function (AbstractCategoryEvent $e) use ($category) {
             return $e->category->id === $category->id;
@@ -282,6 +282,6 @@ class CategoryTest extends TestCase
     {
         $this->app['config']->set('arcanesoft.blog.translatable.enabled', true);
 
-        $this->assertTrue(Blog::instance()->isTranslatable());
+        static::assertTrue(Blog::isTranslatable());
     }
 }

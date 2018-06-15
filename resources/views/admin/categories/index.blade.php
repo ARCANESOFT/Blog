@@ -13,10 +13,10 @@
 
             <div class="box-tools">
                 <div class="btn-group" role="group">
-                    <a href="{{ route('admin::blog.categories.index') }}" class="btn btn-xs btn-default {{ route_is('admin::blog.categories.index') ? 'active' : '' }}">
+                    <a href="{{ route('admin::blog.categories.index') }}" class="btn btn-xs btn-default {{ active(['admin::blog.categories.index']) }}">
                         <i class="fa fa-fw fa-bars"></i> {{ trans('core::generals.all') }}
                     </a>
-                    <a href="{{ route('admin::blog.categories.trash') }}" class="btn btn-xs btn-default {{ route_is('admin::blog.categories.trash') ? 'active' : '' }}">
+                    <a href="{{ route('admin::blog.categories.trash') }}" class="btn btn-xs btn-default {{ active(['admin::blog.categories.trash']) }}">
                         <i class="fa fa-fw fa-trash-o"></i> {{ trans('core::generals.trashed') }}
                     </a>
                 </div>
@@ -92,18 +92,18 @@
             </div>
         </div>
         @if ($categories->hasPages())
-            <div class="box-footer clearfix">{!! $categories->render() !!}</div>
+            <div class="box-footer clearfix">{{ $categories->render() }}</div>
         @endif
     </div>
 @endsection
 
 @section('modals')
-    @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_UPDATE)
-        @if ($trashed)
-            {{-- RESTORE MODAL --}}
+    {{-- RESTORE MODAL --}}
+    @if ($trashed)
+        @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_UPDATE)
             <div id="restore-category-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
-                    {{ Form::open(['method' => 'PUT', 'id' => 'restore-category-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                    {{ form()->open(['route' => ['admin::blog.categories.restore', ':id'], 'method' => 'PUT', 'id' => 'restore-category-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -119,17 +119,17 @@
                                 {{ ui_button('restore', 'submit')->withLoadingText() }}
                             </div>
                         </div>
-                    {{ Form::close() }}
+                    {{ form()->close() }}
                 </div>
             </div>
-        @endif
-    @endcan
+        @endcan
+    @endif
 
+    {{-- DELETE MODAL --}}
     @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_DELETE)
-        {{-- DELETE MODAL --}}
         <div id="delete-category-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
-                {{ Form::open(['method' => 'DELETE', 'id' => 'delete-category-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                {{ form()->open(['route' => ['admin::blog.categories.delete', ':id'], 'method' => 'DELETE', 'id' => 'delete-category-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -145,7 +145,7 @@
                             {{ ui_button('delete', 'submit')->withLoadingText() }}
                         </div>
                     </div>
-                {{ Form::close() }}
+                {{ form()->close() }}
             </div>
         </div>
     @endcan
@@ -153,13 +153,13 @@
 
 @section('scripts')
     {{-- RESTORE SCRIPT --}}
-    @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_UPDATE)
-        @if ($trashed)
+    @if ($trashed)
+        @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_UPDATE)
         <script>
             $(function () {
                 var $restoreCategoryModal = $('div#restore-category-modal'),
                     $restoreCategoryForm  = $('form#restore-category-form'),
-                    restoreCategoryAction = "{{ route('admin::blog.categories.restore', [':id']) }}";
+                    restoreCategoryAction = $restoreCategoryForm.attr('action');
 
                 $('a[href="#restore-category-modal"]').on('click', function (e) {
                     e.preventDefault();
@@ -202,8 +202,8 @@
                 });
             });
         </script>
-        @endif
-    @endcan
+        @endcan
+    @endif
 
     {{-- DELETE SCRIPT --}}
     @can(Arcanesoft\Blog\Policies\CategoriesPolicy::PERMISSION_DELETE)
@@ -211,7 +211,7 @@
         $(function () {
             var $deleteCategoryModal = $('div#delete-category-modal'),
                 $deleteCategoryForm  = $('form#delete-category-form'),
-                deleteCategoryAction = "{{ route('admin::blog.categories.delete', [':id']) }}";
+                deleteCategoryAction = $deleteCategoryForm.attr('action');
 
             $('a[href="#delete-category-modal"]').on('click', function (e) {
                 e.preventDefault();

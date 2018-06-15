@@ -23,7 +23,7 @@ abstract class FormRequest extends BaseFormRequest
      */
     protected function isTranslatable()
     {
-        return Blog::instance()->isTranslatable();
+        return Blog::isTranslatable();
     }
 
     /**
@@ -33,6 +33,6 @@ abstract class FormRequest extends BaseFormRequest
      */
     protected function getSupportedLocales()
     {
-        return Blog::instance()->getSupportedLocalesKeys();
+        return Blog::getSupportedLocalesKeys();
     }
 }

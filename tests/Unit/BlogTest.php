@@ -37,6 +37,28 @@ class BlogTest extends TestCase
      */
 
     /** @test */
+    public function it_can_be_instantiated()
+    {
+        $blog = Blog::instance();
+
+        static::assertInstanceOf(Blog::class, $blog);
+    }
+
+    /** @test */
+    public function it_can_check_if_translatable()
+    {
+        $blog = Blog::instance();
+
+        static::assertFalse($blog->isTranslatable());
+        static::assertFalse(Blog::isTranslatable());
+
+        $this->app['config']->set('arcanesoft.blog.translatable.enabled', true);
+
+        static::assertTrue($blog->isTranslatable());
+        static::assertTrue(Blog::isTranslatable());
+    }
+
+    /** @test */
     public function it_can_check_if_media_manager_installed()
     {
         $this->assertFalse($this->blog->isMediaManagerInstalled());
@@ -44,5 +66,15 @@ class BlogTest extends TestCase
         $this->app->register(\Arcanesoft\Media\MediaServiceProvider::class);
 
         $this->assertTrue($this->blog->isMediaManagerInstalled());
+    }
+
+    /** @test */
+    public function it_can_check_if_seo_manager_installed()
+    {
+        $this->assertFalse($this->blog->isSeoManagerInstalled());
+
+        $this->app->register(\Arcanesoft\Seo\SeoServiceProvider::class);
+
+        $this->assertTrue($this->blog->isSeoManagerInstalled());
     }
 }

@@ -1,8 +1,8 @@
 <?php namespace Arcanesoft\Blog\Models;
 
 use Arcanedev\LaravelSeo\Traits\Seoable;
+use Arcanesoft\Blog\Blog;
 use Arcanesoft\Blog\Events\Posts as PostEvents;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
@@ -68,7 +68,16 @@ class Post extends AbstractModel
      * @var array
      */
     protected $fillable = [
-        'author_id', 'category_id', 'locale', 'title', 'slug', 'excerpt', 'thumbnail', 'content', 'published_at', 'status',
+        'author_id',
+        'category_id',
+        'locale',
+        'title',
+        'slug',
+        'excerpt',
+        'thumbnail',
+        'content',
+        'published_at',
+        'status',
     ];
 
     /**
@@ -122,7 +131,7 @@ class Post extends AbstractModel
     public function scopePublished(Builder $query)
     {
         return $query->where('is_draft', false)
-                     ->where('published_at', '<=', Carbon::now());
+                     ->where('published_at', '<=', now());
     }
 
     /**
@@ -165,7 +174,7 @@ class Post extends AbstractModel
     public function author()
     {
         return $this->belongsTo(
-            config('auth.providers.users.model', 'App\Models\User'),
+            config('auth.providers.users.model', 'App\\Models\\User'),
             'author_id'
         );
     }
@@ -245,9 +254,11 @@ class Post extends AbstractModel
 
             $post->tags()->sync($attributes['tags']);
 
-            $post->createSeo(
-                static::extractSeoAttributes($attributes)
-            );
+            if (Blog::isSeoable()) {
+                $post->createSeo(
+                    static::extractSeoAttributes($attributes)
+                );
+            }
         });
     }
 
@@ -264,9 +275,13 @@ class Post extends AbstractModel
 
         $this->tags()->sync($attributes['tags']);
 
-        $seoAttributes = static::extractSeoAttributes($attributes);
+        if (Blog::isSeoable()) {
+            $seo = static::extractSeoAttributes($attributes);
 
-        $this->hasSeo() ? $this->updateSeo($seoAttributes) : $this->createSeo($seoAttributes);
+            $this->hasSeo()
+                ? $this->updateSeo($seo)
+                : $this->createSeo($seo);
+        }
 
         return $updated;
     }
@@ -277,13 +292,25 @@ class Post extends AbstractModel
      */
 
     /**
+     * Check if the post is deletable.
+     *
+     * @return bool
+     */
+    public function isDeletable()
+    {
+        return true;
+    }
+
+    /**
      * Check if the post's status is "draft".
      *
      * @return bool
      */
     public function isDraft()
     {
-        return is_null($this->is_draft) ? true : $this->is_draft;
+        return is_null($this->is_draft)
+            ? true
+            : $this->is_draft;
     }
 
     /**
