@@ -47,49 +47,49 @@ class TagTest extends TestCase
     /** @test */
     public function it_can_create_without_translations()
     {
-        $this->assertFalse(Blog::instance()->isTranslatable());
+        static::assertFalse(Blog::isTranslatable());
 
         $tag = Tag::createOne(['name' => 'Laravel']);
 
-        $this->assertTagCreationEvents($tag);
+        static::assertTagCreationEvents($tag);
 
-        $this->assertDatabaseHas($tag->getTable(), [
+        static::assertDatabaseHas($tag->getTable(), [
             'name' => 'Laravel', 'slug' => 'laravel',
         ]);
 
         $tag = Tag::createOne(['name' => 'ARCANEDEV', 'slug' => 'Software Company']);
 
-        $this->assertDatabaseHas($tag->getTable(), [
+        static::assertDatabaseHas($tag->getTable(), [
             'name' => 'ARCANEDEV', 'slug' => 'software-company',
         ]);
 
-        $this->assertTagCreationEvents($tag);
+        static::assertTagCreationEvents($tag);
     }
 
     /** @test */
     public function it_can_update_without_translations()
     {
-        $this->assertFalse(Blog::instance()->isTranslatable());
+        static::assertFalse(Blog::isTranslatable());
 
         $tag = Tag::createOne(['name' => 'Laravel']);
 
-        $this->assertTagCreationEvents($tag);
-        $this->assertDatabaseHas($tag->getTable(), [
+        static::assertTagCreationEvents($tag);
+        static::assertDatabaseHas($tag->getTable(), [
             'name' => 'Laravel',
             'slug' => 'laravel',
         ]);
 
         $tag->updateOne(['name' => 'Zonda']);
 
-        $this->assertTagModificationEvents($tag);
-        $this->assertDatabaseHas($tag->getTable(), [
+        static::assertTagModificationEvents($tag);
+        static::assertDatabaseHas($tag->getTable(), [
             'name' => 'Zonda', 'slug' => 'laravel',
         ]);
 
         $tag->updateOne(['slug' => 'Zonda']);
 
-        $this->assertTagModificationEvents($tag);
-        $this->assertDatabaseHas($tag->getTable(), [
+        static::assertTagModificationEvents($tag);
+        static::assertDatabaseHas($tag->getTable(), [
             'name' => 'Zonda', 'slug' => 'zonda',
         ]);
     }
@@ -103,9 +103,9 @@ class TagTest extends TestCase
             'name' => ['en' => 'Tutorials', 'fr' => 'Tutoriaux']
         ]);
 
-        $this->assertTagCreationEvents($tag);
+        static::assertTagCreationEvents($tag);
 
-        $this->assertDatabaseHas($tag->getTable(), [
+        static::assertDatabaseHas($tag->getTable(), [
             'name' => json_encode(['en' => 'Tutorials', 'fr' => 'Tutoriaux']),
             'slug' => json_encode(['en' => 'tutorials', 'fr' => 'tutoriaux']),
         ]);
@@ -115,12 +115,12 @@ class TagTest extends TestCase
             'slug' => ['en' => 'Our latest news', 'fr' => 'Nos dernières nouvelles'],
         ]);
 
-        $this->assertDatabaseHas($tag->getTable(), [
+        static::assertDatabaseHas($tag->getTable(), [
             'name' => json_encode(['en' => 'News', 'fr' => 'Actualités']),
             'slug' => json_encode(['en' => 'our-latest-news', 'fr' => 'nos-dernieres-nouvelles']),
         ]);
 
-        $this->assertTagCreationEvents($tag);
+        static::assertTagCreationEvents($tag);
     }
 
     /** @test */
@@ -128,14 +128,14 @@ class TagTest extends TestCase
     {
         $this->enableTranslations();
 
-        $this->assertTrue(Blog::instance()->isTranslatable());
+        static::assertTrue(Blog::isTranslatable());
 
         $tag = Tag::createOne([
             'name' => ['en' => 'Tutorials', 'fr' => 'Tutoriaux'],
         ]);
 
-        $this->assertTagCreationEvents($tag);
-        $this->assertDatabaseHas($tag->getTable(), [
+        static::assertTagCreationEvents($tag);
+        static::assertDatabaseHas($tag->getTable(), [
             'name' => json_encode(['en' => 'Tutorials', 'fr' => 'Tutoriaux']),
             'slug' => json_encode(['en' => 'tutorials', 'fr' => 'tutoriaux']),
         ]);
@@ -144,8 +144,8 @@ class TagTest extends TestCase
             'name' => ['en' => 'Formation', 'fr' => 'Formations']
         ]);
 
-        $this->assertTagModificationEvents($tag);
-        $this->assertDatabaseHas($tag->getTable(), [
+        static::assertTagModificationEvents($tag);
+        static::assertDatabaseHas($tag->getTable(), [
             'name' => json_encode(['en' => 'Formation', 'fr' => 'Formations']),
             'slug' => json_encode(['en' => 'tutorials', 'fr' => 'tutoriaux']),
         ]);
@@ -154,8 +154,8 @@ class TagTest extends TestCase
             'slug' => ['en' => 'tutorials', 'fr' => 'tutoriaux'],
         ]);
 
-        $this->assertTagModificationEvents($tag);
-        $this->assertDatabaseHas($tag->getTable(), [
+        static::assertTagModificationEvents($tag);
+        static::assertDatabaseHas($tag->getTable(), [
             'name' => json_encode(['en' => 'Formation', 'fr' => 'Formations']),
             'slug' => json_encode(['en' => 'tutorials', 'fr' => 'tutoriaux']),
         ]);
@@ -164,7 +164,7 @@ class TagTest extends TestCase
     /** @test */
     public function it_can_get_data_for_select_input_without_translations()
     {
-        $this->assertFalse(Blog::instance()->isTranslatable());
+        static::assertFalse(Blog::isTranslatable());
 
         $categories = Tag::createMany([
             ['name' => 'News'],
@@ -172,14 +172,14 @@ class TagTest extends TestCase
             ['name' => 'Videos'],
         ]);
 
-        $this->assertCount(3, $categories);
+        static::assertCount(3, $categories);
 
 
         $selectData = Tag::getSelectData();
 
-        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $selectData);
-        $this->assertCount(3, $selectData);
-        $this->assertSame([
+        static::assertInstanceOf(\Illuminate\Support\Collection::class, $selectData);
+        static::assertCount(3, $selectData);
+        static::assertSame([
             1 => 'News',
             2 => 'Tutorials',
             3 => 'Videos',
@@ -191,15 +191,15 @@ class TagTest extends TestCase
     {
         $tag = Tag::createOne(['name' => 'Laravel']);
 
-        $this->assertTagCreationEvents($tag);
-        $this->assertDatabaseHas($tag->getTable(), [
+        static::assertTagCreationEvents($tag);
+        static::assertDatabaseHas($tag->getTable(), [
             'name' => 'Laravel',
             'slug' => 'laravel',
         ]);
 
-        $this->assertCount(0, $tag->posts);
-        $this->assertFalse($tag->hasPosts());
-        $this->assertTrue($tag->isDeletable());
+        static::assertCount(0, $tag->posts);
+        static::assertFalse($tag->hasPosts());
+        static::assertTrue($tag->isDeletable());
 
         /** @var  \Arcanesoft\Blog\Models\Post  $post */
         $post = $tag->posts()->create([
@@ -216,11 +216,11 @@ class TagTest extends TestCase
 
         $tag->load('posts');
 
-        $this->assertCount(1, $tag->posts);
-        $this->assertTrue($tag->hasPosts());
-        $this->assertFalse($tag->isDeletable());
+        static::assertCount(1, $tag->posts);
+        static::assertTrue($tag->hasPosts());
+        static::assertFalse($tag->isDeletable());
 
-        $this->assertDatabaseHas($post->getTable(), [
+        static::assertDatabaseHas($post->getTable(), [
             'author_id'    => 1,
             'category_id'  => 1,
             'locale'       => 'en',
@@ -240,7 +240,7 @@ class TagTest extends TestCase
 
     protected function assertTagCreationEvents(Tag $tag)
     {
-        $this->assertTagEvents([
+        static::assertTagEvents([
             TagCreating::class, TagCreated::class, TagSaving::class, TagSaved::class
         ], function (AbstractTagEvent $e) use ($tag) {
             return $e->tag->id === $tag->id;
@@ -249,7 +249,7 @@ class TagTest extends TestCase
 
     protected function assertTagModificationEvents(Tag $tag)
     {
-        $this->assertTagEvents([
+        static::assertTagEvents([
             TagUpdating::class, TagUpdated::class, TagSaving::class, TagSaved::class
         ], function (AbstractTagEvent $e) use ($tag) {
             return $e->tag->id === $tag->id;
@@ -271,6 +271,6 @@ class TagTest extends TestCase
     {
         $this->app['config']->set('arcanesoft.blog.translatable.enabled', true);
 
-        $this->assertTrue(Blog::instance()->isTranslatable());
+        static::assertTrue(Blog::isTranslatable());
     }
 }

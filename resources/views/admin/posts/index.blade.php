@@ -74,7 +74,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center">
+                                <td colspan="6" class="text-center">
                                     <span class="label label-default">{{ trans('blog::posts.list-empty') }}</span>
                                 </td>
                             </tr>
@@ -84,15 +84,15 @@
             </div>
         </div>
         @if ($posts->hasPages())
-            <div class="box-footer clearfix">{!! $posts->render() !!}</div>
+            <div class="box-footer clearfix">{{ $posts->render() }}</div>
         @endif
     </div>
 @endsection
 
 @section('modals')
     {{-- RESTORE MODAL --}}
-    @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
-        @if ($trashed)
+    @if ($trashed)
+        @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
             <div id="restore-post-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
                     {{ Form::open(['route' => ['admin::blog.posts.restore', ':id'], 'method' => 'PUT', 'id' => 'restore-post-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
@@ -114,8 +114,8 @@
                     {{ Form::close() }}
                 </div>
             </div>
-        @endif
-    @endcan
+        @endcan
+    @endif
 
     {{-- DELETE MODAL --}}
     @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_DELETE)
@@ -143,8 +143,8 @@
 
 @section('scripts')
     {{-- RESTORE SCRIPT --}}
-    @can(\Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
-        @if ($trashed)
+    @if ($trashed)
+        @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_UPDATE)
             <script>
                 $(function () {
                     var $restorePostModal = $('div#restore-post-modal'),
@@ -185,14 +185,14 @@
                         return false;
                     });
 
-                    $restorePostModal.on('hidden.bs.modal', function (e) {
+                    $restorePostModal.on('hidden.bs.modal', function () {
                         $restorePostForm.attr('action', restorePostAction);
                         $restorePostForm.find('.modal-body p').html('');
                     });
                 });
             </script>
-        @endif
-    @endcan
+        @endcan
+    @endif
 
     {{-- DELETE SCRIPT --}}
     @can(Arcanesoft\Blog\Policies\PostsPolicy::PERMISSION_DELETE)

@@ -82,7 +82,7 @@
                     @endcan
 
                     @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
-                        {{ ui_link('delete', '#delete-tag-modal') }}
+                        {{ ui_link('delete', '#delete-tag-modal')->setDisabled( ! $tag->isDeletable()) }}
                     @endcan
                 </div>
             </div>
@@ -147,7 +147,7 @@
         @if ($tag->trashed())
             <div id="restore-tag-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
-                    {{ Form::open(['route' => ['admin::blog.tags.restore', $tag], 'method' => 'PUT', 'id' => 'restore-tag-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                    {{ form()->open(['route' => ['admin::blog.tags.restore', $tag], 'method' => 'PUT', 'id' => 'restore-tag-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -163,7 +163,7 @@
                                 {{ ui_button('restore', 'submit')->withLoadingText() }}
                             </div>
                         </div>
-                    {{ Form::close() }}
+                    {{ form()->close() }}
                 </div>
             </div>
         @endif
@@ -173,7 +173,7 @@
     @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
         <div id="delete-tag-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
-                {{ Form::open(['route' => ['admin::blog.tags.delete', $tag], 'method' => 'DELETE', 'id' => 'delete-tag-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                {{ form()->open(['route' => ['admin::blog.tags.delete', $tag], 'method' => 'DELETE', 'id' => 'delete-tag-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -189,7 +189,7 @@
                             {{ ui_button('delete', 'submit')->withLoadingText() }}
                         </div>
                     </div>
-                {{ Form::close() }}
+                {{ form()->close() }}
             </div>
         </div>
     @endcan
@@ -197,8 +197,8 @@
 
 @section('scripts')
     {{-- RESTORE SCRIPT --}}
-    @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
-        @if ($tag->trashed())
+    @if ($tag->trashed())
+        @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
         <script>
             $(function () {
                 var $restoreTagModal = $('div#restore-tag-modal'),
@@ -238,53 +238,55 @@
                 });
             });
         </script>
-        @endif
-    @endcan
+        @endcan
+    @endif
 
     {{-- DELETE SCRIPT --}}
-    @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
-    <script>
-        $(function () {
-            var $deleteTagModal = $('div#delete-tag-modal'),
-                $deleteTagForm  = $('form#delete-tag-form');
+    @if ($tag->isDeletable())
+        @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
+        <script>
+            $(function () {
+                var $deleteTagModal = $('div#delete-tag-modal'),
+                    $deleteTagForm  = $('form#delete-tag-form');
 
-            $('a[href="#delete-tag-modal"]').on('click', function (e) {
-                e.preventDefault();
+                $('a[href="#delete-tag-modal"]').on('click', function (e) {
+                    e.preventDefault();
 
-                $deleteTagModal.modal('show');
-            });
+                    $deleteTagModal.modal('show');
+                });
 
-            $deleteTagForm.on('submit', function (e) {
-                e.preventDefault();
+                $deleteTagForm.on('submit', function (e) {
+                    e.preventDefault();
 
-                var submitBtn = $deleteTagForm.find('button[type="submit"]');
-                    submitBtn.button('loading');
+                    var submitBtn = $deleteTagForm.find('button[type="submit"]');
+                        submitBtn.button('loading');
 
-                axios.delete($deleteTagForm.attr('action'))
-                     .then(function (response) {
-                         if (response.data.code === 'success') {
-                             $deleteTagModal.modal('hide');
-                             @if ($tag->trashed())
-                                 location.replace("{{ route('admin::blog.tags.index') }}");
-                             @else
-                                 location.reload();
-                             @endif
-                         }
-                         else {
-                             alert('ERROR ! Check the console !');
-                             console.error(response.data.message);
+                    axios.delete($deleteTagForm.attr('action'))
+                         .then(function (response) {
+                             if (response.data.code === 'success') {
+                                 $deleteTagModal.modal('hide');
+                                 @if ($tag->trashed())
+                                     location.replace("{{ route('admin::blog.tags.index') }}");
+                                 @else
+                                     location.reload();
+                                 @endif
+                             }
+                             else {
+                                 alert('ERROR ! Check the console !');
+                                 console.error(response.data.message);
+                                 submitBtn.button('reset');
+                             }
+                         })
+                         .catch(function (error) {
+                             alert('AJAX ERROR ! Check the console !');
+                             console.log(error);
                              submitBtn.button('reset');
-                         }
-                     })
-                     .catch(function (error) {
-                         alert('AJAX ERROR ! Check the console !');
-                         console.log(error);
-                         submitBtn.button('reset');
-                     });
+                         });
 
-                return false;
+                    return false;
+                });
             });
-        });
-    </script>
-    @endcan
+        </script>
+        @endcan
+    @endif
 @endsection

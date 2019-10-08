@@ -72,9 +72,20 @@ class Blog
      *
      * @return bool
      */
-    public function isTranslatable()
+    public static function isTranslatable()
     {
         return config('arcanesoft.blog.translatable.enabled', false);
+    }
+
+    /**
+     * Check if the blog is seoable.
+     *
+     * @return bool
+     */
+    public static function isSeoable()
+    {
+        return config('arcanesoft.blog.seoable.enabled', false)
+            && static::isSeoManagerInstalled();
     }
 
     /**
@@ -82,23 +93,50 @@ class Blog
      *
      * @return array
      */
-    public function getSupportedLocalesKeys()
+    public static function getSupportedLocalesKeys()
     {
         $default = [config('app.locale')];
 
-        return $this->isTranslatable()
+        return static::isTranslatable()
             ? array_unique(config('localization.supported-locales', $default))
             : $default;
     }
 
     /**
-     * Check if the media manager is installed.
+     * Check if the Media manager is installed.
      *
      * @return bool
      */
-    public function isMediaManagerInstalled()
+    public static function isMediaManagerInstalled()
     {
-        return array_key_exists('Arcanesoft\Media\MediaServiceProvider', app()->getLoadedProviders());
+        return static::hasRegisteredProvider('Arcanesoft\\Media\\MediaServiceProvider');
+    }
+
+    /**
+     * Check if the SEO manager is installed.
+     *
+     * @return bool
+     */
+    public static function isSeoManagerInstalled()
+    {
+        return static::hasRegisteredProvider('Arcanesoft\\Seo\\SeoServiceProvider');
+    }
+
+    /* -----------------------------------------------------------------
+     |  Other Methods
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Check if the provider was registered in the container.
+     *
+     * @param  string  $provider
+     *
+     * @return bool
+     */
+    protected static function hasRegisteredProvider($provider)
+    {
+        return array_key_exists($provider, app()->getLoadedProviders());
     }
 
     protected function __clone()

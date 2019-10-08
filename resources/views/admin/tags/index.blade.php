@@ -13,10 +13,10 @@
 
             <div class="box-tools">
                 <div class="btn-group" role="group">
-                    <a href="{{ route('admin::blog.tags.index') }}" class="btn btn-xs btn-default {{ route_is('admin::blog.tags.index') ? 'active' : '' }}">
+                    <a href="{{ route('admin::blog.tags.index') }}" class="btn btn-xs btn-default {{ active(['admin::blog.tags.index']) }}">
                         <i class="fa fa-fw fa-bars"></i> {{ trans('core::generals.all') }}
                     </a>
-                    <a href="{{ route('admin::blog.tags.trash') }}" class="btn btn-xs btn-default {{ route_is('admin::blog.tags.trash') ? 'active' : '' }}">
+                    <a href="{{ route('admin::blog.tags.trash') }}" class="btn btn-xs btn-default {{ active(['admin::blog.tags.trash']) }}">
                         <i class="fa fa-fw fa-trash-o"></i> {{ trans('core::generals.trashed') }}
                     </a>
                 </div>
@@ -89,7 +89,7 @@
             </div>
         </div>
         @if ($tags->hasPages())
-            <div class="box-footer clearfix">{!! $tags->render() !!}</div>
+            <div class="box-footer clearfix">{{ $tags->render() }}</div>
         @endif
     </div>
 @endsection
@@ -100,7 +100,7 @@
         @if ($trashed)
             <div id="restore-tag-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
                 <div class="modal-dialog" role="document">
-                    {{ Form::open(['method' => 'PUT', 'id' => 'restore-tag-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                    {{ form()->open(['method' => 'PUT', 'id' => 'restore-tag-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
                         <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -116,7 +116,7 @@
                                 {{ ui_button('restore', 'submit')->withLoadingText() }}
                             </div>
                         </div>
-                    {{ Form::close() }}
+                    {{ form()->close() }}
                 </div>
             </div>
         @endif
@@ -126,7 +126,7 @@
     @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
         <div id="delete-tag-modal" class="modal fade" data-backdrop="false" tabindex="-1" role="dialog">
             <div class="modal-dialog" role="document">
-                {{ Form::open(['method' => 'DELETE', 'id' => 'delete-tag-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
+                {{ form()->open(['route' => ['admin::blog.tags.delete', ':id'], 'method' => 'DELETE', 'id' => 'delete-tag-form', 'class' => 'form form-loading', 'autocomplete' => 'off']) }}
                     <div class="modal-content">
                         <div class="modal-header">
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -142,7 +142,7 @@
                             {{ ui_button('delete', 'submit')->withLoadingText() }}
                         </div>
                     </div>
-                {{ Form::close() }}
+                {{ form()->close() }}
             </div>
         </div>
     @endcan
@@ -150,13 +150,13 @@
 
 @section('scripts')
     {{-- RESTORE SCRIPT --}}
-    @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
-        @if ($trashed)
+    @if ($trashed)
+        @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_UPDATE)
         <script>
             $(function () {
                 var $restoreTagModal = $('div#restore-tag-modal'),
                     $restoreTagForm  = $('form#restore-tag-form'),
-                    restoreTagAction = "{{ route('admin::blog.tags.restore', [':id']) }}";
+                    restoreTagAction = $restoreTagForm.attr('action');
 
                 $('a[href="#restore-tag-modal"]').on('click', function (e) {
                     e.preventDefault();
@@ -176,7 +176,7 @@
                     $restoreTagModal.find('.modal-body p').html('');
                 });
 
-                $restoreTagForm.submit(function (e) {
+                $restoreTagForm.on('submit', function (e) {
                     e.preventDefault();
 
                     var submitBtn = $restoreTagForm.find('button[type="submit"]');
@@ -204,15 +204,15 @@
                 });
             });
         </script>
-        @endif
-    @endcan
+        @endcan
+    @endif
 
     {{-- DELETE SCRIPT --}}
     @can(Arcanesoft\Blog\Policies\TagsPolicy::PERMISSION_DELETE)
     <script>
         var $deleteTagModal = $('div#delete-tag-modal'),
             $deleteTagForm  = $('form#delete-tag-form'),
-            deleteTagAction = "{{ route('admin::blog.tags.delete', [':id']) }}";
+            deleteTagAction = $deleteTagForm.attr('action');
 
         $('a[href="#delete-tag-modal"]').on('click', function (e) {
             e.preventDefault();

@@ -95,7 +95,7 @@ abstract class AbstractTaxonomy extends AbstractModel
      */
     public function getTranslatableAttributes()
     {
-        return Blog::instance()->isTranslatable() ? ['name', 'slug'] : [];
+        return Blog::isTranslatable() ? ['name', 'slug'] : [];
     }
 
     /* -----------------------------------------------------------------

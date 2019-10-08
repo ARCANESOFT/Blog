@@ -81,7 +81,7 @@ class Category extends AbstractTaxonomy
 
         /** @var  \Illuminate\Database\Eloquent\Collection  $categories */
         return cache()->remember(self::SELECT_CACHE_NAME, $minutes, function () {
-                $withTranslations = Blog::instance()->isTranslatable();
+                $withTranslations = Blog::isTranslatable();
 
                 return self::all()->mapWithKeys(function (Category $category) use ($withTranslations) {
                     return [

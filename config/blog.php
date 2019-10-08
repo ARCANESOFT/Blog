@@ -55,6 +55,15 @@ return [
     ],
 
     /* -----------------------------------------------------------------
+     |  Seoable
+     | -----------------------------------------------------------------
+     */
+
+    'seoable' => [
+        'enabled' => false,
+    ],
+
+    /* -----------------------------------------------------------------
      |  Cache
      | -----------------------------------------------------------------
      */
@@ -71,9 +80,12 @@ return [
      */
 
     'events' => [
+
         'listeners' => [
-            // Post Model events & listeners
+
+            // Posts
             //-----------------------------------------------------
+
             Events\Posts\PostCreating::class  => [],
             Events\Posts\PostCreated::class   => [],
             Events\Posts\PostUpdating::class  => [],
@@ -87,8 +99,9 @@ return [
             Events\Posts\PostRestoring::class => [],
             Events\Posts\PostRestored::class  => [],
 
-            // Category Model events & listeners
+            // Categories
             //-----------------------------------------------------
+
             Events\Categories\CategoryCreating::class  => [],
             Events\Categories\CategoryCreated::class   => [
                 Listeners\Categories\ClearCategoriesSelectDataCache::class,
@@ -104,8 +117,9 @@ return [
             Events\Categories\CategoryRestoring::class => [],
             Events\Categories\CategoryRestored::class  => [],
 
-            // Tag Model events & listeners
+            // Tags
             //-----------------------------------------------------
+
             Events\Tags\TagCreating::class  => [],
             Events\Tags\TagCreated::class   => [
                 Listeners\Tags\ClearTagsSelectDataCache::class,
@@ -121,6 +135,7 @@ return [
             Events\Tags\TagRestoring::class => [],
             Events\Tags\TagRestored::class  => [],
         ],
+
     ],
 
 ];
