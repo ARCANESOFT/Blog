@@ -1,93 +1,141 @@
-<?php namespace Arcanesoft\Blog\Models;
+<?php
+
+declare(strict_types=1);
+
+namespace Arcanesoft\Blog\Models;
 
 use Arcanesoft\Blog\Blog;
-use Arcanesoft\Blog\Events\Tags as TagEvents;
+use Illuminate\Support\Str;
 
 /**
- * Class     Category
+ * Class     Tag
  *
  * @package  Arcanesoft\Blog\Models
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
+ *
+ * @property  int                         id
+ * @property  string                      name
+ * @property  string                      slug
+ * @property  array                       meta
+ * @property  \Illuminate\Support\Carbon  created_at
+ * @property  \Illuminate\Support\Carbon  updated_at
+ *
+ * @property-read  \Arcanesoft\Blog\Models\Post[]|\Illuminate\Database\Eloquent\Collection  $posts
+ * @property-read  int                                                                      $posts_count
  */
-class Tag extends AbstractTaxonomy
+class Tag extends Model
 {
-    /* -----------------------------------------------------------------
-     |  Constants
-     | -----------------------------------------------------------------
-     */
-
-    const SELECT_CACHE_NAME = 'blog::tags.select-data';
-
     /* -----------------------------------------------------------------
      |  Properties
      | -----------------------------------------------------------------
      */
 
     /**
-     * The database table used by the model
-     *
-     * @var string
-     */
-    protected $table = 'tags';
-
-    /**
-     * The event map for the model.
+     * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $dispatchesEvents = [
-        'creating'  => TagEvents\TagCreating::class,
-        'created'   => TagEvents\TagCreated::class,
-        'updating'  => TagEvents\TagUpdating::class,
-        'updated'   => TagEvents\TagUpdated::class,
-        'saving'    => TagEvents\TagSaving::class,
-        'saved'     => TagEvents\TagSaved::class,
-        'deleting'  => TagEvents\TagDeleting::class,
-        'deleted'   => TagEvents\TagDeleted::class,
-        'restoring' => TagEvents\TagRestoring::class,
-        'restored'  => TagEvents\TagRestored::class,
+    protected $fillable = [
+        'name',
+        'slug',
+        'meta',
     ];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'id'   => 'integer',
+        'meta' => 'array',
+    ];
+
+    /* -----------------------------------------------------------------
+     |  Constructor
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Create a new Eloquent model instance.
+     *
+     * @param  array  $attributes
+     */
+    public function __construct(array $attributes = [])
+    {
+        $this->setTable(Blog::table('tags'));
+
+        parent::__construct($attributes);
+    }
+
+    /* -----------------------------------------------------------------
+     |  Getters & Setters
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Get the route key for the model.
+     *
+     * @return string
+     */
+    public function getRouteKeyName(): string
+    {
+        return 'uuid';
+    }
+
+    /**
+     * Set the `slug` attribute.
+     *
+     * @param  string  $slug
+     */
+    public function setSlugAttribute(string $slug)
+    {
+        $this->attributes['slug'] = Str::slug($slug);
+    }
     /* -----------------------------------------------------------------
      |  Relationships
      | -----------------------------------------------------------------
      */
 
     /**
-     * Posts relationship.
+     * Posts' relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function posts()
     {
-        return $this->belongsToMany(Post::class, $this->getPrefix().'post_tag');
+        return $this->belongsToMany(
+            Blog::model('post', Post::class),
+            Blog::table('post_tag', 'post_tag'),
+            'tag_id',
+            'post_id'
+        )
+            ->using(Pivots\PostTag::class)
+            ->as('post_tag');
     }
 
     /* -----------------------------------------------------------------
-     |  Main Methods
+     |  Check Methods
      | -----------------------------------------------------------------
      */
 
     /**
-     * Get the categories options for select input.
+     * Check if the tag is deletable.
      *
-     * @return \Illuminate\Support\Collection
+     * @return bool
      */
-    public static function getSelectData()
+    public function isDeletable(): bool
     {
-        $minutes = config('arcanesoft.blog.cache.tags.select-data', 5);
+        return true;
+    }
 
-        /** @var  \Illuminate\Database\Eloquent\Collection  $categories */
-        return cache()->remember(self::SELECT_CACHE_NAME, $minutes, function () {
-            $withTranslations = Blog::isTranslatable();
-
-            return self::all()->mapWithKeys(function (Tag $tag) use ($withTranslations) {
-                return [
-                    $tag->id => $withTranslations
-                        ? implode(' / ', $tag->getTranslations('name'))
-                        : $tag->name
-                ];
-            });
-        })->toBase();
+    /**
+     * Check if the tag is not deletable.
+     *
+     * @return bool
+     */
+    public function isNotDeletable(): bool
+    {
+        return ! $this->isDeletable();
     }
 }

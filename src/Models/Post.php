@@ -1,13 +1,10 @@
-<?php namespace Arcanesoft\Blog\Models;
+<?php
 
-use Arcanedev\LaravelSeo\Traits\Seoable;
+declare(strict_types=1);
+
+namespace Arcanesoft\Blog\Models;
+
 use Arcanesoft\Blog\Blog;
-use Arcanesoft\Blog\Events\Posts as PostEvents;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 
 /**
  * Class     Post
@@ -15,40 +12,30 @@ use Illuminate\Support\Str;
  * @package  Arcanesoft\Blog\Models
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  *
- * @property  int             id
- * @property  int             author_id
- * @property  int             category_id
- * @property  string          locale
- * @property  string          title
- * @property  string          slug
- * @property  string          excerpt
- * @property  string|null     thumbnail
- * @property  string          content_raw
- * @property  string          content_html
- * @property  bool            is_draft
- * @property  \Carbon\Carbon  published_at
- * @property  \Carbon\Carbon  created_at
- * @property  \Carbon\Carbon  updated_at
- * @property  \Carbon\Carbon  deleted_at
+ * @property  int                         id
+ * @property  int                         author_id
+ * @property  string                      title
+ * @property  string                      slug
+ * @property  string                      excerpt
+ * @property  string                      body
+ * @property  string                      thumbnail
+ * @property  string                      thumbnail_caption
+ * @property  array                       meta
+ * @property  \Illuminate\Support\Carbon  created_at
+ * @property  \Illuminate\Support\Carbon  updated_at
+ * @property  \Illuminate\Support\Carbon  published_at
  *
- * @property  \Arcanesoft\Contracts\Auth\Models\User    author
- * @property  \Arcanesoft\Blog\Models\Category          category
- * @property  \Illuminate\Database\Eloquent\Collection  tags
- *
- * @method  static  \Illuminate\Database\Eloquent\Builder  published()
- * @method  static  \Illuminate\Database\Eloquent\Builder  publishedAt(int $year)
- * @method  static  \Illuminate\Database\Eloquent\Builder  localized(string|null $locale)
+ * @property-read  \Arcanesoft\Blog\Models\Author            author
+ * @property-read  \Illuminate\Database\Eloquent\Collection  tags
  */
-class Post extends AbstractModel
+class Post extends Model
 {
     /* -----------------------------------------------------------------
      |  Traits
      | -----------------------------------------------------------------
      */
 
-    use Presenters\PostPresenter,
-        Seoable,
-        SoftDeletes;
+    use Presenters\PostPresenter;
 
     /* -----------------------------------------------------------------
      |  Properties
@@ -56,28 +43,20 @@ class Post extends AbstractModel
      */
 
     /**
-     * The database table used by the model
-     *
-     * @var string
-     */
-    protected $table = 'posts';
-
-    /**
-     * The attributes that are mass assignable
+     * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
         'author_id',
-        'category_id',
-        'locale',
         'title',
         'slug',
         'excerpt',
+        'body',
         'thumbnail',
-        'content',
+        'thumbnail_caption',
+        'meta',
         'published_at',
-        'status',
     ];
 
     /**
@@ -85,7 +64,7 @@ class Post extends AbstractModel
      *
      * @var array
      */
-    protected $dates = ['published_at', 'deleted_at'];
+    protected $dates = ['published_at'];
 
     /**
      * The attributes that should be casted to native types.
@@ -93,72 +72,26 @@ class Post extends AbstractModel
      * @var array
      */
     protected $casts = [
-        'author_id'   => 'integer',
-        'category_id' => 'integer',
-        'is_draft'    => 'boolean',
-    ];
-
-    /**
-     * The event map for the model.
-     *
-     * @var array
-     */
-    protected $dispatchesEvents = [
-        'creating'  => PostEvents\PostCreating::class,
-        'created'   => PostEvents\PostCreated::class,
-        'updating'  => PostEvents\PostUpdating::class,
-        'updated'   => PostEvents\PostUpdated::class,
-        'saving'    => PostEvents\PostSaving::class,
-        'saved'     => PostEvents\PostSaved::class,
-        'deleting'  => PostEvents\PostDeleting::class,
-        'deleted'   => PostEvents\PostDeleted::class,
-        'restoring' => PostEvents\PostRestoring::class,
-        'restored'  => PostEvents\PostRestored::class,
+        'id'        => 'integer',
+        'author_id' => 'integer',
+        'meta'      => 'array',
     ];
 
     /* -----------------------------------------------------------------
-     |  Scopes
+     |  Constructor
      | -----------------------------------------------------------------
      */
 
     /**
-     * Scope only published posts.
+     * Create a new Eloquent model instance.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  array  $attributes
      */
-    public function scopePublished(Builder $query)
+    public function __construct(array $attributes = [])
     {
-        return $query->where('is_draft', false)
-                     ->where('published_at', '<=', now());
-    }
+        $this->setTable(Blog::table('posts'));
 
-    /**
-     * Scope only published posts.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  int                                    $year
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopePublishedAt(Builder $query, $year)
-    {
-        return $this->scopePublished($query)
-                    ->where(DB::raw('YEAR(published_at)'), $year);
-    }
-
-    /**
-     * Scope by post's locale.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @param  string|null                            $locale
-     *
-     * @return \Illuminate\Database\Eloquent\Builder
-     */
-    public function scopeLocalized(Builder $query, $locale = null)
-    {
-        return $query->where('locale', $locale ?: config('app.locale'));
+        parent::__construct($attributes);
     }
 
     /* -----------------------------------------------------------------
@@ -167,127 +100,67 @@ class Post extends AbstractModel
      */
 
     /**
-     * Author relationship.
+     * Author's relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function author()
     {
         return $this->belongsTo(
-            config('auth.providers.users.model', 'App\\Models\\User'),
+            Blog::model('author', Author::class),
             'author_id'
         );
     }
 
     /**
-     * Category relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
-
-    /**
-     * Tags relationship.
+     * Tags' relationship.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function tags()
     {
-        return $this->belongsToMany(Tag::class, "{$this->prefix}post_tag");
+        return $this->belongsToMany(
+            Blog::model('tag', Tag::class),
+            Blog::table('post_tag', 'post_tag'),
+            'post_id',
+            'tag_id'
+        )
+            ->using(Pivots\PostTag::class)
+            ->as('post_tag');
     }
 
     /* -----------------------------------------------------------------
-     |  Getters & Setters
+     |  Scopes
      | -----------------------------------------------------------------
      */
 
     /**
-     * Set the title attribute.
+     * Scope a query to only include published posts.
      *
-     * @param  string  $title
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function setTitleAttribute($title)
+    public function scopePublished($query)
     {
-        $this->attributes['title'] = $title;
+        return $query->whereNotNull('published_at')
+                     ->where('published_at', '<=', now());
     }
 
     /**
-     * Get the slug attribute.
+     * Scope a query to only include drafts (unpublished posts).
      *
-     * @param  string  $slug
-     */
-    public function setSlugAttribute($slug)
-    {
-        $this->attributes['slug'] = Str::slug($slug);
-    }
-
-    /**
-     * Set the content attribute.
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      *
-     * @param  string  $content
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function setContentAttribute($content)
+    public function scopeDraft($query)
     {
-        $this->attributes['content_raw']  = $content;
-        $this->attributes['content_html'] = markdown($content);
+        return $query->whereNull('published_at');
     }
 
     /* -----------------------------------------------------------------
-     |  Main Functions
-     | -----------------------------------------------------------------
-     */
-
-    /**
-     * Create a post.
-     *
-     * @param  array  $attributes
-     *
-     * @return self
-     */
-    public static function createOne(array $attributes)
-    {
-        return tap(new self($attributes), function (self $post) use ($attributes) {
-            $post->save();
-
-            $post->tags()->sync($attributes['tags']);
-
-            if (Blog::isSeoable()) {
-                $post->createSeo(
-                    static::extractSeoAttributes($attributes)
-                );
-            }
-        });
-    }
-
-    /**
-     * Create a post.
-     *
-     * @param  array  $attributes
-     *
-     * @return bool|int
-     */
-    public function updateOne(array $attributes)
-    {
-        $updated = $this->update(Arr::except($attributes, ['author_id']));
-
-        $this->tags()->sync($attributes['tags']);
-
-        if (Blog::isSeoable()) {
-            $seo = static::extractSeoAttributes($attributes);
-
-            $this->hasSeo()
-                ? $this->updateSeo($seo)
-                : $this->createSeo($seo);
-        }
-
-        return $updated;
-    }
-
-    /* -----------------------------------------------------------------
-     |  Check Functions
+     |  Check Methods
      | -----------------------------------------------------------------
      */
 
@@ -296,62 +169,38 @@ class Post extends AbstractModel
      *
      * @return bool
      */
-    public function isDeletable()
+    public function isDeletable(): bool
     {
         return true;
     }
 
     /**
-     * Check if the post's status is "draft".
+     * Check if the post is not deletable.
      *
      * @return bool
      */
-    public function isDraft()
+    public function isNotDeletable(): bool
     {
-        return is_null($this->is_draft)
-            ? true
-            : $this->is_draft;
+        return ! $this->isDeletable();
     }
 
     /**
-     * Check if the post's status is "published".
+     * Check if the post is published.
      *
      * @return bool
      */
-    public function isPublished()
+    public function isPublished(): bool
     {
-        return ! $this->isDraft();
+        return $this->isDraft();
     }
 
     /**
-     * Check if the post has thumbnail.
+     * Check if the post is a draft.
      *
      * @return bool
      */
-    public function hasThumbnail()
+    public function isDraft(): bool
     {
-        return ! is_null($this->thumbnail);
-    }
-
-    /* -----------------------------------------------------------------
-     |  Other Methods
-     | -----------------------------------------------------------------
-     */
-
-    /**
-     * Extract the seo attributes.
-     *
-     * @param  array  $inputs
-     *
-     * @return array
-     */
-    protected static function extractSeoAttributes(array $inputs)
-    {
-        return [
-            'title'       => Arr::get($inputs, 'seo_title'),
-            'description' => Arr::get($inputs, 'seo_description'),
-            'keywords'    => Arr::get($inputs, 'seo_keywords'),
-            'metas'       => Arr::get($inputs, 'seo_metas', []),
-        ];
+        return is_null($this->published_at);
     }
 }

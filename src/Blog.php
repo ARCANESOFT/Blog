@@ -1,8 +1,5 @@
 <?php namespace Arcanesoft\Blog;
 
-use Arcanesoft\Blog\Http\Routes\Front as Routes;
-use Illuminate\Support\Facades\Route;
-
 /**
  * Class     Blog
  *
@@ -16,14 +13,8 @@ class Blog
      | -----------------------------------------------------------------
      */
 
-    /**
-     * Indicates if migrations will be run.
-     *
-     * @var bool
-     */
+    /** @var  bool */
     public static $runsMigrations = true;
-
-    protected static $instance = null;
 
     /* -----------------------------------------------------------------
      |  Main Methods
@@ -31,116 +22,60 @@ class Blog
      */
 
     /**
-     * Get the blog instance.
+     * Get the blog table name.
      *
-     * @return Blog
+     * @param  string       $name
+     * @param  string|null  $default
+     * @param  bool         $prefixed
+     *
+     * @return string
      */
-    public static function instance()
+    public static function table(string $name, $default = null, $prefixed = true): string
     {
-        if (is_null(static::$instance)) {
-            static::$instance = new static;
-        }
+        $name = config()->get("arcanesoft.blog.database.tables.{$name}", $default);
 
-        return static::$instance;
+        return $prefixed ? static::prefixTable($name) : $name;
     }
 
     /**
-     * Publish the migrations.
+     * Get the model class by the given key.
+     *
+     * @param  string       $name
+     * @param  string|null  $default
+     *
+     * @return string
      */
-    public static function publishMigrations()
+    public static function model(string $name, $default = null): string
     {
-        static::$runsMigrations = false;
+        // TODO: Throw exception if not found ?
+
+        return config()->get("arcanesoft.blog.database.models.{$name}", $default);
     }
 
     /**
-     * Register the public blog routes.
+     * Make/Get the model instance.
+     *
+     * @param  string       $name
+     * @param  string|null  $default
+     *
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Builder|mixed
      */
-    public static function routes()
+    public static function makeModel(string $name, $default = null)
     {
-        Route::name('public::blog.')
-            ->prefix('blog')
-            ->namespace('\\Arcanesoft\\Blog\\Http\\Controllers\\Front')
-            ->group(function () {
-                Routes\PostsRoutes::register();
-                Routes\CategoriesRoutes::register();
-                Routes\TagsRoutes::register();
-            });
+        return app()->make(static::model($name, $default));
     }
 
     /**
-     * Check if the blog is translatable.
+     * Add the blog prefix to the table.
      *
-     * @return bool
-     */
-    public static function isTranslatable()
-    {
-        return config('arcanesoft.blog.translatable.enabled', false);
-    }
-
-    /**
-     * Check if the blog is seoable.
+     * @param  string  $name
      *
-     * @return bool
+     * @return string
      */
-    public static function isSeoable()
+    public static function prefixTable(string $name): string
     {
-        return config('arcanesoft.blog.seoable.enabled', false)
-            && static::isSeoManagerInstalled();
-    }
+        $prefix = config()->get('arcanesoft.blog.database.prefix');
 
-    /**
-     * Get the supported locales.
-     *
-     * @return array
-     */
-    public static function getSupportedLocalesKeys()
-    {
-        $default = [config('app.locale')];
-
-        return static::isTranslatable()
-            ? array_unique(config('localization.supported-locales', $default))
-            : $default;
-    }
-
-    /**
-     * Check if the Media manager is installed.
-     *
-     * @return bool
-     */
-    public static function isMediaManagerInstalled()
-    {
-        return static::hasRegisteredProvider('Arcanesoft\\Media\\MediaServiceProvider');
-    }
-
-    /**
-     * Check if the SEO manager is installed.
-     *
-     * @return bool
-     */
-    public static function isSeoManagerInstalled()
-    {
-        return static::hasRegisteredProvider('Arcanesoft\\Seo\\SeoServiceProvider');
-    }
-
-    /* -----------------------------------------------------------------
-     |  Other Methods
-     | -----------------------------------------------------------------
-     */
-
-    /**
-     * Check if the provider was registered in the container.
-     *
-     * @param  string  $provider
-     *
-     * @return bool
-     */
-    protected static function hasRegisteredProvider($provider)
-    {
-        return array_key_exists($provider, app()->getLoadedProviders());
-    }
-
-    protected function __clone()
-    {
-        // YOU ... SHALL NOT ... CLOOOOOONE!
+        return $prefix ? $prefix.$name : $name;
     }
 }

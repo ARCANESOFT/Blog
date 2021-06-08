@@ -1,4 +1,4 @@
 /build/
 /vendor/
-composer.lock
-composer.phar
+/composer.phar
+/composer.lock

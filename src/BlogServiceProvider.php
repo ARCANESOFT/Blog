@@ -1,6 +1,10 @@
-<?php namespace Arcanesoft\Blog;
+<?php
 
-use Arcanesoft\Core\Bases\PackageServiceProvider;
+declare(strict_types=1);
+
+namespace Arcanesoft\Blog;
+
+use Arcanesoft\Foundation\Support\Providers\PackageServiceProvider;
 
 /**
  * Class     BlogServiceProvider
@@ -16,11 +20,18 @@ class BlogServiceProvider extends PackageServiceProvider
      */
 
     /**
-     * Package name.
+     * The package name.
      *
-     * @var string
+     * @var  string
      */
     protected $package = 'blog';
+
+    /**
+     * Merge multiple config files into one instance (package name as root key)
+     *
+     * @var bool
+     */
+    protected $multiConfigs = true;
 
     /* -----------------------------------------------------------------
      |  Main Methods
@@ -28,50 +39,37 @@ class BlogServiceProvider extends PackageServiceProvider
      */
 
     /**
-     * Register the service provider.
+     * Register any application services.
      */
-    public function register()
+    public function register(): void
     {
-        parent::register();
-
         $this->registerConfig();
-        $this->registerSidebarItems();
 
         $this->registerProviders([
-            Providers\AuthorizationServiceProvider::class,
+            Providers\AuthServiceProvider::class,
             Providers\EventServiceProvider::class,
-            Providers\ViewComposerServiceProvider::class,
+            Providers\MetricServiceProvider::class,
             Providers\RouteServiceProvider::class,
-            \Arcanedev\LaravelMarkdown\LaravelMarkdownServiceProvider::class,
+            Providers\ViewServiceProvider::class,
         ]);
-        $this->registerConsoleServiceProvider(Providers\CommandServiceProvider::class);
     }
 
     /**
      * Boot the service provider.
      */
-    public function boot()
+    public function boot(): void
     {
-        parent::boot();
+        $this->loadTranslations();
+        $this->loadViews();
 
-        // Publishes
-        $this->publishConfig();
-        $this->publishViews();
-        $this->publishTranslations();
-        $this->publishSidebarItems();
+        if ($this->app->runningInConsole()) {
+            $this->publishConfig();
+            $this->publishTranslations();
+            $this->publishViews();
 
-        Blog::$runsMigrations ? $this->loadMigrations() : $this->publishMigrations();
-    }
-
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
-    {
-        return [
-            //
-        ];
+            Blog::$runsMigrations
+                ? $this->loadMigrations()
+                : $this->publishMigrations();
+        }
     }
 }

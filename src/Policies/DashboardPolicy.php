@@ -1,7 +1,10 @@
-<?php namespace Arcanesoft\Blog\Policies;
+<?php
 
-use Arcanesoft\Contracts\Auth\Models\User;
-use Arcanesoft\Core\Bases\Policy;
+declare(strict_types=1);
+
+namespace Arcanesoft\Blog\Policies;
+
+use Arcanesoft\Foundation\Authorization\Models\Administrator;
 
 /**
  * Class     DashboardPolicy
@@ -12,26 +15,62 @@ use Arcanesoft\Core\Bases\Policy;
 class DashboardPolicy extends Policy
 {
     /* -----------------------------------------------------------------
-     |  Constants
-     | -----------------------------------------------------------------
-     */
-
-    const PERMISSION_STATS = 'blog.dashboard.stats';
-
-    /* -----------------------------------------------------------------
-     |  Abilities
+     |  Getters
      | -----------------------------------------------------------------
      */
 
     /**
-     * Allow to list all the statistics.
+     * Get the ability's prefix.
      *
-     * @param  \Arcanesoft\Contracts\Auth\Models\User  $user
-     *
-     * @return bool
+     * @return string
      */
-    public function statsPolicy(User $user)
+    protected static function prefix(): string
     {
-        return $user->may(static::PERMISSION_STATS);
+        return 'admin::blog.statistics.';
+    }
+
+    /* -----------------------------------------------------------------
+     |  Main Methods
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Get the policy's abilities.
+     *
+     * @return \Arcanedev\LaravelPolicies\Ability[]|iterable
+     */
+    public function abilities(): iterable
+    {
+        $this->setMetas([
+            'category' => 'Dashboard',
+        ]);
+
+        return [
+
+            // admin::blog.statistics.index
+            $this->makeAbility('index')->setMetas([
+                'name'        => 'Show all the statistics',
+                'description' => 'Ability to show all the statistics',
+            ]),
+
+        ];
+    }
+
+
+    /* -----------------------------------------------------------------
+     |  Policies
+     | -----------------------------------------------------------------
+     */
+
+    /**
+     * Allow to access all the auth stats.
+     *
+     * @param  \Arcanesoft\Foundation\Authorization\Models\Administrator|mixed  $administrator
+     *
+     * @return \Illuminate\Auth\Access\Response|bool|void
+     */
+    public function index(Administrator $administrator)
+    {
+        //
     }
 }

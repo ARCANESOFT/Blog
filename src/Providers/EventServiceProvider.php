@@ -1,6 +1,6 @@
 <?php namespace Arcanesoft\Blog\Providers;
 
-use Arcanedev\Support\Providers\EventServiceProvider as ServiceProvider;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 /**
  * Class     EventServiceProvider
@@ -11,17 +11,17 @@ use Arcanedev\Support\Providers\EventServiceProvider as ServiceProvider;
 class EventServiceProvider extends ServiceProvider
 {
     /* -----------------------------------------------------------------
-     |  Main Methods
+     |  Constructor
      | -----------------------------------------------------------------
      */
 
     /**
-     * Register the application's event listeners.
+     * Get the events and handlers.
+     *
+     * @return array
      */
-    public function boot()
+    public function listens(): array
     {
-        $this->listen = array_filter(config('arcanesoft.blog.events.listeners'));
-
-        parent::boot();
+        return config('arcanesoft.blog.events', []);
     }
 }

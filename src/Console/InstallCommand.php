@@ -1,10 +1,14 @@
-<?php namespace Arcanesoft\Blog\Console;
+<?php
 
-use Arcanedev\Support\Bases\Command;
-use Arcanesoft\Blog\Seeds\DatabaseSeeder;
+declare(strict_types=1);
+
+namespace Arcanesoft\Blog\Console;
+
+use Arcanesoft\Blog\Database\DatabaseSeeder;
+use Arcanesoft\Foundation\Support\Console\InstallCommand as Command;
 
 /**
- * Class     SetupCommand
+ * Class     InstallCommand
  *
  * @package  Arcanesoft\Blog\Console
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
@@ -21,14 +25,14 @@ class InstallCommand extends Command
      *
      * @var string
      */
-    protected $signature   = 'blog:install';
+    protected $signature = 'blog:install';
 
     /**
      * The console command description.
      *
-     * @var string
+     * @var string|null
      */
-    protected $description = 'Install the Blog module.';
+    protected $description = 'Install Blog module';
 
     /* -----------------------------------------------------------------
      |  Main Methods
@@ -36,10 +40,10 @@ class InstallCommand extends Command
      */
 
     /**
-     * Execute the console command.
+     * Handle the command.
      */
-    public function handle()
+    public function handle(): void
     {
-        $this->call('db:seed', ['--class' => DatabaseSeeder::class]);
+        $this->seed(DatabaseSeeder::class);
     }
 }

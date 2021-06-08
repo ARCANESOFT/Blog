@@ -1,9 +1,10 @@
 {
     "name":        "arcanesoft/blog",
-    "description": "Blog package for ARCANESOFT/Foundation.",
-    "homepage":    "https://github.com/ARCANESOFT/Blog",
-    "keywords":    ["arcanedev", "arcanesoft", "blog", "posts", "categories", "tags", "cms"],
-    "authors":  [
+    "description": "Blog module for ARCANESOFT.",
+    "keywords":    ["arcanedev", "arcanesoft", "blog", "framework", "laravel"],
+    "license":     "MIT",
+    "type":        "project",
+    "authors":     [
         {
             "name":     "ARCANEDEV",
             "email":    "arcanedev.maroc@gmail.com",
@@ -11,22 +12,14 @@
             "role":     "Developer"
         }
     ],
-    "type":    "library",
-    "license": "MIT",
     "require": {
-        "php":                        ">=7.0",
-        "arcanedev/laravel-markdown": "~1.3.0",
-        "arcanedev/laravel-seo":      "~0.6",
-        "arcanedev/localization":     "~2.1.0",
-        "arcanesoft/auth":            "~3.1.0",
-        "arcanesoft/core":            "~2.7.0"
+        "php": "^7.3|^8.0",
+        "arcanesoft/foundation": "^4.0",
+        "arcanedev/laravel-markdown": "~5.0"
     },
     "require-dev": {
-        "arcanesoft/media":    "~2.4.0",
-        "arcanesoft/seo":      "~2.3.0",
-        "orchestra/testbench": "~3.5.0",
-        "phpunit/phpcov":      "~4.0",
-        "phpunit/phpunit":     "~6.0"
+        "arcanesoft/seo": "@dev",
+        "phpunit/phpunit": "^9.3.3"
     },
     "autoload": {
         "psr-4": {
@@ -37,5 +30,21 @@
         "psr-4": {
             "Arcanesoft\\Blog\\Tests\\": "tests/"
         }
-    }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Arcanesoft\\Blog\\BlogServiceProvider"
+            ]
+        },
+        "arcanesoft": {
+            "install": "Arcanesoft\\Blog\\Console\\InstallCommand",
+            "publish": "Arcanesoft\\Blog\\Console\\PublishCommand"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
