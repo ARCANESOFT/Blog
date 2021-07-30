@@ -1,10 +1,8 @@
-@extends(arcanesoft\foundation()->template())
+<x-arc:layout>
+    @section('page-title')
+        <i class="far fa-fw fa-newspaper"></i> @lang('New Post')
+    @endsection
 
-@section('page-title')
-    <i class="far fa-fw fa-newspaper"></i> @lang('New Post')
-@endsection
-
-@section('content')
     {{ form()->open(['route' => 'admin::blog.posts.store', 'method' => 'POST']) }}
         <div class="card card-borderless mb-3">
             <div class="card-header">@lang('Post')</div>
@@ -53,10 +51,10 @@
             </div>
         </div>
     {{ form()->close() }}
-@endsection
 
-@push('scripts')
-    <script defer>
-        plugins.select2('select[name="tags[]"]')
-    </script>
-@endpush
+    @push('scripts')
+        <script defer>
+            plugins.select2('select[name="tags[]"]')
+        </script>
+    @endpush
+</x-arc:layout>

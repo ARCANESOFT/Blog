@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Arcanesoft\Blog\Console;
 
@@ -10,7 +8,6 @@ use Arcanesoft\Foundation\Support\Console\InstallCommand as Command;
 /**
  * Class     InstallCommand
  *
- * @package  Arcanesoft\Blog\Console
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 class InstallCommand extends Command
@@ -42,8 +39,10 @@ class InstallCommand extends Command
     /**
      * Handle the command.
      */
-    public function handle(): void
+    public function handle(): int
     {
         $this->seed(DatabaseSeeder::class);
+
+        return static::SUCCESS;
     }
 }

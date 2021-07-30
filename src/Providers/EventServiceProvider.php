@@ -1,11 +1,12 @@
-<?php namespace Arcanesoft\Blog\Providers;
+<?php declare(strict_types=1);
+
+namespace Arcanesoft\Blog\Providers;
 
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 /**
  * Class     EventServiceProvider
  *
- * @package  Arcanesoft\Blog\Providers
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 class EventServiceProvider extends ServiceProvider
@@ -22,6 +23,6 @@ class EventServiceProvider extends ServiceProvider
      */
     public function listens(): array
     {
-        return config('arcanesoft.blog.events', []);
+        return config()->get('arcanesoft.blog.events', []);
     }
 }

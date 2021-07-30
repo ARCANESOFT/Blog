@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Arcanesoft\Blog\Repositories;
 
@@ -11,7 +9,6 @@ use Illuminate\Support\Str;
 /**
  * Class     PostsRepository
  *
- * @package  Arcanesoft\Blog\Repositories
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 class PostsRepository extends AbstractRepository
@@ -28,7 +25,7 @@ class PostsRepository extends AbstractRepository
      */
     public static function modelClass(): string
     {
-        return Blog::model('post');
+        return Blog::model('post', Post::class);
     }
 
     /**
@@ -38,7 +35,7 @@ class PostsRepository extends AbstractRepository
      *
      * @return \Arcanesoft\Blog\Models\Post|mixed
      */
-    public function createOne(array $attributes)
+    public function createOne(array $attributes): Post
     {
         /** @var  \Arcanesoft\Blog\Models\Post  $post */
         $post = $this->model()->fill($attributes)->forceFill([
@@ -60,7 +57,7 @@ class PostsRepository extends AbstractRepository
      *
      * @return bool
      */
-    public function updateOne(Post $post, array $attributes)
+    public function updateOne(Post $post, array $attributes): bool
     {
         return $post->update($attributes);
     }
@@ -72,7 +69,7 @@ class PostsRepository extends AbstractRepository
      *
      * @return bool|null
      */
-    public function deleteOne(Post $post)
+    public function deleteOne(Post $post): ?bool
     {
         return $post->delete();
     }

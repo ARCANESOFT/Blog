@@ -1,14 +1,12 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Arcanesoft\Blog\Http\Datatables;
 
 use Arcanesoft\Blog\Http\Transformers\TagTransformer;
 use Arcanesoft\Blog\Policies\TagsPolicy;
 use Arcanesoft\Blog\Repositories\TagsRepository;
-use Arcanesoft\Foundation\Datatable\{Action, Column, Datatable, Filter};
-use Arcanesoft\Foundation\Datatable\Concerns\{HasActions, HasFilters, HasPagination};
+use Arcanesoft\Foundation\Datatable\{Action, Column, Filter};
+use Arcanesoft\Foundation\Datatable\Concerns\HasFilters;
 use Arcanesoft\Foundation\Datatable\Contracts\Transformer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -25,9 +23,7 @@ class TagsDatatable extends Datatable
      | -----------------------------------------------------------------
      */
 
-    use HasActions;
     use HasFilters;
-    use HasPagination;
 
     /* -----------------------------------------------------------------
      |  Main Methods

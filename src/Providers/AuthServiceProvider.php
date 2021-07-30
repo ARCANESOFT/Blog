@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Arcanesoft\Blog\Providers;
 
@@ -9,7 +7,6 @@ use Arcanesoft\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 /**
  * Class     AuthServiceProvider
  *
- * @package  Arcanesoft\Blog\Providers
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 class AuthServiceProvider extends ServiceProvider

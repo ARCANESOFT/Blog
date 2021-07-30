@@ -1,14 +1,12 @@
-<?php namespace Arcanesoft\Blog\Http\Requests\Tags;
+<?php declare(strict_types=1);
 
-use Arcanesoft\Blog\Http\Requests\FormRequest;
-use Arcanesoft\Blog\Rules\Tags\NameRule;
-use Arcanesoft\Blog\Rules\Tags\SlugRule;
-use Illuminate\Support\Str;
+namespace Arcanesoft\Blog\Http\Requests\Tags;
+
+use Arcanesoft\Blog\Rules\Tags\{NameRule, SlugRule};
 
 /**
  * Class     CreateTagRequest
  *
- * @package  Arcanesoft\Blog\Http\Requests\Tags
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 class CreateTagRequest extends FormRequest
@@ -37,19 +35,5 @@ class CreateTagRequest extends FormRequest
                 SlugRule::unique(),
             ],
         ];
-    }
-
-    /**
-     * Prepare the data for validation.
-     *
-     * @return void
-     */
-    protected function prepareForValidation(): void
-    {
-        if (is_null($this->get('slug'))) {
-            $this->merge([
-                'slug' => Str::slug($this->get('name')),
-            ]);
-        }
     }
 }

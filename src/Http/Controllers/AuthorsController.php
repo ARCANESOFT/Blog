@@ -1,20 +1,17 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Arcanesoft\Blog\Http\Controllers;
 
 use Arcanesoft\Blog\Http\Datatables\AuthorsDatatable;
-use Arcanesoft\Foundation\Support\Traits\HasNotifications;
 use Arcanesoft\Blog\Http\Requests\Authors\{CreateAuthorRequest, UpdateAuthorRequest};
 use Arcanesoft\Blog\Models\Author;
 use Arcanesoft\Blog\Policies\AuthorsPolicy;
 use Arcanesoft\Blog\Repositories\AuthorsRepository;
+use Arcanesoft\Foundation\Support\Traits\HasNotifications;
 
 /**
  * Class     AuthorsController
  *
- * @package  Arcanesoft\Blog\Http\Controllers
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 class AuthorsController extends Controller
@@ -83,8 +80,8 @@ class AuthorsController extends Controller
         $author = $repo->createOne($request->getValidatedData());
 
         $this->notifySuccess(
-            __('Author Created'),
-            __('The author has been successfully created!')
+            'Author Created',
+            'The author has been successfully created!'
         );
 
         return redirect()->route('admin::blog.authors.show', [$author]);
@@ -115,8 +112,8 @@ class AuthorsController extends Controller
         $repo->updateOne($author, $request->getValidatedData());
 
         $this->notifySuccess(
-            __('Author Updated'),
-            __('The author has been successfully updated!')
+            'Author Updated',
+            'The author has been successfully updated!'
         );
 
         return redirect()->route('admin::blog.authors.show', [$author]);
@@ -129,8 +126,8 @@ class AuthorsController extends Controller
         $repo->deleteOne($author);
 
         $this->notifySuccess(
-            __('Author Deleted'),
-            __('The author has been successfully deleted!')
+            'Author Deleted',
+            'The author has been successfully deleted!'
         );
 
         return $this->jsonResponseSuccess();

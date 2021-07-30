@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Arcanesoft\Blog\Http\Routes;
 
@@ -8,7 +8,6 @@ use Closure;
 /**
  * Class     AbstractRouteRegistrar
  *
- * @package  Arcanesoft\Blog\Http\Routes
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 abstract class AbstractRouteRegistrar extends AdminRouteRegistrar

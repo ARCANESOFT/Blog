@@ -1,12 +1,9 @@
-@extends(arcanesoft\foundation()->template())
-
-@section('page-title')
-    <i class="fas fa-fw fa-tag"></i> @lang("Tag's Details")
-@endsection
-
 <?php /** @var  \Arcanesoft\Blog\Models\Tag  $tag */ ?>
+<x-arc:layout>
+    @section('page-title')
+        <i class="fas fa-fw fa-tag"></i> @lang("Tag's Details")
+    @endsection
 
-@section('content')
     <div class="row g-4">
         <div class="col-md-4">
             <div class="card card-borderless shadow-sm">
@@ -72,4 +69,4 @@
             </div>
         </div>
     </div>
-@endsection
+</x-arc:layout>

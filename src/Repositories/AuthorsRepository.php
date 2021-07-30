@@ -1,19 +1,15 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Arcanesoft\Blog\Repositories;
 
-use Arcanesoft\Auth\Repositories\UsersRepository;
 use Arcanesoft\Blog\Blog;
 use Arcanesoft\Blog\Models\Author;
-use Arcanesoft\Foundation\Auth\Repositories\AdministratorsRepository;
+use Arcanesoft\Foundation\Authorization\Repositories\AdministratorsRepository;
 use Illuminate\Support\Str;
 
 /**
  * Class     AuthorsRepository
  *
- * @package  Arcanesoft\Blog\Repositories
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 class AuthorsRepository extends AbstractRepository
@@ -30,7 +26,7 @@ class AuthorsRepository extends AbstractRepository
      */
     public static function modelClass(): string
     {
-        return Blog::model('author');
+        return Blog::model('author', Author::class);
     }
 
     /**
@@ -38,13 +34,13 @@ class AuthorsRepository extends AbstractRepository
      *
      * @param  array  $attributes
      *
-     * @return \Arcanesoft\Blog\Models\Author
+     * @return \Arcanesoft\Blog\Models\Author|mixed
      */
-    public function createOne(array $attributes)
+    public function createOne(array $attributes): Author
     {
         /** @var  \Arcanesoft\Blog\Models\Author  $author */
         $author = $this->model()->fill($attributes)->forceFill([
-            'uuid' => Str::uuid(),
+            'uuid' => Str::uuid(), // TODO: Move to Event/Listener
         ]);
 
         $this->addCreator($author, $attributes);
@@ -81,7 +77,7 @@ class AuthorsRepository extends AbstractRepository
      *
      * @return bool|null
      */
-    public function deleteOne(Author $author)
+    public function deleteOne(Author $author): ?bool
     {
         return $author->delete();
     }
@@ -116,16 +112,16 @@ class AuthorsRepository extends AbstractRepository
      *
      * @return bool
      */
-    protected function updateCreator(Author $author, $attributes)
+    protected function updateCreator(Author $author, array $attributes): bool
     {
         return static::getAdminRepository()
-                     ->updateOne($author->creator, $attributes);
+            ->updateOne($author->creator, $attributes);
     }
 
     /**
      * Get the `administrator` repository.
      *
-     * @return \Arcanesoft\Foundation\Auth\Repositories\AdministratorsRepository|mixed
+     * @return \Arcanesoft\Foundation\Authorization\Repositories\AdministratorsRepository|mixed
      */
     protected static function getAdminRepository(): AdministratorsRepository
     {

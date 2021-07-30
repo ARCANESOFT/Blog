@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Arcanesoft\Blog\Providers;
 
@@ -10,7 +8,6 @@ use Arcanesoft\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 /**
  * Class     RouteServiceProvider
  *
- * @package  Arcanesoft\Auth\Providers
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 class RouteServiceProvider extends ServiceProvider
@@ -28,10 +25,7 @@ class RouteServiceProvider extends ServiceProvider
     public function routeClasses(): array
     {
         return [
-            Routes\DashboardRoutes::class,
-            Routes\PostsRoutes::class,
-            Routes\TagsRoutes::class,
-            Routes\AuthorsRoutes::class,
+            Routes\WebRoutes::class,
         ];
     }
 }

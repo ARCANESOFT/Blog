@@ -1,14 +1,12 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Arcanesoft\Blog\Http\Datatables;
 
 use Arcanesoft\Blog\Http\Transformers\AuthorTransformer;
 use Arcanesoft\Blog\Policies\AuthorsPolicy;
 use Arcanesoft\Blog\Repositories\AuthorsRepository;
-use Arcanesoft\Foundation\Datatable\{Action, Column, Datatable, Filter};
-use Arcanesoft\Foundation\Datatable\Concerns\{HasActions, HasFilters, HasPagination};
+use Arcanesoft\Foundation\Datatable\{Action, Column, Filter};
+use Arcanesoft\Foundation\Datatable\Concerns\HasFilters;
 use Arcanesoft\Foundation\Datatable\Contracts\Transformer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
@@ -25,9 +23,7 @@ class AuthorsDatatable extends Datatable
      | -----------------------------------------------------------------
      */
 
-    use HasActions;
     use HasFilters;
-    use HasPagination;
 
     /* -----------------------------------------------------------------
      |  Main Methods

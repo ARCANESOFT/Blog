@@ -1,12 +1,9 @@
-@extends(arcanesoft\foundation()->template())
-
 <?php /** @var  Arcanesoft\Blog\Models\Tag  $tag */ ?>
+<x-arc:layout>
+    @section('page-title')
+        <i class="fas fa-fw fa-tag"></i> @lang('Edit Tag')
+    @endsection
 
-@section('page-title')
-    <i class="fas fa-fw fa-tag"></i> @lang('Edit Tag')
-@endsection
-
-@section('content')
     {{ form()->open(['route' => ['admin::blog.tags.update', $tag], 'method' => 'PUT']) }}
         <div class="row">
             <div class="col-md-6">
@@ -38,4 +35,4 @@
             </div>
         </div>
     {{ form()->close() }}
-@endsection
+</x-arc:layout>

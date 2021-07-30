@@ -1,13 +1,10 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Arcanesoft\Blog\Http\Controllers;
 
 /**
  * Class     DashboardController
  *
- * @package  Arcanesoft\Blog\Http\Controllers
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 class DashboardController extends Controller
@@ -22,7 +19,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $this->setCurrentSidebarItem('blog::main');
+        $this->setCurrentSidebarItem('blog::main.dashboard');
         $this->addBreadcrumb(__('Statistics'));
 
         return $this->view('dashboard');

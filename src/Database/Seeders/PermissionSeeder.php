@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Arcanesoft\Blog\Database\Seeders;
 
@@ -9,7 +7,6 @@ use Arcanesoft\Foundation\Core\Database\PermissionsSeeder as Seeder;
 /**
  * Class     PermissionSeeder
  *
- * @package  Arcanesoft\Blog\Database\Seeders
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 class PermissionSeeder extends Seeder

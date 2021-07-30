@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Arcanesoft\Blog\Http\Controllers;
 
@@ -7,7 +7,6 @@ use Arcanesoft\Foundation\Support\Http\Controller as BaseController;
 /**
  * Class     Controller
  *
- * @package  Arcanesoft\Blog\Http\Controllers
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 abstract class Controller extends BaseController

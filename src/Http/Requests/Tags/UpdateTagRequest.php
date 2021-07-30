@@ -1,17 +1,13 @@
-<?php namespace Arcanesoft\Blog\Http\Requests\Tags;
+<?php declare(strict_types=1);
 
-use Arcanesoft\Blog\Blog;
-use Arcanesoft\Blog\Http\Requests\FormRequest;
+namespace Arcanesoft\Blog\Http\Requests\Tags;
+
 use Arcanesoft\Blog\Http\Routes\TagsRoutes;
-use Arcanesoft\Blog\Rules\Tags\NameRule;
-use Arcanesoft\Blog\Rules\Tags\SlugRule;
-use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
+use Arcanesoft\Blog\Rules\Tags\{NameRule, SlugRule};
 
 /**
  * Class     UpdateTagRequest
  *
- * @package  Arcanesoft\Blog\Http\Requests\Tags
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 class UpdateTagRequest extends FormRequest
@@ -42,18 +38,6 @@ class UpdateTagRequest extends FormRequest
                 SlugRule::unique()->ignore($tag->getRouteKey(), $tag->getRouteKeyName()),
             ],
         ];
-    }
-
-    /**
-     * Prepare the data for validation.
-     */
-    protected function prepareForValidation(): void
-    {
-        if (is_null($this->get('slug'))) {
-            $this->merge([
-                'slug' => Str::slug($this->get('name')),
-            ]);
-        }
     }
 
     /**

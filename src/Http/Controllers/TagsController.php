@@ -1,6 +1,4 @@
-<?php
-
-declare(strict_types=1);
+<?php declare(strict_types=1);
 
 namespace Arcanesoft\Blog\Http\Controllers;
 
@@ -14,7 +12,6 @@ use Arcanesoft\Foundation\Support\Traits\HasNotifications;
 /**
  * Class     TagsController
  *
- * @package  Arcanesoft\Blog\Http\Controllers
  * @author   ARCANEDEV <arcanedev.maroc@gmail.com>
  */
 class TagsController extends Controller

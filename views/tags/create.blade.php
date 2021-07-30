@@ -1,10 +1,8 @@
-@extends(arcanesoft\foundation()->template())
+<x-arc:layout>
+    @section('page-title')
+        <i class="fas fa-fw fa-tag"></i> @lang('New Tag')
+    @endsection
 
-@section('page-title')
-    <i class="fas fa-fw fa-tag"></i> @lang('New Tag')
-@endsection
-
-@section('content')
     {{ form()->open(['route' => 'admin::blog.tags.store', 'method' => 'POST']) }}
         <div class="row">
             <div class="col-md-6">
@@ -36,4 +34,4 @@
             </div>
         </div>
     {{ form()->close() }}
-@endsection
+</x-arc:layout>
