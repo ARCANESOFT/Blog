@@ -40,7 +40,7 @@ class AuthorsDatatable extends Datatable
      */
     public function handle(AuthorsRepository $repo, Request $request)
     {
-        $query = $repo->query();
+        $query = $repo->query()->withCount(['posts']);
 
         $this->handleSearchQuery($request, $query);
 

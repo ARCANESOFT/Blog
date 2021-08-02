@@ -11,10 +11,12 @@
             <a href="{{ route('admin::blog.posts.index') }}"
                class="btn btn-sm btn-secondary {{ active(['admin::blog.posts.index']) }}">@lang('List')</a>
 
-            {{ arcanesoft\ui\action_link('add', route('admin::blog.posts.create'))->size('sm') }}
+            @can(Arcanesoft\Blog\Policies\PostsPolicy::ability('create'))
+                <x-arc:button-action
+                    type="add" :action="route('admin::blog.posts.create')"/>
+            @endcan
         </nav>
     @endpush
 
-    <v-datatable url="{{ route('admin::blog.posts.datatable') }}"
-                 name="posts-datatable"/>
+    <v-datatable url="{{ route('admin::blog.posts.datatable') }}" name="posts-datatable"/>
 </x-arc:layout>

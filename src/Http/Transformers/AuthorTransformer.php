@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Arcanesoft\Blog\Http\Transformers;
 
 use Arcanesoft\Foundation\Datatable\Contracts\Transformer;
+use Arcanesoft\Foundation\Datatable\DataTypes\BadgeCount;
 use Illuminate\Http\Request;
 
 /**
@@ -32,7 +33,7 @@ class AuthorTransformer implements Transformer
         return [
             'full_name'  => $resource->full_name,
             'username'   => $resource->username,
-            'posts'      => $resource->posts_count,
+            'posts'      => (new BadgeCount)->transform($resource->posts_count),
             'created_at' => $resource->created_at->format('Y-m-d H:i:s'),
         ];
     }

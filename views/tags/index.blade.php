@@ -13,6 +13,5 @@
         </nav>
     @endpush
 
-    <v-datatable url="{{ route('admin::blog.tags.datatable') }}"
-                 name="tags-datatable"/>
+    <v-datatable url="{{ route('admin::blog.tags.datatable') }}" name="tags-datatable"/>
 </x-arc:layout>

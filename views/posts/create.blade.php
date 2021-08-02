@@ -1,60 +1,44 @@
 <x-arc:layout>
     @section('page-title')
-        <i class="far fa-fw fa-newspaper"></i> @lang('New Post')
+        <i class="far fa-fw fa-newspaper"></i> @lang('Posts') <small>@lang('New Post')</small>
     @endsection
 
-    {{ form()->open(['route' => 'admin::blog.posts.store', 'method' => 'POST']) }}
-        <div class="card card-borderless mb-3">
-            <div class="card-header">@lang('Post')</div>
-            <div class="card-body">
+    <x-arc:form action="{{ route('admin::blog.posts.store') }}">
+        <x-arc:card>
+            <x-arc:card-header>@lang('Post')</x-arc:card-header>
+            <x-arc:card-body>
                 <div class="row g-3">
                     <div class="col-lg-6">
-                        <label for="title" class="form-label font-weight-light text-uppercase text-muted">@lang('Title')</label>
-                        {{ form()->text('title', old('title'), ['class' => 'form-control'.$errors->first('title', ' is-invalid'), 'required']) }}
-                        @error('title')
-                        <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                        @enderror
+                        {{-- TITLE --}}
+                        <x-arc:input-control type="text" name="title" label="Title" required/>
                     </div>
                     <div class="col-lg-6">
-                        <label for="slug" class="form-label font-weight-light text-uppercase text-muted">@lang('Slug')</label>
-                        {{ form()->text('slug', old('slug'), ['class' => 'form-control'.$errors->first('slug', ' is-invalid')]) }}
-                        @error('slug')
-                        <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                        @enderror
+                        {{-- SLUG --}}
+                        <x-arc:input-control type="text" name="slug" label="Slug" required/>
                     </div>
-                    <div class="col-lg-12">
-                        <label for="excerpt" class="form-label font-weight-light text-uppercase text-muted">@lang('Excerpt')</label>
-                        {{ form()->text('excerpt', old('excerpt'), ['class' => 'form-control'.$errors->first('excerpt', ' is-invalid'), 'required']) }}
-                        @error('body')
-                        <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                        @enderror
+                    <div class="col-12">
+                        {{-- Excerpt --}}
+                        <x-arc:input-control type="text" name="excerpt" label="Excerpt" required/>
                     </div>
-                    <div class="col-lg-12">
-                        <label for="body" class="form-label font-weight-light text-uppercase text-muted">@lang('Body')</label>
-                        <v-markdown-editor name="body" value="{{ old('body') }}"></v-markdown-editor>
-                        @error('body')
-                        <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                        @enderror
+                    <div class="col-12">
+                        <x-arc:vue-control use="v-markdown-editor" name="body" label="Body"/>
                     </div>
-                    <div class="col-lg-12">
-                        <label for="tags" class="form-label font-weight-light text-uppercase text-muted">@lang('Tags')</label>
-                        {{ form()->select('tags[]', $tags, old('tags'), ['class' => 'form-control'.$errors->first('tags', ' is-invalid'), 'multiple']) }}
-                        @error('tags')
-                        <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                        @enderror
+                    <div class="col-12">
+                        {{-- Excerpt --}}
+                        <x-arc:select-control id="tags" name="tags[]" :options="$tags" label="Tags"/>
                     </div>
                 </div>
-            </div>
+            </x-arc:card-body>
             <div class="card-footer d-flex justify-content-between">
-                <a href="{{ route('admin::blog.posts.index') }}" class="btn btn-sm btn-light">@lang('Cancel')</a>
-                <button type="submit" class="btn btn-sm btn-primary">@lang('Save')</button>
+                <x-arc:form-cancel-button to="{{ route('admin::blog.posts.index') }}"/>
+                <x-arc:form-submit-button type="save"/>
             </div>
-        </div>
-    {{ form()->close() }}
+        </x-arc:card>
+    </x-arc:form>
 
     @push('scripts')
         <script defer>
-            plugins.select2('select[name="tags[]"]')
+            // plugins.select2('select#tags')
         </script>
     @endpush
 </x-arc:layout>

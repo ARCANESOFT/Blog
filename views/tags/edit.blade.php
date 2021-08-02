@@ -4,35 +4,29 @@
         <i class="fas fa-fw fa-tag"></i> @lang('Edit Tag')
     @endsection
 
-    {{ form()->open(['route' => ['admin::blog.tags.update', $tag], 'method' => 'PUT']) }}
+    <x-arc:form action="{{ route('admin::blog.tags.update', [$tag]) }}" methos="PUT">
         <div class="row">
             <div class="col-md-6">
-                <div class="card card-borderless shadow-sm mb-3">
-                    <div class="card-header">@lang('Tag')</div>
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-lg-12">
-                                <label for="name" class="form-label font-weight-light text-uppercase text-muted">@lang('Name')</label>
-                                {{ form()->text('name', old('name', $tag->name), ['class' => 'form-control'.$errors->first('name', ' is-invalid'), 'required']) }}
-                                @error('name')
-                                <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                @enderror
+                <x-arc:card>
+                    <x-arc:card-header>@lang('Tag')</x-arc:card-header>
+                    <x-arc:card-body>
+                        <div class="row row-cols-1 g-3">
+                            <div class="col">
+                                {{-- NAME --}}
+                                <x-arc:input-control type="text" name="username" :value="$tag->name" label="Username" required/>
                             </div>
-                            <div class="col-lg-12">
-                                <label for="name" class="form-label font-weight-light text-uppercase text-muted">@lang('Slug')</label>
-                                {{ form()->text('slug', old('slug', $tag->slug), ['class' => 'form-control'.$errors->first('slug', ' is-invalid')]) }}
-                                @error('slug')
-                                <span class="invalid-feedback" role="alert">{{ $message }}</span>
-                                @enderror
+                            <div class="col">
+                                {{-- SLUG --}}
+                                <x-arc:input-control type="text" name="slug" :value="$tag->slug" label="Slug" required/>
                             </div>
                         </div>
-                    </div>
-                    <div class="card-footer d-flex justify-content-between">
-                        <a href="{{ route('admin::blog.tags.show', [$tag]) }}" class="btn btn-sm btn-light">@lang('Cancel')</a>
-                        <button type="submit" class="btn btn-sm btn-primary">@lang('Save')</button>
-                    </div>
-                </div>
+                    </x-arc:card-body>
+                    <x-arc:card-footer class="d-flex justify-content-between">
+                        <x-arc:form-cancel-button to="{{ route('admin::blog.tags.show', [$tag]) }}"/>
+                        <x-arc:form-submit-button type="save"/>
+                    </x-arc:card-footer>
+                </x-arc:card>
             </div>
         </div>
-    {{ form()->close() }}
+    </x-arc:form>
 </x-arc:layout>

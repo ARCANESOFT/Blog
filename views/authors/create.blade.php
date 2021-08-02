@@ -12,18 +12,15 @@
                         <div class="row row-cols-1 g-3">
                             <div class="col">
                                 {{-- USERNAME --}}
-                                <x-arc:input-control
-                                    type="text" name="username" :value="old('username')" label="Username" required/>
+                                <x-arc:input-control type="text" name="username" label="Username" required/>
                             </div>
                             <div class="col">
                                 {{-- SLUG --}}
-                                <x-arc:input-control
-                                    type="text" name="slug" :value="old('slug')" label="Slug" required/>
+                                <x-arc:input-control type="text" name="slug" label="Slug" required/>
                             </div>
                             <div class="col">
                                 {{-- BIO --}}
-                                <x-arc:textarea-control
-                                    name="bio" :value="old('bio')" label="Bio" required/>
+                                <x-arc:textarea-control name="bio" label="Bio" required/>
                             </div>
                         </div>
                     </x-arc:card-body>
