@@ -1,5 +1,5 @@
 <x-arc:layout>
     @section('page-title')
-        <i class="fa fa-fw fa-users"></i> @lang('Statistics')
+        <i class="fas fa-fw fa-tachometer-alt"></i> @lang('Statistics')
     @endsection
 </x-arc:layout>

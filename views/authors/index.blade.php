@@ -4,12 +4,7 @@
     @endsection
 
     @push('content-nav')
-        <nav class="page-actions">
-            @can(Arcanesoft\Blog\Policies\AuthorsPolicy::ability('create'))
-                <x-arc:button-action
-                    type="add" :action="route('admin::blog.authors.create')"/>
-            @endcan
-        </nav>
+        @include('blog::authors._partials.nav-actions')
     @endpush
 
     <v-datatable

@@ -18,7 +18,7 @@ return [
                 [
                     'name'        => 'blog::main.dashboard',
                     'title'       => 'Statistics',
-                    'icon'        => 'fa fa-fw fa-tachometer-alt',
+                    'icon'        => 'fas fa-fw fa-tachometer-alt',
                     'route'       => 'admin::blog.index',
                     'roles'       => [
                         'blog-author',
